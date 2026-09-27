@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { AuthContext } from './AuthContext'
 import { createDemoSession, getDemoSession, clearDemoSession, DEMO_PROFILE_KEY, DEMO_SESSION_KEY } from '../lib/demoSession'
 import { DEMO_MODE } from '../config/demo'
-import { verifyOtp } from '../lib/otpApi'
+import { clearStudentServerSession, verifyOtp } from '../lib/otpApi'
 
 // Shares the normalized profile interface; no Supabase session is fabricated.
 export function DemoAuthProvider({ children }: { children: ReactNode }) {
@@ -33,6 +33,6 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
       } finally { verifying.current = false }
     },
     refreshProfile: async () => { if (DEMO_MODE) setProfile(getDemoSession()) },
-    signOut: async () => { if (DEMO_MODE) { revision.current++; try { clearDemoSession() } finally { setProfile(null) } } },
+    signOut: async () => { if (DEMO_MODE) { revision.current++; try { if(typeof clearStudentServerSession==='function')await clearStudentServerSession() } finally { clearDemoSession(); setProfile(null) } } },
   }}>{children}</AuthContext.Provider>
 }

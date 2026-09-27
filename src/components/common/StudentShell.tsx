@@ -21,6 +21,6 @@ export function StudentShell({ children }: { children?: ReactNode }) {
   const action = useAuthAction()
   if (loading) return <LoadingScreen />
   if (!profile) return <ProfileLoadError onRetry={() => void action.run(() => refreshProfile())} busy={Boolean(action.busy)} error={action.error} logoutAction={<LogoutButton />} />
-  const contentPage = /^\/(resources|careers|explore|branches|about)(\/|$)/.test(pathname)
+  const contentPage = /^\/(resources|careers|explore|branches|about|campus|faculty)(\/|$)/.test(pathname)
   return <AppShell profile={profile} logoutAction={<LogoutButton />}>{contentPage ? <ContentBoundary>{children ?? <Outlet />}</ContentBoundary> : children ?? <Outlet />}</AppShell>
 }

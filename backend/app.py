@@ -1,6 +1,6 @@
 from functools import partial
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -12,6 +12,9 @@ from contact_service import ContactError, ContactService
 from models import SendOtpRequest, VerifyOtpRequest
 from otp_service import OtpError, OtpService
 from cms.api import install_cms
+from cms.problems import install_problems
+from cms.storage import install_uploads
+from student_session import issue as issue_student_session, clear as clear_student_session
 
 
 def create_app(settings: Settings, *, otp_service: OtpService | None = None, contact_service: ContactService | None = None, db_factory=None, admin_sender=None) -> FastAPI:
@@ -19,7 +22,7 @@ def create_app(settings: Settings, *, otp_service: OtpService | None = None, con
     service = otp_service or OtpService(settings.otp_secret, partial(send_otp_email, settings=settings))
     contacts = contact_service or ContactService(partial(send_contact_email, settings=settings))
     app.add_middleware(CORSMiddleware, allow_origins=[settings.frontend_url],
-                       allow_methods=["GET", "POST", "PUT", "PATCH"], allow_headers=["Content-Type", "X-Pivot-Admin", "X-CSRF-Token"], allow_credentials=True)
+                       allow_methods=["GET", "POST", "PUT", "PATCH"], allow_headers=["Content-Type", "X-Pivot-Admin", "X-Pivot-Student", "X-CSRF-Token"], allow_credentials=True)
 
     @app.middleware("http")
     async def no_cache(request: Request, call_next):
@@ -29,7 +32,7 @@ def create_app(settings: Settings, *, otp_service: OtpService | None = None, con
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_request: Request, error: RequestValidationError):
-        if _request.url.path.startswith(("/api/admin", "/api/public")):
+        if _request.url.path.startswith(("/api/admin", "/api/public", "/api/problems")):
             fields = list(dict.fromkeys('.'.join(str(part) for part in item['loc'] if part != 'body') for item in error.errors()))
             return JSONResponse(status_code=422, content={"detail": {"message": "Check the highlighted fields and try again.", "fields": fields}})
         if _request.url.path == "/api/contact":
@@ -74,9 +77,17 @@ def create_app(settings: Settings, *, otp_service: OtpService | None = None, con
         return {"success": True, "message": "OTP sent successfully"}
 
     @app.post("/api/auth/verify-otp")
-    def verify_otp(body: VerifyOtpRequest):
+    def verify_otp(body: VerifyOtpRequest, response: Response):
         service.verify(str(body.email), body.otp)
+        issue_student_session(response, settings.otp_secret, str(body.email), settings.frontend_url)
         return {"success": True, "verified": True}
 
+    @app.post('/api/auth/logout')
+    def student_logout(response: Response):
+        clear_student_session(response, settings.frontend_url)
+        return {"success": True}
+
     install_cms(app, settings, db_factory, admin_sender or partial(send_otp_email, settings=settings))
+    install_problems(app, settings)
+    install_uploads(app)
     return app

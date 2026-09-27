@@ -11,6 +11,13 @@ export function studentPreviewPath(section:AdminSection,row:Record<string,unknow
   if(section.resource==='branches')return `/branches/${slug}`
   if(section.resource==='career-domains')return `/careers/domains/${slug}`
   if(section.resource==='career-roles')return `/careers/jobs/${slug}`
+  if(section.resource==='rooms')return '/campus/rooms'
+  if(section.resource==='faculty'||section.resource==='faculty-subjects')return '/faculty'
+  if(section.resource==='career-resources'){
+    const branch=catalog.branches.find(item=>item.id===row.branch_id)
+    const page=row.resource_type==='job'?'jobs':'domains'
+    return `/careers/${page}${branch?`?branch=${textValue(branch.slug)}`:''}`
+  }
   if(section.resource==='site-content')return row.key==='about'?'/about':'/explore'
   const subject=section.resource==='books'?catalog.subjects.find(item=>item.id===row.subject_id):section.resource==='subjects'?row:undefined
   const lab=section.resource==='experiments'?catalog.labs.find(item=>item.id===row.lab_id):section.resource==='labs'?row:undefined

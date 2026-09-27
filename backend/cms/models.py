@@ -211,3 +211,70 @@ class SiteContent(Content, Base):
     key: Mapped[str] = mapped_column(String(100), unique=True)
     title: Mapped[str] = mapped_column(String(200), default='')
     content_json: Mapped[dict] = mapped_column(JSONB, default=dict)
+
+
+class InformationRoom(Content, Base):
+    __tablename__ = 'information_rooms'
+    __table_args__ = (status_check('information_rooms'), UniqueConstraint('room_number', 'name', name='uq_room_number_name'))
+    name: Mapped[str] = mapped_column(String(200))
+    room_number: Mapped[str] = mapped_column(String(80))
+    phone_number: Mapped[str] = mapped_column(String(32))
+    floor: Mapped[str] = mapped_column(String(80), default='')
+    description: Mapped[str] = mapped_column(Text, default='')
+
+
+class FacultySubject(Content, Base):
+    __tablename__ = 'faculty_subjects'
+    __table_args__ = (status_check('faculty_subjects'),)
+    name: Mapped[str] = mapped_column(String(200))
+    slug: Mapped[str] = mapped_column(String(100), unique=True)
+
+
+class FacultyMember(Content, Base):
+    __tablename__ = 'faculty_members'
+    __table_args__ = (status_check('faculty_members'),)
+    subject_id: Mapped[str] = mapped_column(ForeignKey('faculty_subjects.id', ondelete='RESTRICT'), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    designation: Mapped[str] = mapped_column(String(200), default='')
+    mobile_number: Mapped[str] = mapped_column(String(32), default='')
+    email: Mapped[str] = mapped_column(String(254), default='')
+    room_number: Mapped[str] = mapped_column(String(80), default='')
+    image_url: Mapped[str | None] = mapped_column(Text)
+
+
+class CareerResource(Content, Base):
+    __tablename__ = 'career_resources'
+    __table_args__ = (status_check('career_resources'),
+                      CheckConstraint("resource_type IN ('domain','job')", name='ck_career_resource_type'))
+    resource_type: Mapped[str] = mapped_column(String(12), index=True)
+    branch_id: Mapped[str] = mapped_column(ForeignKey('branches.id', ondelete='RESTRICT'), index=True)
+    title: Mapped[str] = mapped_column(String(300))
+    description: Mapped[str] = mapped_column(Text, default='')
+    pdf_url: Mapped[str | None] = mapped_column(Text)
+    supporting_url: Mapped[str | None] = mapped_column(Text)
+    storage_type: Mapped[str | None] = mapped_column(String(20))
+    tags: Mapped[list] = mapped_column(JSONB, default=list)
+
+
+class StudentProblem(Identity, Timestamps, Base):
+    __tablename__ = 'student_problems'
+    __table_args__ = (CheckConstraint("academic_level IN ('P1','E1')", name='ck_problem_academic_level'),
+                      CheckConstraint("priority IN ('low','medium','high')", name='ck_problem_priority'),
+                      CheckConstraint("status IN ('open','in_progress','resolved','archived')", name='ck_problem_status'),
+                      Index('ix_student_problems_created_at', 'created_at'))
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(Text)
+    academic_level: Mapped[str] = mapped_column(String(2), index=True)
+    category: Mapped[str | None] = mapped_column(String(40))
+    priority: Mapped[str] = mapped_column(String(10), index=True)
+    status: Mapped[str] = mapped_column(String(16), default='open', server_default='open', index=True)
+    author_identifier: Mapped[str] = mapped_column(String(64))
+
+
+class ProblemReaction(Identity, Timestamps, Base):
+    __tablename__ = 'problem_reactions'
+    __table_args__ = (UniqueConstraint('problem_id', 'student_identifier', name='uq_problem_student_reaction'),
+                      CheckConstraint("reaction IN ('like','dislike')", name='ck_problem_reaction'))
+    problem_id: Mapped[str] = mapped_column(ForeignKey('student_problems.id', ondelete='RESTRICT'), index=True)
+    student_identifier: Mapped[str] = mapped_column(String(64))
+    reaction: Mapped[str] = mapped_column(String(8))

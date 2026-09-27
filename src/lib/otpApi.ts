@@ -27,7 +27,7 @@ async function request(path: string, body: { email: string; otp?: string }): Pro
     const response = await fetch(`${API_BASE_URL}/api/auth/${path}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...body, email: normalizeEmail(body.email) }),
-      signal: controller.signal, cache: 'no-store', credentials: 'omit',
+      signal: controller.signal, cache: 'no-store', credentials: path === 'verify-otp' ? 'include' : 'omit',
     })
     const value: unknown = await response.json()
     const data = value && typeof value === 'object' ? value as Record<string, unknown> : {}
@@ -49,4 +49,7 @@ export async function verifyOtp(email: string, otp: string): Promise<VerifiedOtp
   const result = await request('verify-otp', { email, otp })
   if (result.verified !== true) throw new OtpApiError('service_unavailable')
   return { success: true, verified: true }
+}
+export async function clearStudentServerSession(): Promise<void> {
+  try { await fetch(`${API_BASE_URL}/api/auth/logout`, {method:'POST',credentials:'include',cache:'no-store',headers:{'X-Pivot-Student':'1'}}) } catch { /* Local logout always completes. */ }
 }

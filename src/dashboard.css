@@ -172,7 +172,8 @@
   .pivot-main { padding: 35px 32px 30px; max-width: 880px; }
   .pivot-main h1 { font-size: 38px; }
   .pivot-app-footer { padding: 22px 32px calc(100px + env(safe-area-inset-bottom, 0px)); max-width: 880px; }
-  .pivot-bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 35; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); align-items: stretch; min-height: 67px; padding: 8px max(12px, env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px)); border-top: 1px solid #ffffff12; background: #0d0b13f2; backdrop-filter: blur(16px); }
+  .pivot-bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 35; display: flex; align-items: stretch; overflow-x: auto; overscroll-behavior-inline: contain; min-height: 67px; padding: 8px max(12px, env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px)); border-top: 1px solid #ffffff12; background: #0d0b13f2; backdrop-filter: blur(16px); }
+  .pivot-bottom-nav a { flex: 0 0 72px; }
   .pivot-bottom-nav a { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 5px 0; color: #a19aa9; font-size: 11px; line-height: 1.25; }
   .pivot-bottom-nav a.active { color: #d2c2ee; }
   .pivot-bottom-nav a.active::before { content: ''; position: absolute; top: -9px; height: 2px; width: 24px; background: #bda3e3; border-radius: 4px; }

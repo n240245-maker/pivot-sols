@@ -2,7 +2,7 @@ import { NavLink } from 'react-router'
 import { ChevronRight, GraduationCap } from 'lucide-react'
 import { Logo } from '../Logo'
 import { InitialsAvatar } from './InitialsAvatar'
-import { studentNavigation } from '../../config/studentNavigation'
+import { navigationForLevel } from '../../config/studentNavigation'
 import type { StudentProfile } from '../../types/student'
 
 export function DesktopSidebar({ profile }: { profile: StudentProfile }) {
@@ -11,7 +11,7 @@ export function DesktopSidebar({ profile }: { profile: StudentProfile }) {
     <div className="pivot-sidebar-nav-wrap">
       <p className="pivot-nav-caption">Your campus companion</p>
       <nav aria-label="Main student navigation" className="pivot-sidebar-nav">
-        {studentNavigation.slice(0, 4).map(({ label, path, icon: Icon }) => <NavLink key={path} to={path} end={path !== '/branches'}><Icon size={19} strokeWidth={1.6} aria-hidden="true" /><span>{label}</span></NavLink>)}
+        {navigationForLevel(profile.academicLevel).filter(item=>item.path!=='/profile').map(({ label, path, icon: Icon }) => <NavLink key={path} to={path} end={path !== '/branches'}><Icon size={19} strokeWidth={1.6} aria-hidden="true" /><span>{label}</span></NavLink>)}
       </nav>
     </div>
     <div className="pivot-sidebar-bottom">

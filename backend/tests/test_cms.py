@@ -109,7 +109,7 @@ def test_schema_migration_and_constraints(engine):
     assert any(item['name'] == 'uq_subject_semester_slug' for item in inspector.get_unique_constraints('subjects'))
     assert any(item['name'] == 'uq_semester_p1' for item in inspector.get_indexes('semesters'))
     with engine.connect() as connection:
-        assert connection.execute(text('select version_num from alembic_version')).scalar() == '222b971ed0e6'
+        assert connection.execute(text('select version_num from alembic_version')).scalar() == '41f606784098'
 
 
 def test_password_otp_session_and_logout(cms):

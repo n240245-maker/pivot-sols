@@ -12,10 +12,13 @@ RESOURCES = {
     'labs': (m.Lab, s.LabInput), 'experiments': (m.Experiment, s.ExperimentInput),
     'career-domains': (m.CareerDomain, s.DomainInput), 'career-roles': (m.CareerRole, s.RoleInput),
     'site-content': (m.SiteContent, s.SiteContentInput),
+    'rooms': (m.InformationRoom, s.RoomInput), 'faculty-subjects': (m.FacultySubject, s.FacultySubjectInput),
+    'faculty': (m.FacultyMember, s.FacultyMemberInput), 'career-resources': (m.CareerResource, s.CareerResourceInput),
 }
 PARENTS = {m.Semester: ('branch_id', m.Branch), m.Subject: ('semester_id', m.Semester),
            m.ReferenceBook: ('subject_id', m.Subject), m.Lab: ('semester_id', m.Semester),
-           m.Experiment: ('lab_id', m.Lab), m.CareerRole: ('domain_id', m.CareerDomain)}
+           m.Experiment: ('lab_id', m.Lab), m.CareerRole: ('domain_id', m.CareerDomain),
+           m.FacultyMember: ('subject_id', m.FacultySubject), m.CareerResource: ('branch_id', m.Branch)}
 RELATIONS = {m.Branch: {'domain_ids': ('domains', m.CareerDomain), 'role_ids': ('roles', m.CareerRole)},
              m.CareerDomain: {'related_role_ids': ('related_roles', m.CareerRole)}}
 
@@ -135,9 +138,23 @@ def change_status(db, row, body):
     return save(db, type(row), schema.model_validate(values), row)
 
 
+def remove_draft(db, row):
+    if row.status != 'draft':
+        fail('Only draft content can be deleted. Unpublish it first.', 409)
+    if dependencies(db, row):
+        fail('Remove related content before deleting this draft.', 409)
+    db.delete(row)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        fail('This record is still in use and cannot be deleted.', 409)
+    return {'success': True}
+
+
 def published_rows(db):
     result = {}
-    for key in ('branches', 'semesters', 'subjects', 'books', 'labs', 'experiments', 'career-domains', 'career-roles', 'site-content'):
+    for key in ('branches', 'semesters', 'subjects', 'books', 'labs', 'experiments', 'career-domains', 'career-roles', 'site-content', 'rooms', 'faculty-subjects', 'faculty', 'career-resources'):
         model, _ = RESOURCES[key]
         rows = list(db.scalars(select(model).where(model.status == 'published').order_by(model.sort_order, model.created_at, model.id)).unique())
         if model in PARENTS:

@@ -27,7 +27,7 @@ const authMocks = { ...contentMocks, '../contexts/AuthContext': {useAuth:()=>({p
 function render(element,path='/dashboard') {
   return renderToStaticMarkup(createElement(MemoryRouter,{initialEntries:[path]},element))
 }
-test('dashboard uses profile values and exactly the five required resource destinations', () => {
+test('P1 and E1 dashboards use different resource destinations', () => {
   const {DashboardContent} = loadTypeScript('src/pages/DashboardPage.tsx',authMocks)
   const html = render(createElement(DashboardContent,{profile:fixture}))
   assert.match(html,/Layout/)
@@ -35,31 +35,40 @@ test('dashboard uses profile values and exactly the five required resource desti
   assert.match(html,/P1/)
   assert.match(html,/RGUKT Nuzvid/)
   assert.match(html,/Your Pivot/)
-  assert.equal((html.match(/class="pivot-resource-card /g)??[]).length,5)
-  for (const path of ['/resources/books','/resources/labs','/careers/domains','/careers/jobs','/explore']) assert.ok(html.includes(`href="${path}"`),path)
+  assert.equal((html.match(/class="pivot-resource-card /g)??[]).length,6)
+  for (const path of ['/resources/books','/resources/labs','/campus/rooms','/faculty','/problems','/explore']) assert.ok(html.includes(`href="${path}"`),path)
+  assert.ok(!html.includes('Career Domains')&&!html.includes('Career Jobs'))
   assert.ok(!html.includes('<video'))
   const updated = render(createElement(DashboardContent,{profile:{...fixture,name:'Another Student',studentId:'N240123',batch:24,academicLevel:'E1'}}))
   assert.match(updated,/Another/); assert.match(updated,/N240123/); assert.match(updated,/E1/)
   assert.ok(!updated.includes('N260000'))
+  for(const path of ['/careers/domains','/careers/jobs','/problems'])assert.ok(updated.includes(`href="${path}"`))
+  assert.ok(!updated.includes('I3 Block Rooms')&&!updated.includes('Faculty Directory'))
 })
-test('mobile navigation contains exactly five working destinations with an active state', () => {
+test('mobile navigation follows academic level and keeps active state', () => {
   const {MobileBottomNav} = loadTypeScript('src/components/dashboard/MobileBottomNav.tsx')
-  const html = render(createElement(MobileBottomNav),'/branches')
-  assert.equal((html.match(/<a /g)??[]).length,5)
-  for (const label of ['Home','Branches','About','Contact','Profile']) assert.ok(html.includes(`>${label}</span>`))
+  const p1=render(createElement(MobileBottomNav,{level:'P1'}),'/faculty')
+  for (const label of ['Rooms','Faculty','Problems','About','Contact','Profile']) assert.ok(p1.includes(`>${label}</span>`))
+  assert.ok(!p1.includes('Career Domains')&&!p1.includes('Career Jobs'))
+  const html=render(createElement(MobileBottomNav,{level:'E1'}),'/branches')
+  assert.ok(html.includes('Domains')&&html.includes('Jobs')&&html.includes('Problems'))
   assert.match(html,/aria-current="page"[^>]*href="\/branches"/)
-  const detail=render(createElement(MobileBottomNav),'/branches/ece')
+  const detail=render(createElement(MobileBottomNav,{level:'E1'}),'/branches/ece')
   assert.match(detail,/aria-current="page"[^>]*href="\/branches"/)
 })
-test('all resource destinations expose working content and dashboard navigation', () => {
-  const pages=['ReferenceBooksPage','LabVideosPage','CareerDomainsPage','CareerJobsPage','ExplorePage']
-  for (const [index,resource] of navigation.resourceDestinations.entries()) {
-    const Component=loadTypeScript(`src/pages/${pages[index]}.tsx`,authMocks)[pages[index]]
-    const html = render(createElement(Component),resource.path)
-    assert.ok(html.includes(resource.title)); assert.ok(!html.includes('Content coming in the next phase.'))
-    assert.ok(html.includes('<a ')); assert.ok(html.includes('<h1'))
-    assert.ok(html.includes('href="/dashboard"'))
-  }
+test('resource registries never offer P1 career destinations', () => {
+  const p1=navigation.resourcesForLevel('P1')
+  const e1=navigation.resourcesForLevel('E1')
+  assert.ok(p1.some(item=>item.path==='/campus/rooms')&&p1.some(item=>item.path==='/faculty'))
+  assert.ok(!p1.some(item=>item.path.startsWith('/careers/')))
+  assert.ok(e1.some(item=>item.path==='/careers/domains')&&e1.some(item=>item.path==='/careers/jobs'))
+  assert.ok(p1.some(item=>item.path==='/problems')&&e1.some(item=>item.path==='/problems'))
+})
+test('P1 desktop sidebar includes campus links and excludes career links',()=>{
+  const {DesktopSidebar}=loadTypeScript('src/components/dashboard/DesktopSidebar.tsx')
+  const html=render(createElement(DesktopSidebar,{profile:fixture}))
+  assert.ok(html.includes('I3 Block Rooms')&&html.includes('Faculty Directory')&&html.includes('Student Problems'))
+  assert.ok(!html.includes('Career Domains')&&!html.includes('Career Jobs'))
 })
 test('profile identity stays read-only while contact exposes a prefilled working form', () => {
   const {ProfileContent} = loadTypeScript('src/pages/ProfilePage.tsx',authMocks)
@@ -85,6 +94,7 @@ test('every student destination is nested under the unchanged protected route', 
     './pages/ReferenceBooksPage':{ReferenceBooksPage:stub},
     './pages/LabVideosPage':{LabVideosPage:stub},
     './pages/DemoLoginPage':{DemoLoginPage:stub},
+    './pages/RoomsPage':{RoomsPage:stub}, './pages/FacultyPage':{FacultyPage:stub}, './pages/ProblemsPage':{ProblemsPage:stub}, './components/E1Route':{E1Route:stub},
     './components/ProtectedRoute':{ProtectedRoute:protectedStub,GuestRoute:stub}, './components/common/StudentShell':{StudentShell:shellStub},
   }
   const App=loadTypeScript('src/App.tsx',mocks).default

@@ -1,15 +1,14 @@
 import type { CareerDomain, CareerRole } from '../types/careers'
-import type { BranchGuide } from '../types/content'
-import { resourceDestinations } from '../config/studentNavigation'
+import type { BranchGuide, CareerResource, InformationRoom, FacultyMember, FacultySubject } from '../types/content'
+import { resourcesForLevel } from '../config/studentNavigation'
 import { booksPath } from './referenceBooks'
 import { labsPath } from './labVideos'
-import { domainPath, rolePath } from './careers'
 import type { SearchResult } from '../types/search'
 import type { SupportedAcademicLevel } from '../types/student'
 import type { ReferenceCatalog } from '../types/referenceBooks'
 import type { LabCatalog } from '../types/labVideos'
 
-export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:ReferenceCatalog,labs:LabCatalog,careerDomains:readonly CareerDomain[],careerRoles:readonly CareerRole[],branchGuides:readonly BranchGuide[]):readonly SearchResult[] {
+export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:ReferenceCatalog,labs:LabCatalog,_careerDomains:readonly CareerDomain[],_careerRoles:readonly CareerRole[],branchGuides:readonly BranchGuide[],careerResources:readonly CareerResource[]=[],rooms:readonly InformationRoom[]=[],faculty:readonly FacultyMember[]=[],facultySubjects:readonly FacultySubject[]=[]):readonly SearchResult[] {
   const results:SearchResult[]=[]
   for(const subject of books.subjects) {
     const curriculum=books.curricula.find(c=>c.id===subject.curriculumId&&c.level===level)
@@ -28,10 +27,15 @@ export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:Referen
     results.push({id:`lab:${lab.id}`,title:lab.name,type:'Lab',context,to:labsPath(curriculum,semester,lab),keywords:lab.shortDescription??''})
     for(const experiment of lab.experiments) results.push({id:`experiment:${lab.id}:${experiment.id}`,title:experiment.title,type:'Experiment',context:`${lab.name} · ${context}`,to:labsPath(curriculum,semester,lab,experiment),keywords:lab.name})
   }
-  for(const domain of careerDomains) results.push({id:`domain:${domain.id}`,title:domain.name,type:'Career Domain',context:domain.category,to:domainPath(domain.slug),keywords:[...domain.skills,...domain.tools,...domain.roleIds.flatMap(id=>careerRoles.find(role=>role.id===id)?.name??[])].join(' ')})
-  for(const role of careerRoles) results.push({id:`role:${role.id}`,title:role.name,type:'Career Role',context:careerDomains.find(d=>d.slug===role.domainSlug)?.name??'',to:rolePath(role.slug),keywords:[...role.skills,...role.tools,...role.technologies].join(' ')})
-  for(const branch of branchGuides) results.push({id:`branch:${branch.id}`,title:branch.name,type:'Branch',context:branch.shortName??'',to:`/branches/${branch.id}`,keywords:[...branch.areas,branch.id].join(' ')})
-  for(const section of resourceDestinations) results.push({id:`section:${section.path}`,title:section.title,type:'Section',context:'Pivot Sols',to:section.path,keywords:section.description})
+  if(level==='E1') {
+    for(const resource of careerResources) results.push({id:`career-resource:${resource.id}`,title:resource.title,type:resource.resource_type==='domain'?'Career Domain Resource':'Career Job Resource',context:branchGuides.find(branch=>branch.id===resource.branch_id)?.name??'',to:`/careers/${resource.resource_type==='domain'?'domains':'jobs'}?branch=${encodeURIComponent(resource.branch_id)}`,keywords:[resource.description,...resource.tags].join(' ')})
+    for(const branch of branchGuides) results.push({id:`branch:${branch.id}`,title:branch.name,type:'Branch',context:branch.shortName??'',to:`/branches/${branch.id}`,keywords:[...branch.areas,branch.id].join(' ')})
+  } else {
+    for(const room of rooms) results.push({id:`room:${room.id}`,title:room.name,type:'I3 Block Room',context:room.room_number,to:'/campus/rooms',keywords:`${room.phone_number} ${room.floor} ${room.description}`})
+    for(const subject of facultySubjects) results.push({id:`faculty-subject:${subject.id}`,title:subject.name,type:'Faculty Subject',context:'Faculty Directory',to:'/faculty',keywords:''})
+    for(const member of faculty) results.push({id:`faculty:${member.id}`,title:member.name,type:'Faculty Member',context:facultySubjects.find(subject=>subject.id===member.subject_id)?.name??'',to:'/faculty',keywords:`${member.designation} ${member.room_number}`})
+  }
+  for(const section of resourcesForLevel(level)) results.push({id:`section:${section.path}`,title:section.title,type:'Section',context:'Pivot Sols',to:section.path,keywords:section.description})
   return results
 }
 export function searchLocalResources(index:readonly SearchResult[],query:string):readonly SearchResult[] {

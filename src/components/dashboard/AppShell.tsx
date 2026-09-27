@@ -35,7 +35,7 @@ export function AppShell({ profile, logoutAction, children }: { profile: Student
     <div className="pivot-app-body">
       <header className="pivot-app-header">
         <div className="pivot-mobile-brand"><Logo /></div>
-        <p className="pivot-breadcrumb"><span>Student space</span><ChevronRight size={13} aria-hidden="true" /><strong>{getStudentPageTitle(pathname)}</strong></p>
+        <p className="pivot-breadcrumb"><span>Student space</span><ChevronRight size={13} aria-hidden="true" /><strong>{profile.academicLevel==='P1'&&/^\/careers\/(domains|jobs)(\/|$)/.test(pathname)?'Dashboard':getStudentPageTitle(pathname)}</strong></p>
         <div className="pivot-header-actions">
           <button type="button" className="pivot-search-trigger" aria-label="Search Pivot Sols" onClick={() => setSearchOpen(true)}><Search size={18} strokeWidth={1.7} aria-hidden="true" /><span>Search Pivot Sols</span></button>
           <ProfileMenu key={pathname} profile={profile} logoutAction={logoutAction} />
@@ -48,7 +48,7 @@ export function AppShell({ profile, logoutAction, children }: { profile: Student
       </main>
       <footer className="pivot-app-footer"><span>Pivot Sols</span><span>Built around student needs.</span></footer>
     </div>
-    <MobileBottomNav />
+    <MobileBottomNav level={profile.academicLevel} />
     <SearchModal open={searchOpen} onClose={closeSearch} level={profile.academicLevel} />
   </div>
 }

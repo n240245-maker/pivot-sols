@@ -134,5 +134,6 @@ test('existing demo login profile feeds books and dashboard navigation without I
   assert.equal(helpers.getBranchesForLevel(data,e1.academicLevel).length,6)
   const navigation=loadTypeScript('src/config/studentNavigation.ts')
   assert.equal(navigation.resourceDestinations.find(d=>d.title==='Reference Books').path,'/resources/books')
-  assert.equal(navigation.resourceDestinations.length,5)
+  assert.ok(navigation.resourcesForLevel('P1').some(d=>d.title==='Faculty Directory'))
+  assert.ok(navigation.resourcesForLevel('E1').some(d=>d.title==='Career Jobs'))
 })

@@ -197,7 +197,7 @@ class AboutContent(Input):
 
 
 class ExploreCard(Input):
-    path: Literal['/resources/books', '/resources/labs', '/careers/domains', '/careers/jobs']
+    path: Literal['/resources/books', '/resources/labs', '/careers/domains', '/careers/jobs', '/campus/rooms', '/faculty', '/problems']
     title: ShortText = Field(min_length=1)
     description: LongText = Field(max_length=1000)
 
@@ -207,7 +207,7 @@ class ExploreContent(Input):
     academic_title: ShortText = ''
     careers_title: ShortText = ''
     tools_title: ShortText = ''
-    cards: list[ExploreCard] = Field(default_factory=list, max_length=4)
+    cards: list[ExploreCard] = Field(default_factory=list, max_length=7)
 
     @model_validator(mode='after')
     def unique_cards(self):
@@ -240,3 +240,62 @@ class ContentResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     model_config = ConfigDict(extra='allow')
+
+
+class RoomInput(ContentInput):
+    name: ShortText = Field(min_length=1, max_length=200)
+    room_number: ShortText = Field(min_length=1, max_length=80)
+    phone_number: ShortText = Field(min_length=1, max_length=32, pattern=r'^\+?[0-9()\- ]{5,32}$')
+    floor: ShortText = Field(default='', max_length=80)
+    description: LongText = ''
+
+
+class FacultySubjectInput(ContentInput):
+    name: ShortText = Field(min_length=1, max_length=200)
+    slug: Slug
+
+
+class FacultyMemberInput(ContentInput):
+    subject_id: UUID
+    name: ShortText = Field(min_length=1, max_length=200)
+    designation: ShortText = Field(default='', max_length=200)
+    mobile_number: ShortText = Field(default='', max_length=32, pattern=r'^(?:\+?[0-9()\- ]{5,32})?$')
+    email: ShortText = Field(default='', max_length=254)
+    room_number: ShortText = Field(default='', max_length=80)
+    image_url: str | None = None
+
+    @field_validator('image_url')
+    @classmethod
+    def image_link(cls, value):
+        return safe_url(value)
+
+    @field_validator('email')
+    @classmethod
+    def email_address(cls, value):
+        if value and not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+', value):
+            raise ValueError('Enter a valid email address.')
+        return value
+
+
+class CareerResourceInput(ContentInput):
+    resource_type: Literal['domain', 'job']
+    branch_id: UUID
+    title: ShortText = Field(min_length=1, max_length=300)
+    description: LongText = ''
+    pdf_url: str | None = None
+    supporting_url: str | None = None
+    storage_type: Literal['object', 'external'] | None = None
+    tags: TextList = Field(default_factory=list)
+
+    @field_validator('pdf_url', 'supporting_url')
+    @classmethod
+    def resource_link(cls, value):
+        return safe_url(value)
+
+    @model_validator(mode='after')
+    def useful_publish(self):
+        if self.status == 'published' and not (self.pdf_url or self.supporting_url):
+            raise ValueError('Add a PDF or supporting link before publishing.')
+        if self.storage_type == 'object' and not self.pdf_url:
+            raise ValueError('Uploaded storage requires a PDF URL.')
+        return self

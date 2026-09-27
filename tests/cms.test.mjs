@@ -7,7 +7,7 @@ import {loadTypeScript} from './load-typescript.mjs'
 import {contentFixture,contentMocks} from './content-fixture.mjs'
 
 const nodes=value=>!value||typeof value!=='object'?[]:Array.isArray(value)?value.flatMap(nodes):[value,...nodes(value.props?.children)]
-const render=element=>renderToStaticMarkup(React.createElement(MemoryRouter,null,element))
+const render=(element,path='/')=>renderToStaticMarkup(React.createElement(MemoryRouter,{initialEntries:[path]},element))
 function hooks(){
   let cursor=0;const slots=[];const effects=[]
   return {reset(){cursor=0},slots,effects,react:{...React,
@@ -25,7 +25,7 @@ const catalog={...emptyAdminCatalog,books:[row],branches:[{id:'branch',name:'Tes
 test('public content transport uses the database endpoint and refuses errors or malformed payloads',async()=>{
   let value=contentFixture;let ok=true;const requests=[]
   const api=loadTypeScript('src/lib/contentApi.ts',{},new Map(),{fetch:async(url,options)=>{requests.push({url,options});return {ok,json:async()=>value}}})
-  assert.equal(await api.fetchPublishedContent(),contentFixture)
+  assert.equal(JSON.stringify(await api.fetchPublishedContent()),JSON.stringify(contentFixture))
   assert.equal(requests[0].url,'http://localhost:8000/api/public/catalog')
   assert.equal(requests[0].options.credentials,'omit')
   for(const invalid of [null,{}, {...contentFixture,domains:null}]){value=invalid;await assert.rejects(api.fetchPublishedContent(),/couldn't load/)}
@@ -54,16 +54,16 @@ test('content provider discards obsolete requests and clears stale records after
   assert.equal(draw().status,'error');assert.equal(draw().data.books.books.length,0);cleanup()
 })
 
-test('student pages and shared search render changed API content rather than seed defaults',()=>{
-  const domain={...contentFixture.domains[0],id:'new-api-domain',slug:'database-only',name:'Database-only Domain'}
-  const data={...contentFixture,domains:[domain],roles:[]}
+test('student resource library and search render changed API content rather than old career seed data',()=>{
+  const resource={...contentFixture.career_resources[0],id:'new-api-resource',title:'Database-only PDF'}
+  const data={...contentFixture,career_resources:[resource],domains:[],roles:[]}
   const mocks=Object.fromEntries(Object.keys(contentMocks).map(key=>[key,{useContent:()=>({data,status:'ready'})}]))
   const {CareerDomainsPage}=loadTypeScript('src/pages/CareerDomainsPage.tsx',mocks)
-  const html=render(React.createElement(CareerDomainsPage))
-  assert.match(html,/Database-only Domain/);assert.doesNotMatch(html,/href="\/careers\/domains\/vlsi"/)
+  const html=render(React.createElement(CareerDomainsPage),'/careers/domains?branch=ece')
+  assert.match(html,/Database-only PDF/);assert.doesNotMatch(html,/href="\/careers\/domains\/vlsi"/)
   const {buildLocalSearchIndex}=loadTypeScript('src/lib/localSearch.ts')
-  const index=buildLocalSearchIndex('E1',data.books,data.labs,data.domains,data.roles,data.branches)
-  assert.ok(index.some(item=>item.to==='/careers/domains/database-only'));assert.ok(!index.some(item=>item.to==='/careers/domains/vlsi'))
+  const index=buildLocalSearchIndex('E1',data.books,data.labs,data.domains,data.roles,data.branches,data.career_resources)
+  assert.ok(index.some(item=>item.title==='Database-only PDF'));assert.ok(!index.some(item=>item.title==='VLSI'))
 })
 
 test('database books preserve details and resource actions with truthful availability',()=>{

@@ -1,0 +1,21 @@
+.directory-heading { margin-bottom: 24px; }
+.directory-heading h1 { margin: 6px 0 8px; }
+.directory-filters { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 22px; }
+.directory-filters label { display: grid; gap: 7px; min-width: min(100%, 220px); color: var(--foreground); }
+.directory-filters input, .directory-filters select { width: 100%; min-height: 42px; padding: 9px 12px; border: 1px solid #ffffff26; border-radius: 10px; background: #17131f; color: var(--foreground); }
+.directory-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 12px; margin: 0 0 20px; scrollbar-width: thin; }
+.directory-tabs button { flex: 0 0 auto; padding: 10px 16px; border: 1px solid #ffffff27; border-radius: 999px; background: #17131f; color: var(--foreground); cursor: pointer; }
+.directory-tabs button[aria-selected="true"] { border-color: #bda3e3; background: #6b5295; }
+.directory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 16px; }
+.directory-card { min-width: 0; padding: 20px; border: 1px solid #ffffff20; border-radius: 16px; background: #17131f; }
+.directory-card h2 { margin: 0 0 12px; font-size: 1.2rem; overflow-wrap: anywhere; }
+.directory-card p { line-height: 1.55; overflow-wrap: anywhere; }
+.directory-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.directory-actions a, .directory-actions button { padding: 9px 12px; border: 1px solid #bda3e3; border-radius: 9px; background: transparent; color: #dccaf8; text-decoration: none; cursor: pointer; }
+.directory-tags { color: #c9b4ed; }
+.faculty-photo { width: 88px; height: 88px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
+.problem-form { display: grid; gap: 14px; margin: 0 0 24px; padding: 20px; border: 1px solid #ffffff20; border-radius: 16px; background: #17131f; }
+.problem-form label { display: grid; gap: 7px; }
+.problem-form input, .problem-form select, .problem-form textarea { width: 100%; min-height: 42px; padding: 9px 12px; border: 1px solid #ffffff26; border-radius: 9px; background: #0d0b13; color: var(--foreground); }
+.problem-status { font-weight: 700; color: #bda3e3; }
+.problem-status.resolved { color: #80cfa7; }

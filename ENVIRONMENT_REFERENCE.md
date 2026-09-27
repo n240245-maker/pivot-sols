@@ -19,6 +19,12 @@ Verified 25 September 2026. Values below are examples only. Never commit `backen
 | `OTP_SECRET` | backend | Yes | **Secret** | HMAC for student/admin OTP and admin CSRF; minimum 32 random characters | `<LONG_RANDOM_SECRET>` | A separately generated long random secret |
 | `FRONTEND_URL` | backend | Yes | No | Exact single CORS/Origin allowance and cookie environment | `http://localhost:5173` | Actual Vercel HTTPS origin, no trailing path |
 | `CONTACT_TO_EMAIL` | backend | Required for functional Contact delivery | No | Inbox receiving messages; configured in local `.env` | `<CONTACT_INBOX>` | `<CONTACT_INBOX>` |
+| `STORAGE_ENDPOINT` | backend | Optional with object storage | No | S3-compatible API endpoint; blank uses AWS S3 | blank | Provider endpoint |
+| `STORAGE_REGION` | backend | Optional with object storage | No | Object storage region | blank | Provider region |
+| `STORAGE_BUCKET` | backend | For direct uploads | No | Durable bucket name | blank | `<BUCKET>` |
+| `STORAGE_ACCESS_KEY` | backend | For direct uploads | **Secret** | Object storage access key | blank | `<ACCESS_KEY>` |
+| `STORAGE_SECRET_KEY` | backend | For direct uploads | **Secret** | Object storage secret key | blank | `<SECRET_KEY>` |
+| `STORAGE_PUBLIC_BASE_URL` | backend | For direct uploads | No | Public HTTPS base URL used for uploaded files | blank | `https://YOUR-STORAGE.example` |
 | `PORT` | backend host | Host-provided | No | Uvicorn listen port | `8000` via CLI | Use provider's `$PORT`/`${PORT}` |
 | `PYTHON_VERSION` | `render.yaml` | Render configuration only | No | Runtime pin | current local venv is Python 3.12 | `3.13.12` in Render blueprint |
 
