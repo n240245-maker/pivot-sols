@@ -12,6 +12,8 @@ export interface ResourceDestination {
 }
 const commonResources: readonly ResourceDestination[] = [
   { title: 'Reference Books', description: 'Find subject-wise books and study references for your coursework.', category: 'Academic', path: '/resources/books', icon: BookOpen, accent: 'indigo' },
+]
+const p1LabResources: readonly ResourceDestination[] = [
   { title: 'Lab Videos', description: 'Watch practical demonstrations and understand experiments before entering the lab.', category: 'Practical', path: '/resources/labs', icon: FlaskConical, accent: 'purple' },
 ]
 const p1Resources: readonly ResourceDestination[] = [
@@ -27,16 +29,16 @@ const sharedEnd: readonly ResourceDestination[] = [
   { title: 'Explore', description: 'Discover resources, search across Pivot Sols and find your next step.', category: 'More possibilities', path: '/explore', icon: Sparkles, accent: 'explore' },
 ]
 export function resourcesForLevel(level: SupportedAcademicLevel): readonly ResourceDestination[] {
-  return [...commonResources, ...(level === 'P1' ? p1Resources : e1Resources), ...sharedEnd]
+  return [...commonResources, ...(level === 'P1' ? [...p1LabResources, ...p1Resources] : e1Resources), ...sharedEnd]
 }
 // A complete registry for titles and metadata; render resourcesForLevel for students.
-export const resourceDestinations = [...commonResources, ...p1Resources, ...e1Resources, ...sharedEnd] as const
+export const resourceDestinations = [...commonResources, ...p1LabResources, ...p1Resources, ...e1Resources, ...sharedEnd] as const
 const nav = (label: string, path: string, icon: LucideIcon, mobileLabel = label) => ({ label, mobileLabel, path, icon })
 export function navigationForLevel(level: SupportedAcademicLevel) {
   return [
     nav('Dashboard', '/dashboard', House, 'Home'),
     nav('Reference Books', '/resources/books', BookOpen, 'Books'),
-    nav('Lab Videos', '/resources/labs', FlaskConical, 'Labs'),
+    ...(level === 'P1' ? [nav('Lab Videos', '/resources/labs', FlaskConical, 'Labs')] : []),
     ...(level === 'P1' ? [nav('I3 Block Rooms', '/campus/rooms', Building2, 'Rooms'), nav('Faculty Directory', '/faculty', Users, 'Faculty')]
       : [nav('Career Domains', '/careers/domains', Compass, 'Domains'), nav('Career Jobs', '/careers/jobs', BriefcaseBusiness, 'Jobs')]),
     nav('Student Problems', '/problems', MessageCircle, 'Problems'),

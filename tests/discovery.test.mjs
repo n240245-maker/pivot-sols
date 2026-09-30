@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {createElement} from 'react'
 import {renderToStaticMarkup} from 'react-dom/server'
-import {MemoryRouter} from 'react-router'
+import {MemoryRouter,Route,Routes} from 'react-router'
 import {loadTypeScript} from './load-typescript.mjs'
 import {contentFixture,contentMocks} from './content-fixture.mjs'
 
@@ -19,6 +19,9 @@ test('old career seed data remains intact during the resource migration',()=>{
 
 test('P1 search includes rooms and faculty but excludes every career result and branch link',()=>{
   const p1=index('P1')
+  assert.ok(p1.some(item=>item.type==='Lab'&&item.to.startsWith('/resources/labs/p1/')))
+  assert.ok(p1.some(item=>item.type==='Experiment'&&item.to.startsWith('/resources/labs/p1/')))
+  assert.ok(p1.some(item=>item.title==='Lab Videos'&&item.to==='/resources/labs'))
   assert.ok(p1.some(item=>item.type==='I3 Block Room'&&item.title==='Test Office'))
   assert.ok(p1.some(item=>item.type==='Faculty Subject'&&item.title==='Mathematics'))
   assert.ok(p1.some(item=>item.type==='Faculty Member'&&item.title==='Test Faculty'))
@@ -31,7 +34,9 @@ test('E1 search uses published resource records and allows every branch',()=>{
   assert.ok(e1.some(item=>item.type==='Career Domain Resource'&&item.title==='Test VLSI Guide'&&item.to.includes('branch=ece')))
   assert.ok(e1.some(item=>item.type==='Career Job Resource'&&item.title==='Test Software Job Guide'&&item.to.includes('branch=cse')))
   assert.ok(!e1.some(item=>item.title===contentFixture.domains[0].name&&item.type==='Career Domain'))
-  for(const result of e1.filter(item=>['Book','Subject','Lab','Experiment'].includes(item.type)))assert.ok(result.to.includes('/e1/'))
+  for(const result of e1.filter(item=>['Book','Subject'].includes(item.type)))assert.ok(result.to.includes('/e1/'))
+  assert.ok(!e1.some(item=>item.type==='Lab'||item.type==='Experiment'||item.to.startsWith('/resources/labs')))
+  assert.ok(!search.searchLocalResources(e1,'lab videos').length)
 })
 
 test('career libraries show branch tabs, PDFs and truthful download actions',()=>{
@@ -80,6 +85,8 @@ test('P1 Explore shows campus and faculty, while E1 Explore shows career resourc
   assert.ok(p1.includes('I3 Block Rooms')&&p1.includes('Faculty Directory'))
   assert.ok(!p1.includes('Career Domains')&&!p1.includes('Career Jobs'))
   assert.ok(e1.includes('Career Domains')&&e1.includes('Career Jobs'))
+  assert.ok(p1.includes('Lab Videos')&&p1.includes('href="/resources/labs"'))
+  assert.ok(!e1.includes('Lab Videos')&&!e1.includes('href="/resources/labs"'))
 })
 
 test('P1 direct career route is redirected and E1 route is allowed',()=>{
@@ -95,7 +102,24 @@ test('resource finder changes P1 campus and E1 career links by level',()=>{
   const p1=render(createElement(ResourceFinder,{level:'P1'}))
   const e1=render(createElement(ResourceFinder,{level:'E1'}))
   assert.ok(p1.includes('Campus')&&!p1.includes('Careers'))
+  assert.ok(p1.includes('Labs'))
   assert.ok(e1.includes('Careers')&&!e1.includes('Campus'))
+  assert.ok(!e1.includes('Labs')&&!e1.includes('Lab Videos'))
+})
+
+test('E1 branch guides and landing resources omit Lab Videos',()=>{
+  const branch='ece'
+  const e1Mocks={...contentMocks,'../contexts/AuthContext':{useAuth:()=>({profile:{academicLevel:'E1'}})}}
+  const p1Mocks={...contentMocks,'../contexts/AuthContext':{useAuth:()=>({profile:{academicLevel:'P1'}})}}
+  const BranchesPage=loadTypeScript('src/pages/BranchesPage.tsx',e1Mocks).BranchesPage
+  const e1Guide=render(createElement(Routes,null,createElement(Route,{path:'/branches/:branchSlug',element:createElement(BranchesPage)})),`/branches/${branch}`)
+  assert.ok(e1Guide.includes('Reference Books'))
+  assert.ok(!e1Guide.includes('Lab Videos')&&!e1Guide.includes('/resources/labs'))
+  const marqueeProps={paused:true,onToggle:()=>{},reducedMotion:true}
+  const e1Marquee=render(createElement(loadTypeScript('src/components/ResourceMarquee.tsx',e1Mocks).ResourceMarquee,marqueeProps))
+  const p1Marquee=render(createElement(loadTypeScript('src/components/ResourceMarquee.tsx',p1Mocks).ResourceMarquee,marqueeProps))
+  assert.ok(!e1Marquee.includes('Lab Videos'))
+  assert.ok(p1Marquee.includes('Lab Videos'))
 })
 
 test('rooms search and faculty subject filtering render only matching directory entries',()=>{

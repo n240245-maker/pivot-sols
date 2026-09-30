@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router'
 import { resourceDestinations } from '../../config/studentNavigation'
 import { useContent } from '../../contexts/ContentContext'
+import { useAuth } from '../../contexts/AuthContext'
 import { resolveBooksRoute } from '../../lib/referenceBooks'
 import { getLabPageTitle, LABS_ROOT } from '../../lib/labVideos'
 import { discoveryTitle } from '../../lib/discoveryTitles'
@@ -23,10 +24,12 @@ const titles: Record<string, string> = {
 export function RouteEffects() {
   const { pathname } = useLocation()
   const {data,status}=useContent()
+  const {profile}=useAuth()
   useEffect(() => {
     const referenceBooksCatalog=data.books
     const labVideosCatalog=data.labs
     if(pathname.startsWith('/admin')) { document.title=pathname==='/admin/login'?'Agent Login | Pivot Sols':'Agent Dashboard | Pivot Sols'; return }
+    if(profile?.academicLevel==='E1'&&(pathname===LABS_ROOT||pathname.startsWith(`${LABS_ROOT}/`))) { document.title='Dashboard · Pivot Sols'; return }
     if(status!=='ready' && /^\/(resources|careers|branches)\//.test(pathname)) {document.title='Loading resources · Pivot Sols';return}
     if (pathname.startsWith('/resources/books/')) {
       const p1 = resolveBooksRoute(referenceBooksCatalog, 'P1', pathname)
@@ -35,7 +38,7 @@ export function RouteEffects() {
       document.title = `${resource.valid ? resource.subject?.name ?? 'Reference Books' : 'Resource not found'} · Pivot Sols`
     } else if (pathname === LABS_ROOT || pathname.startsWith(`${LABS_ROOT}/`)) document.title = getLabPageTitle(labVideosCatalog, pathname)
     else document.title = discoveryTitle(pathname,data) ?? titles[pathname.replace(/\/$/, '') || '/'] ?? 'Page not found — Pivot Sols'
-  }, [pathname,data,status])
+  }, [pathname,data,status,profile?.academicLevel])
   useEffect(()=>{window.scrollTo({ top: 0, left: 0, behavior: 'instant' })},[pathname])
   return null
 }

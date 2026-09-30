@@ -1,4 +1,5 @@
 import { BookOpen, BriefcaseBusiness, Compass, FlaskConical, GraduationCap, Lightbulb, Pause, Play } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 const resources = [
   { label: 'Reference Books', icon: BookOpen },
@@ -14,6 +15,8 @@ export function ResourceMarquee({ paused, onToggle, reducedMotion }: {
   onToggle: () => void
   reducedMotion: boolean
 }) {
+  const { profile } = useAuth()
+  const visibleResources = profile?.academicLevel === 'P1' ? resources : resources.filter(item => item.label !== 'Lab Videos')
   return (
     <footer id="resources" className="resource-footer relative z-10" tabIndex={-1}>
       <div className="resource-inner">
@@ -22,7 +25,7 @@ export function ResourceMarquee({ paused, onToggle, reducedMotion }: {
           <div className="marquee-track" style={{ animationPlayState: paused ? 'paused' : 'running' }}>
             {[0, 1].map((copy) => (
               <ul className="marquee-sequence" key={copy} aria-hidden={copy === 1 ? true : undefined}>
-                {resources.map(({ label, icon: Icon }) => (
+                {visibleResources.map(({ label, icon: Icon }) => (
                   <li key={label}>
                     <span className="liquid-glass resource-icon"><Icon size={17} strokeWidth={1.5} aria-hidden="true" /></span>
                     <span>{label}</span>

@@ -22,6 +22,7 @@ import { ReferenceBooksPage } from './pages/ReferenceBooksPage'
 import { LabVideosPage } from './pages/LabVideosPage'
 import { DemoLoginPage } from './pages/DemoLoginPage'
 import { E1Route } from './components/E1Route'
+import { P1Route } from './components/P1Route'
 import { RoomsPage } from './pages/RoomsPage'
 import { FacultyPage } from './pages/FacultyPage'
 import { ProblemsPage } from './pages/ProblemsPage'
@@ -47,8 +48,10 @@ export default function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/resources/books" element={<ReferenceBooksPage />} />
           <Route path="/resources/books/*" element={<ReferenceBooksPage />} />
-          <Route path="/resources/labs" element={<LabVideosPage />} />
-          <Route path="/resources/labs/*" element={<LabVideosPage />} />
+          <Route element={<P1Route />}>
+            <Route path="/resources/labs" element={<LabVideosPage />} />
+            <Route path="/resources/labs/*" element={<LabVideosPage />} />
+          </Route>
           <Route element={<E1Route />}>
             <Route path="/branches" element={<BranchesPage />} />
             <Route path="/branches/:branchSlug" element={<BranchesPage />} />

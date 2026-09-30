@@ -235,14 +235,51 @@ test('MP4 media failures render a clear recoverable fallback',()=>{
   const html=render(draw());assert.ok(html.includes('Video unavailable'));assert.ok(!html.includes('<video'))
 })
 
-test('dashboard Lab Videos target and mobile navigation persist through nested lab routes', () => {
+test('P1 Lab Videos target remains available while E1 navigation omits it', () => {
   const {DashboardContent}=loadTypeScript('src/pages/DashboardPage.tsx',authMocks)
-  assert.ok(render(createElement(DashboardContent,{profile})).includes('href="/resources/labs"'))
+  const p1Profile={...profile,academicLevel:'P1',studentId:'N260001'}
+  assert.ok(render(createElement(DashboardContent,{profile:p1Profile})).includes('href="/resources/labs"'))
   const {MobileBottomNav}=loadTypeScript('src/components/dashboard/MobileBottomNav.tsx')
-  const html=render(createElement(MobileBottomNav,{level:'E1'}),detailPath)
-  for(const path of ['/dashboard','/branches','/about','/contact','/profile','/problems']) assert.ok(html.includes(`href="${path}"`))
+  const p1=render(createElement(MobileBottomNav,{level:'P1'}),detailPath)
+  const e1=render(createElement(MobileBottomNav,{level:'E1'}),detailPath)
+  assert.ok(p1.includes('href="/resources/labs"'))
+  assert.ok(!e1.includes('href="/resources/labs"'))
+  for(const path of ['/dashboard','/branches','/about','/contact','/profile','/problems']) assert.ok(e1.includes(`href="${path}"`))
   const nav=loadTypeScript('src/config/studentNavigation.ts')
   assert.equal(nav.getStudentPageTitle(detailPath),'Lab Videos')
   const source=readFileSync('src/App.tsx','utf8')
+  assert.ok(source.includes('<Route element={<P1Route />}>'))
   assert.ok(source.includes('<Route path="/resources/labs/*" element={<LabVideosPage />} />'))
+})
+
+test('P1 route opens Lab Videos and E1 direct root or experiment route redirects',()=>{
+  for(const level of ['P1','E1']) {
+    const {P1Route}=loadTypeScript('src/components/P1Route.tsx',{
+      '../contexts/AuthContext':{useAuth:()=>({profile:{academicLevel:level}})},
+    })
+    const result=P1Route()
+    if(level==='P1')assert.equal(result.type.name,'Outlet')
+    else {
+      assert.equal(result.props.to,'/dashboard')
+      assert.equal(result.props.replace,true)
+    }
+  }
+  const source=readFileSync('src/App.tsx','utf8')
+  const guarded=source.slice(source.indexOf('<Route element={<P1Route />}>'),source.indexOf('</Route>',source.indexOf('<Route element={<P1Route />}>')))
+  assert.ok(guarded.includes('<Route path="/resources/labs"'))
+  assert.ok(guarded.includes('<Route path="/resources/labs/*"'))
+})
+
+test('E1 direct Lab Videos URL does not expose a lab page title while redirecting',()=>{
+  for(const level of ['P1','E1']) {
+    const document={title:''}
+    const {RouteEffects}=loadTypeScript('src/components/common/RouteEffects.tsx',{
+      ...contentMocks,
+      react:{useEffect:callback=>callback()},
+      'react-router':{useLocation:()=>({pathname:detailPath})},
+      '../../contexts/AuthContext':{useAuth:()=>({profile:{academicLevel:level}})},
+    },new Map(),{document,window:{scrollTo:()=>{}}})
+    RouteEffects()
+    assert.equal(document.title,level==='E1'?'Dashboard · Pivot Sols':"Verification of Thevenin's Theorem · Pivot Sols")
+  }
 })

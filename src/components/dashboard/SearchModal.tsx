@@ -47,7 +47,7 @@ export function SearchModal({ open, onClose, level }: { open: boolean; onClose: 
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose()
   }}>
     <div className="pivot-modal-heading"><h2 id={titleId}>Search Pivot Sols</h2><button type="button" className="pivot-icon-button" aria-label="Close search" onClick={onClose}><X size={20} /></button></div>
-    <label className="pivot-search-input"><Search size={19} aria-hidden="true" /><input ref={inputRef} aria-label="Search Pivot Sols resources" placeholder={level==='P1'?'Search books, labs, rooms, faculty...':'Search books, labs, career resources...'} value={query} onChange={(event) => setQuery(event.target.value)} autoComplete="off" /></label>
+    <label className="pivot-search-input"><Search size={19} aria-hidden="true" /><input ref={inputRef} aria-label="Search Pivot Sols resources" placeholder={level==='P1'?'Search books, labs, rooms, faculty...':'Search books and career resources...'} value={query} onChange={(event) => setQuery(event.target.value)} autoComplete="off" /></label>
     <p id={descriptionId} className="discovery-search-hint">{level==='P1'?'Search academic and campus resources.':'Search academic, branch and career resources.'}</p>
     <ContentBoundary><LocalSearchResults query={query} results={results} onNavigate={onClose} /></ContentBoundary>
     <p className="pivot-modal-hint"><kbd>Esc</kbd> to close</p>

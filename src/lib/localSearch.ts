@@ -19,7 +19,7 @@ export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:Referen
     results.push({id:`subject:${subject.id}`,title:subject.name,type:'Subject',context,to,keywords:subject.code??''})
     for(const book of books.books.filter(b=>b.subjectId===subject.id)) results.push({id:`book:${book.id}`,title:book.title,type:'Book',context:`${subject.name} · ${context}`,to,keywords:[...book.authors,book.description??'',subject.name].join(' ')})
   }
-  for(const lab of labs.labs) {
+  if(level==='P1') for(const lab of labs.labs) {
     const curriculum=labs.curricula.find(c=>c.id===lab.curriculumId&&c.level===level)
     const semester=curriculum?.semesters.find(s=>s.id===lab.semesterId)
     if(!curriculum||!semester)continue

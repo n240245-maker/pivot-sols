@@ -43,15 +43,18 @@ test('P1 and E1 dashboards use different resource destinations', () => {
   assert.match(updated,/Another/); assert.match(updated,/N240123/); assert.match(updated,/E1/)
   assert.ok(!updated.includes('N260000'))
   for(const path of ['/careers/domains','/careers/jobs','/problems'])assert.ok(updated.includes(`href="${path}"`))
+  assert.ok(!updated.includes('Lab Videos')&&!updated.includes('href="/resources/labs"'))
   assert.ok(!updated.includes('I3 Block Rooms')&&!updated.includes('Faculty Directory'))
 })
 test('mobile navigation follows academic level and keeps active state', () => {
   const {MobileBottomNav} = loadTypeScript('src/components/dashboard/MobileBottomNav.tsx')
   const p1=render(createElement(MobileBottomNav,{level:'P1'}),'/faculty')
   for (const label of ['Rooms','Faculty','Problems','About','Contact','Profile']) assert.ok(p1.includes(`>${label}</span>`))
+  assert.ok(p1.includes('href="/resources/labs"')&&p1.includes('>Labs</span>'))
   assert.ok(!p1.includes('Career Domains')&&!p1.includes('Career Jobs'))
   const html=render(createElement(MobileBottomNav,{level:'E1'}),'/branches')
   assert.ok(html.includes('Domains')&&html.includes('Jobs')&&html.includes('Problems'))
+  assert.ok(!html.includes('href="/resources/labs"')&&!html.includes('>Labs</span>'))
   assert.match(html,/aria-current="page"[^>]*href="\/branches"/)
   const detail=render(createElement(MobileBottomNav,{level:'E1'}),'/branches/ece')
   assert.match(detail,/aria-current="page"[^>]*href="\/branches"/)
@@ -62,13 +65,18 @@ test('resource registries never offer P1 career destinations', () => {
   assert.ok(p1.some(item=>item.path==='/campus/rooms')&&p1.some(item=>item.path==='/faculty'))
   assert.ok(!p1.some(item=>item.path.startsWith('/careers/')))
   assert.ok(e1.some(item=>item.path==='/careers/domains')&&e1.some(item=>item.path==='/careers/jobs'))
+  assert.ok(p1.some(item=>item.path==='/resources/labs'))
+  assert.ok(!e1.some(item=>item.path==='/resources/labs'))
   assert.ok(p1.some(item=>item.path==='/problems')&&e1.some(item=>item.path==='/problems'))
 })
 test('P1 desktop sidebar includes campus links and excludes career links',()=>{
   const {DesktopSidebar}=loadTypeScript('src/components/dashboard/DesktopSidebar.tsx')
   const html=render(createElement(DesktopSidebar,{profile:fixture}))
   assert.ok(html.includes('I3 Block Rooms')&&html.includes('Faculty Directory')&&html.includes('Student Problems'))
+  assert.ok(html.includes('href="/resources/labs"'))
   assert.ok(!html.includes('Career Domains')&&!html.includes('Career Jobs'))
+  const e1=render(createElement(DesktopSidebar,{profile:{...fixture,academicLevel:'E1'}}))
+  assert.ok(!e1.includes('Lab Videos')&&!e1.includes('href="/resources/labs"'))
 })
 test('profile identity stays read-only while contact exposes a prefilled working form', () => {
   const {ProfileContent} = loadTypeScript('src/pages/ProfilePage.tsx',authMocks)
@@ -94,7 +102,7 @@ test('every student destination is nested under the unchanged protected route', 
     './pages/ReferenceBooksPage':{ReferenceBooksPage:stub},
     './pages/LabVideosPage':{LabVideosPage:stub},
     './pages/DemoLoginPage':{DemoLoginPage:stub},
-    './pages/RoomsPage':{RoomsPage:stub}, './pages/FacultyPage':{FacultyPage:stub}, './pages/ProblemsPage':{ProblemsPage:stub}, './components/E1Route':{E1Route:stub},
+    './pages/RoomsPage':{RoomsPage:stub}, './pages/FacultyPage':{FacultyPage:stub}, './pages/ProblemsPage':{ProblemsPage:stub}, './components/E1Route':{E1Route:stub}, './components/P1Route':{P1Route:stub},
     './components/ProtectedRoute':{ProtectedRoute:protectedStub,GuestRoute:stub}, './components/common/StudentShell':{StudentShell:shellStub},
   }
   const App=loadTypeScript('src/App.tsx',mocks).default
