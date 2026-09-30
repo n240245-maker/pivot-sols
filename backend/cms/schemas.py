@@ -284,6 +284,7 @@ class CareerResourceInput(ContentInput):
     description: LongText = ''
     pdf_url: str | None = None
     supporting_url: str | None = None
+    youtube_url: str | None = None
     storage_type: Literal['object', 'external'] | None = None
     tags: TextList = Field(default_factory=list)
 
@@ -292,10 +293,15 @@ class CareerResourceInput(ContentInput):
     def resource_link(cls, value):
         return safe_url(value)
 
+    @field_validator('youtube_url')
+    @classmethod
+    def video_link(cls, value):
+        return normalize_youtube(value) if value else None
+
     @model_validator(mode='after')
     def useful_publish(self):
-        if self.status == 'published' and not (self.pdf_url or self.supporting_url):
-            raise ValueError('Add a PDF or supporting link before publishing.')
+        if self.status == 'published' and not (self.pdf_url or self.supporting_url or self.youtube_url):
+            raise ValueError('Add a PDF, YouTube video or supporting link before publishing.')
         if self.storage_type == 'object' and not self.pdf_url:
             raise ValueError('Uploaded storage requires a PDF URL.')
         return self

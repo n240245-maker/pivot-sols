@@ -12,7 +12,7 @@ test('contact API normalizes inputs and requires literal backend success',async(
   const requests=[];let payload={success:true}
   const transport=loadTypeScript('src/lib/contactApi.ts',{},new Map(),{fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>payload}}})
   await transport.sendContactMessage({...body,name:' Student ',email:' STUDENT@example.com '})
-  assert.equal(requests[0].url,'http://localhost:8000/api/contact')
+  assert.equal(requests[0].url,'/api/contact')
   assert.deepEqual(JSON.parse(requests[0].options.body),body)
   assert.equal(requests[0].options.credentials,'omit')
   for(const invalid of [null,{}, {success:false},{success:'true'}]){payload=invalid;await assert.rejects(transport.sendContactMessage(body),/couldn't send/)}

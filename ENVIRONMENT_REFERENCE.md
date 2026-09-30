@@ -4,7 +4,7 @@ Verified 25 September 2026. Values below are examples only. Never commit `backen
 
 | Variable | Location | Needed | Secret? | Purpose | Local example | Production example |
 | --- | --- | --- | --- | --- | --- | --- |
-| `VITE_API_BASE_URL` | frontend `.env.local`; Vercel | Required for hosted build; local dev has port-8000 fallback | No | FastAPI origin, no `/api` suffix | `http://localhost:8000` | `https://YOUR-BACKEND.example` |
+| `VITE_API_BASE_URL` | frontend `.env.local` | Optional for local development; ignored by production builds | No | Local FastAPI origin, no `/api` suffix | `http://localhost:8000` | Leave unset; production calls same-origin `/api` |
 | `VITE_SUPABASE_URL` | frontend | Only if `DEMO_MODE` is changed to false | Public | Preserved alternate Supabase client | blank in active mode | Supabase project URL, if alternate mode adopted |
 | `VITE_SUPABASE_ANON_KEY` | frontend | Only for alternate Supabase mode | Public client key | Preserved Supabase client | blank in active mode | Supabase anon key, if adopted |
 | `DATABASE_URL` | `backend/.env`; backend host | Yes | **Secret** | SQLAlchemy and Alembic PostgreSQL connection | `postgresql+psycopg://USER:<PASSWORD>@localhost:5432/pivot_sols` | Provider PostgreSQL URL; database factory selects psycopg driver |
@@ -28,8 +28,8 @@ Verified 25 September 2026. Values below are examples only. Never commit `backen
 | `PORT` | backend host | Host-provided | No | Uvicorn listen port | `8000` via CLI | Use provider's `$PORT`/`${PORT}` |
 | `PYTHON_VERSION` | `render.yaml` | Render configuration only | No | Runtime pin | current local venv is Python 3.12 | `3.13.12` in Render blueprint |
 
-Actual files: root `.env.example` and `backend/.env.example` exist and contain placeholders; `backend/.env` exists and is ignored; root `.env` and `.env.local` are absent. The frontend therefore currently uses its development fallback `http://localhost:8000`. The backend process loads `backend/.env` unless a process environment variable already defines a key. The active mode is `src/config/demo.ts` `DEMO_MODE=true`; the preserved Supabase variables do not make the current OTP flow work.
+Actual files: root `.env.example` and `backend/.env.example` contain placeholders; `backend/.env` is ignored. Local Vite development uses `http://localhost:8000` by default. Production calls relative `/api` URLs through the Vercel rewrite in `vercel.json`. The backend process loads `backend/.env` unless a process environment variable already defines a key. The active mode is `src/config/demo.ts` `DEMO_MODE=true`; its student auth now restores from a PostgreSQL-backed 30-day session. The preserved Supabase variables do not operate in this mode.
 
 `CONTACT_TO_EMAIL` is configured locally for the owner's inbox. One controlled Contact delivery was confirmed there on 25 September 2026. The local `FRONTEND_URL` was corrected to `http://localhost:5173`; the backend was restarted and student OTP was verified through the browser.
 
-For Vercel, configure only `VITE_API_BASE_URL` from the active variables. All database and mail credentials belong on the backend host. A frontend production build requires a public HTTPS origin by `vite.config.ts`; localhost or a missing value fails deliberately.
+For Vercel, do not set `VITE_API_BASE_URL`; `vercel.json` proxies `/api/:path*` to the Render API before the SPA fallback. The browser receives a same-origin HttpOnly student cookie. Set backend `FRONTEND_URL` to the exact deployed frontend origin. All database and mail credentials belong on the backend host. The current API proxy destination is `https://pivot-sols-api.onrender.com`; verify that it is the actual backend URL before manual deployment.

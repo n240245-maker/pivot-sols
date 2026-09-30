@@ -48,6 +48,30 @@ test('career libraries show branch tabs, PDFs and truthful download actions',()=
   assert.ok(!domainHtml.includes(contentFixture.domains[0].overview))
 })
 
+test('career domain and job video actions use the shared safe YouTube parser',()=>{
+  const {CareerResourceCard,CareerVideoEmbed}=loadTypeScript('src/pages/CareerResourceLibrary.tsx',contentMocks)
+  const parser=loadTypeScript('src/lib/labVideoSource.ts')
+  const domain=contentFixture.career_resources[0]
+  const job=contentFixture.career_resources[1]
+  assert.equal(parser.youtubeVideoId(domain.youtube_url),'dQw4w9WgXcQ')
+  assert.equal(parser.youtubeVideoId(job.youtube_url),'dQw4w9WgXcQ')
+  for(const item of [domain,job]){
+    const html=render(createElement(CareerResourceCard,{item,branch:'Test Branch'}))
+    assert.ok(html.includes('Watch Video'))
+    assert.ok(html.includes('View PDF'))
+    assert.ok(!html.includes('<iframe'))
+  }
+  const noVideo=render(createElement(CareerResourceCard,{item:{...domain,youtube_url:null},branch:'Test Branch'}))
+  assert.ok(!noVideo.includes('Watch Video')&&noVideo.includes('View PDF'))
+  const videoOnly=render(createElement(CareerResourceCard,{item:{...domain,pdf_url:null,supporting_url:null},branch:'Test Branch'}))
+  assert.ok(videoOnly.includes('Watch Video')&&!videoOnly.includes('View PDF')&&!videoOnly.includes('Download PDF'))
+  const bad=render(createElement(CareerResourceCard,{item:{...domain,youtube_url:'<iframe src="javascript:alert(1)"></iframe>'},branch:'Test Branch'}))
+  assert.ok(!bad.includes('Watch Video')&&!bad.includes('<iframe'))
+  const embed=render(createElement(CareerVideoEmbed,{id:'dQw4w9WgXcQ',title:'Test video'}))
+  assert.ok(embed.includes('youtube-nocookie.com/embed/dQw4w9WgXcQ'))
+  assert.ok(embed.includes('autoplay=0'))
+})
+
 test('P1 Explore shows campus and faculty, while E1 Explore shows career resource links',()=>{
   const p1Mocks={...contentMocks,'../contexts/AuthContext':{useAuth:()=>({profile:{academicLevel:'P1'}})}}
   const e1Mocks={...contentMocks,'../contexts/AuthContext':{useAuth:()=>({profile:{academicLevel:'E1'}})}}

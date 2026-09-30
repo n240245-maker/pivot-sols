@@ -8,7 +8,7 @@ import { DEMO_MODE } from '../config/demo'
 export function ProtectedRoute() {
   const { session, user, profile, loading, error } = useAuth()
   if (loading) return <LoadingScreen />
-  if (DEMO_MODE) return profile ? <Outlet /> : <Navigate to="/login" replace />
+  if (DEMO_MODE) return error ? <AccessProblem /> : profile ? <Outlet /> : <Navigate to="/login" replace />
   if (!session || !user || !user.email_confirmed_at || !isRguktEmail(user.email ?? '')) return <Navigate to="/login" replace />
   if (error) return <AccessProblem />
   if (!profile) return <Navigate to="/complete-profile" replace />

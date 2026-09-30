@@ -29,11 +29,11 @@ P1 direct career URLs redirect to `/dashboard`. The new sections begin empty unt
 - `GET /api/admin/problems`, `PUT /api/admin/problems/{id}`: Agent report moderation.
 - `POST /api/admin/uploads/image`, `POST /api/admin/uploads/pdf`: Agent-only validated file upload to configured S3-compatible storage.
 
-The student session is issued by `POST /api/auth/verify-otp` and cleared by `POST /api/auth/logout`. Existing students with a browser-local profile must verify OTP once again before submitting or voting. The backend proves their email identity from the signed cookie; the current student profile's P1/E1 level is still client-provided because the existing OTP service verifies email but does not store academic level on the server.
+The student session is issued by `POST /api/auth/verify-otp`, restored by `GET /api/auth/me`, and revoked by `POST /api/auth/logout`. The active login no longer trusts the browser-local profile marker. PostgreSQL stores only a hash of the opaque 30-day token; Student Problems derive vote identity from the verified session email. Name, student ID and P1/E1 level entered at login are not independently checked against a campus registry.
 
 ## Database and local verification
 
-Migration: `backend/migrations/versions/41f606784098_add_level_specific_resources_and_.py`, based on `222b971ed0e6`. It adds `information_rooms`, `faculty_subjects`, `faculty_members`, `career_resources`, `student_problems`, and `problem_reactions` with status constraints, foreign keys, uniqueness and indexes. It was applied to the local PostgreSQL database only. Local `alembic current` and `alembic heads` both show `41f606784098`.
+Migration: `backend/migrations/versions/41f606784098_add_level_specific_resources_and_.py`, based on `222b971ed0e6`. It adds `information_rooms`, `faculty_subjects`, `faculty_members`, `career_resources`, `student_problems`, and `problem_reactions` with status constraints, foreign keys, uniqueness and indexes. The subsequent `b6d3f9a2c741_career_youtube_student_sessions.py` adds the optional career YouTube URL and revocable student sessions. Both were applied to the local PostgreSQL database only. Local `alembic current` and `alembic heads` show `b6d3f9a2c741`.
 
 After backing up and reviewing a target database, run the migration through the existing Alembic process from `backend/`. Do not reset or reseed the database. Existing career records are deliberately preserved.
 

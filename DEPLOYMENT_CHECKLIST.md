@@ -1,11 +1,11 @@
 # Pivot Sols deployment checklist
 
-Checked boxes record completed local or Neon setup as of 25 September 2026. Public hosting is still pending; record actual URLs only after deployment.
+Checked boxes record completed local or Neon setup through 30 September 2026. Public hosting is still pending; record actual URLs only after deployment.
 
 ## Local release gate
 
 - [x] Local FastAPI `/api/health` and Vite `/login` respond.
-- [x] PostgreSQL connects as `pivot_admin` to `pivot_sols`; Alembic current=head `222b971ed0e6`.
+- [x] PostgreSQL connects as `pivot_admin` to `pivot_sols`; local Alembic current=head `b6d3f9a2c741`. Neon was last verified at `222b971ed0e6` and needs the pending additive migrations during manual deployment.
 - [x] Frontend tests, backend tests, and local production compilation pass (see `PROJECT_HANDOFF.md` for exact run).
 - [x] `.env.example` uses the actual port 8000; backend CORS origin matches local frontend.
 - [x] `.gitignore` excludes local secrets, private content export, builds, and caches.
@@ -13,7 +13,7 @@ Checked boxes record completed local or Neon setup as of 25 September 2026. Publ
 - [x] `CONTACT_TO_EMAIL` configured in ignored local backend `.env`; owner confirmed one real Contact delivery.
 - [x] Agent password and OTP sign-in confirmed by the owner; browser reached `/admin`. Student route checks covered 375/768/1024/1440 px across 15 routes, plus selected 320/1920 px checks. Seven agent sections also loaded without document overflow at 375/768/1440 px.
 - [x] Local CMS test book and experiment each stayed hidden as drafts, appeared in public API when published, and disappeared after archiving. Experiment preview generated an explicit-load YouTube no-cookie iframe. Temporary rows remain archived locally and are absent from the Neon snapshot.
-- [ ] Put student verification behind a server-authorized student session if private student data or production-grade access control is required. Current student profile marker is browser localStorage.
+- [x] Student OTP now issues a revocable 30-day PostgreSQL session; frontend restores through `/api/auth/me` instead of a localStorage login marker. Reverify once after this upgrade to replace old cookies.
 
 ## Source and hosting
 
@@ -25,7 +25,7 @@ Checked boxes record completed local or Neon setup as of 25 September 2026. Publ
 - [x] Import and verify the ignored content-only snapshot in Neon: 171 intended content rows and 68 relationships. The first attempt rolled back safely on a timezone formatting mismatch; normalization was fixed and the verified import succeeded.
 - [ ] Create first production agent with hidden password prompt; never put its password in CLI arguments, code, chat, or logs.
 - [ ] Deploy one-worker backend and verify actual HTTPS `/api/health`; record actual backend origin.
-- [ ] Import repository into Vercel (root `.`, Vite, `npm run build`, output `dist`), set only public `VITE_API_BASE_URL` to the actual HTTPS backend origin, deploy, record actual frontend origin.
+- [ ] Import repository into Vercel (root `.`, Vite, `npm run build`, output `dist`); verify `vercel.json` proxies `/api/:path*` to the actual Render backend before the SPA fallback. Do not set `VITE_API_BASE_URL` in production. Record the actual frontend origin.
 - [ ] Set backend `FRONTEND_URL` to the actual Vercel origin, restart/redeploy backend, verify credentialed CORS/Origin and secure admin cookie.
 
 ## Production acceptance
@@ -39,4 +39,4 @@ Checked boxes record completed local or Neon setup as of 25 September 2026. Publ
 - [ ] Submit Contact and confirm real recipient inbox delivery, validation, failure display and rate limit.
 - [ ] Check 320, 375, 430, 768, 1024, 1280, 1440 and 1920 px widths for overflow and navigation.
 - [ ] Check browser console/network for unexpected errors; verify no secrets appear in frontend bundle, responses or logs.
-- [ ] Recheck provider quotas, free-tier availability, third-party-cookie behavior and persistent DB after backend restart.
+- [ ] Recheck provider quotas, free-tier availability, same-origin student cookie behavior and persistent DB after backend restart.

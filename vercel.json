@@ -1,3 +1,6 @@
 {
-  "rewrites": [{ "source": "/((?!assets/|favicon.svg).*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://pivot-sols-api.onrender.com/api/:path*" },
+    { "source": "/((?!assets/|favicon.svg).*)", "destination": "/index.html" }
+  ]
 }

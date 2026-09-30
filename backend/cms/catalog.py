@@ -51,5 +51,5 @@ def build_catalog(db):
             'rooms': [dict(id=r.id,name=r.name,room_number=r.room_number,phone_number=r.phone_number,floor=r.floor,description=r.description,updated_at=r.updated_at) for r in rows['rooms']],
             'faculty_subjects': [dict(id=s.id,name=s.name,slug=s.slug) for s in rows['faculty-subjects']],
             'faculty': [dict(id=f.id,subject_id=f.subject_id,name=f.name,designation=f.designation,mobile_number=f.mobile_number,email=f.email,room_number=f.room_number,image_url=f.image_url) for f in rows['faculty']],
-            'career_resources': [dict(id=r.id,resource_type=r.resource_type,branch_id=branches[r.branch_id].slug,title=r.title,description=r.description,pdf_url=r.pdf_url,supporting_url=r.supporting_url,storage_type=r.storage_type,tags=r.tags,updated_at=r.updated_at) for r in rows['career-resources']],
+            'career_resources': [dict(id=r.id,resource_type=r.resource_type,branch_id=branches[r.branch_id].slug,title=r.title,description=r.description,pdf_url=r.pdf_url,supporting_url=r.supporting_url,youtube_url=r.youtube_url,storage_type=r.storage_type,tags=r.tags,updated_at=r.updated_at) for r in rows['career-resources']],
             'site': {s.key: {'title': s.title, **s.content_json} for s in rows['site-content']}}

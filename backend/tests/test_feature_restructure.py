@@ -1,5 +1,7 @@
 """Rollback-only integration tests for new directories, resources and reports."""
 from uuid import uuid4
+from datetime import timedelta
+from hashlib import sha256
 
 import pytest
 from fastapi.testclient import TestClient
@@ -12,6 +14,7 @@ from cms.auth import hash_password
 from cms.database import create_database_engine
 from cms.storage import identify
 from otp_service import OtpService
+from student_session import COOKIE, cookie_options, identifier
 
 
 @pytest.fixture
@@ -104,6 +107,98 @@ def test_career_resource_filters_and_links(feature):
     assert client.post('/api/admin/career-resources', json={**body, 'pdf_url': None, 'supporting_url': None}).status_code == 422
     assert client.patch(f"/api/admin/career-resources/{created.json()['id']}/status", json={'status': 'archived'}).status_code == 200
     assert client.get(f"/api/public/career-resources?type=domain&branch={branches[0]['slug']}").json() == []
+
+
+def test_career_youtube_urls_are_normalized_and_video_only_resources_publish(feature):
+    client, _, _, _ = feature
+    agent(feature)
+    slug = f'qa-video-{uuid4().hex[:8]}'
+    branch = client.post('/api/admin/branches', json={'slug': slug, 'name': 'QA Video Branch',
+        'description': 'Test branch', 'status': 'published'}).json()
+    video_id = 'dQw4w9WgXcQ'
+    for resource_type, url in [('domain', f'https://www.youtube.com/watch?v={video_id}&t=10'),
+                               ('job', f'https://youtu.be/{video_id}')]:
+        body = {'resource_type': resource_type, 'branch_id': branch['id'],
+                'title': f'QA {resource_type} video', 'youtube_url': url, 'status': 'published'}
+        created = client.post('/api/admin/career-resources', json=body)
+        assert created.status_code == 201, created.text
+        assert created.json()['youtube_url'] == f'https://www.youtube.com/watch?v={video_id}'
+        listed = client.get(f'/api/public/career-resources?type={resource_type}&branch={slug}').json()
+        assert len(listed) == 1 and listed[0]['youtube_url'].endswith(video_id)
+    for bad in ('https://evil.example/watch?v=dQw4w9WgXcQ',
+                'https://youtube.com.evil.example/watch?v=dQw4w9WgXcQ',
+                '<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>',
+                'javascript:alert(1)'):
+        response = client.post('/api/admin/career-resources', json={
+            'resource_type': 'domain', 'branch_id': branch['id'], 'title': 'Invalid video',
+            'youtube_url': bad, 'status': 'published'})
+        assert response.status_code == 422
+
+
+def test_student_cookie_is_secure_on_hosted_frontend():
+    hosted = cookie_options('https://pivot-sols.vercel.app')
+    assert hosted == {'httponly': True, 'secure': True, 'samesite': 'lax', 'path': '/'}
+    assert cookie_options('http://localhost:5173')['secure'] is False
+
+
+def test_student_session_restores_expires_and_revokes(feature):
+    client, factory, delivered, _ = feature
+    email = f'session-{uuid4().hex}@example.com'
+    assert client.get('/api/auth/me').status_code == 401
+    assert client.post('/api/auth/send-otp', json={'email': email}).status_code == 200
+    verified = client.post('/api/auth/verify-otp', json={'email': email, 'otp': delivered[-1][1],
+        'name': 'Session Student', 'student_id': 'N240001', 'academic_level': 'E1'})
+    assert verified.status_code == 200
+    cookie = verified.headers['set-cookie'].lower()
+    assert 'max-age=2592000' in cookie and 'httponly' in cookie and 'path=/' in cookie
+    raw_token = client.cookies.get(COOKIE)
+    assert raw_token and len(raw_token) >= 40
+    with factory() as db:
+        row = db.scalar(select(m.StudentSession).where(m.StudentSession.student_email == email))
+        assert row.token_hash == sha256(raw_token.encode()).hexdigest()
+        assert row.token_hash != raw_token
+        assert abs((row.expires_at - row.created_at).total_seconds() - 2592000) < 2
+        session_id = row.id
+    profile = client.get('/api/auth/me').json()['profile']
+    assert profile['academicLevel'] == 'E1' and profile['studentId'] == 'N240001'
+    assert profile['email'] == email and 'token' not in profile
+    with TestClient(client.app) as reopened:
+        reopened.cookies.set(COOKIE, raw_token)
+        assert reopened.get('/api/auth/me').json()['profile']['academicLevel'] == 'E1'
+    client.cookies.set(COOKIE, 'forged-token')
+    assert client.get('/api/auth/me').status_code == 401
+    client.cookies.set(COOKIE, raw_token)
+    client.headers['X-Pivot-Student'] = '1'
+    assert client.post('/api/auth/logout').json() == {'success': True}
+    assert client.get('/api/auth/me').status_code == 401
+    with factory() as db:
+        assert db.get(m.StudentSession, session_id).revoked_at is not None
+
+    client.cookies.clear()
+    next_email = f'expired-{uuid4().hex}@example.com'
+    assert client.post('/api/auth/send-otp', json={'email': next_email}).status_code == 200
+    assert client.post('/api/auth/verify-otp', json={'email': next_email, 'otp': delivered[-1][1],
+        'name': 'P1 Student', 'student_id': 'N260002', 'academic_level': 'P1'}).status_code == 200
+    assert client.get('/api/auth/me').json()['profile']['academicLevel'] == 'P1'
+    with factory() as db:
+        row = db.scalar(select(m.StudentSession).where(m.StudentSession.student_email == next_email))
+        row.expires_at = row.created_at - timedelta(seconds=1)
+        db.commit()
+    assert client.get('/api/auth/me').status_code == 401
+
+
+def test_problem_author_identity_comes_from_session_not_request(feature):
+    client, factory, delivered, _ = feature
+    email = f'author-{uuid4().hex}@example.com'
+    student(client, delivered, email)
+    body = {'title': 'Test internet issue', 'description': 'The internet is unavailable in the test area.',
+            'academic_level': 'P1', 'priority': 'medium'}
+    assert client.post('/api/problems', json={**body, 'author_identifier': 'another-student'}).status_code == 422
+    created = client.post('/api/problems', json=body)
+    assert created.status_code == 201
+    with factory() as db:
+        row = db.get(m.StudentProblem, created.json()['id'])
+        assert row.author_identifier == identifier(client.app.state.admin_security.settings.otp_secret, email)
 
 
 def test_student_reports_have_server_identity_and_one_reaction_per_student(feature):

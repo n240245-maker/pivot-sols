@@ -49,6 +49,20 @@ class AdminSession(Identity, Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
+class StudentSession(Identity, Base):
+    __tablename__ = 'student_sessions'
+    __table_args__ = (CheckConstraint("academic_level IS NULL OR academic_level IN ('P1','E1')", name='ck_student_session_level'),)
+    student_email: Mapped[str] = mapped_column(String(254), index=True)
+    student_name: Mapped[str | None] = mapped_column(String(120))
+    student_id: Mapped[str | None] = mapped_column(String(40))
+    academic_level: Mapped[str | None] = mapped_column(String(2))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    last_used_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class AdminChallenge(Identity, Base):
     __tablename__ = 'admin_challenges'
     admin_id: Mapped[str] = mapped_column(ForeignKey('admins.id', ondelete='RESTRICT'), index=True)
@@ -252,6 +266,7 @@ class CareerResource(Content, Base):
     description: Mapped[str] = mapped_column(Text, default='')
     pdf_url: Mapped[str | None] = mapped_column(Text)
     supporting_url: Mapped[str | None] = mapped_column(Text)
+    youtube_url: Mapped[str | None] = mapped_column(Text)
     storage_type: Mapped[str | None] = mapped_column(String(20))
     tags: Mapped[list] = mapped_column(JSONB, default=list)
 

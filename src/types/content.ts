@@ -8,7 +8,7 @@ export interface ExploreContent { title: string; description: string; academic_t
 export interface InformationRoom {id:string;name:string;room_number:string;phone_number:string;floor:string;description:string;updated_at:string}
 export interface FacultySubject {id:string;name:string;slug:string}
 export interface FacultyMember {id:string;subject_id:string;name:string;designation:string;mobile_number:string;email:string;room_number:string;image_url:string|null}
-export interface CareerResource {id:string;resource_type:'domain'|'job';branch_id:string;title:string;description:string;pdf_url:string|null;supporting_url:string|null;storage_type:'object'|'external'|null;tags:readonly string[];updated_at:string}
+export interface CareerResource {id:string;resource_type:'domain'|'job';branch_id:string;title:string;description:string;pdf_url:string|null;supporting_url:string|null;youtube_url:string|null;storage_type:'object'|'external'|null;tags:readonly string[];updated_at:string}
 export interface PublicContent {
   books: ReferenceCatalog
   labs: LabCatalog

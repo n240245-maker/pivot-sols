@@ -53,7 +53,7 @@ test('API helper posts normalized email and never treats send as verification',a
   const requests=[]
   const api=loadTypeScript('src/lib/otpApi.ts',{},new Map(),{fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>({success:true,message:'OTP sent successfully'})}}})
   assert.equal(await api.sendOtp(' Student@Example.com '),undefined)
-  assert.equal(requests[0].url,'http://localhost:8000/api/auth/send-otp')
+  assert.equal(requests[0].url,'/api/auth/send-otp')
   assert.deepEqual(JSON.parse(requests[0].options.body),{email:'student@example.com'})
   assert.equal(requests[0].options.credentials,'omit')
   await assert.rejects(api.verifyOtp(details.email,'483912'),/verification service/)
@@ -67,6 +67,33 @@ test('API verify requires literal verified true and validates the code format',a
   for(const value of [false,'true',1,undefined]) {response={success:true,verified:value};await assert.rejects(api.verifyOtp(details.email,'483912'))}
   response=verified
   assert.equal((await api.verifyOtp(details.email,'483912')).verified,true)
+})
+
+test('OTP submits profile to backend and /me restores P1 or E1 without a browser login flag',async()=>{
+  const requests=[]
+  const profile={id:'server-id',name:'Harsha',studentId:'N240001',email:details.email,academicLevel:'E1',batch:0,campus:'Nuzvid'}
+  const api=loadTypeScript('src/lib/otpApi.ts',{},new Map(),{fetch:async(url,options)=>{
+    requests.push({url,options})
+    return {ok:true,status:200,json:async()=>url.endsWith('/verify-otp')?verified:{profile}}
+  }})
+  await api.verifyOtp(details.email,'483912',details)
+  assert.deepEqual(JSON.parse(requests[0].options.body),{email:details.email,otp:'483912',name:details.name,student_id:details.studentId,academic_level:'E1'})
+  assert.equal(requests[0].options.credentials,'include')
+  assert.equal((await api.getStudentSession()).academicLevel,'E1')
+  assert.equal(requests[1].url,'/api/auth/me')
+  assert.equal(requests[1].options.credentials,'include')
+  const missing=loadTypeScript('src/lib/otpApi.ts',{},new Map(),{fetch:async()=>({ok:false,status:401})})
+  assert.equal(await missing.getStudentSession(),null)
+})
+
+test('student logout calls backend and refuses to claim success on failure',async()=>{
+  const requests=[]
+  const api=loadTypeScript('src/lib/otpApi.ts',{},new Map(),{fetch:async(url,options)=>{requests.push({url,options});return {ok:true}}})
+  await api.clearStudentServerSession()
+  assert.equal(requests[0].url,'/api/auth/logout')
+  assert.equal(requests[0].options.credentials,'include')
+  const failed=loadTypeScript('src/lib/otpApi.ts',{},new Map(),{fetch:async()=>({ok:false})})
+  await assert.rejects(failed.clearStudentServerSession(),/Unable to log out/)
 })
 
 test('API maps wrong, expired, locked, throttled and delivery errors without exposing server text',async()=>{
@@ -165,27 +192,25 @@ test('resend countdown blocks sends until zero and resend clears the previous in
   button(render(),'Change email').props.onClick();assert.equal(changed,1)
 })
 
-test('provider awaits backend verification before persisting profile; logout cancels late completion',async()=>{
-  let check=deferred();const saved=storage();const changes=[]
-  const session=loadTypeScript('src/lib/demoSession.ts')
+test('provider waits for server verification, restores profile and cancels late login after logout',async()=>{
+  let check=deferred();const slots=[];let index=0,logoutCount=0
+  const restored={id:'server-session',name:details.name,studentId:details.studentId,academicLevel:'E1',email:details.email,batch:0,campus:'Nuzvid'}
   const {DemoAuthProvider}=loadTypeScript('src/contexts/DemoAuthContext.tsx',{
-    react:{useState:initial=>[initial(),v=>changes.push(v)],useRef:v=>({current:v}),useEffect:()=>{}},
+    react:{useState:initial=>{const i=index++;if(!(i in slots))slots[i]=typeof initial==='function'?initial():initial;return [slots[i],value=>{slots[i]=typeof value==='function'?value(slots[i]):value}]},useRef:value=>{const i=index++;return slots[i]??(slots[i]={current:value})},useEffect:()=>{}},
     './AuthContext':{AuthContext:{Provider:()=>null}},
-    '../lib/otpApi':{verifyOtp:()=>check.promise},
-    '../lib/demoSession':{...session,getDemoSession:()=>session.getDemoSession(saved),createDemoSession:(d,v)=>session.createDemoSession(d,v,saved),clearDemoSession:()=>session.clearDemoSession(saved)},
+    '../lib/otpApi':{verifyOtp:()=>check.promise,getStudentSession:async()=>restored,clearStudentServerSession:async()=>{logoutCount++}},
   })
-  const api=DemoAuthProvider({children:null}).props.value
+  const render=()=>{index=0;return DemoAuthProvider({children:null}).props.value}
+  let api=render();assert.equal(api.profile,null);assert.equal(api.loading,true)
   const pending=api.completeDemoLogin(details,'483912')
-  assert.equal(session.getDemoSession(saved),null);assert.equal(changes.length,0)
+  assert.equal(render().profile,null)
   check.resolve(verified);await pending
-  assert.equal(changes.at(-1).email,details.email)
-  assert.equal(session.getDemoSession(saved).academicLevel,'E1')
-  assert.deepEqual(Object.keys(JSON.parse(saved.getItem(session.DEMO_PROFILE_KEY))).sort(),['academicLevel','campus','email','name','studentId'])
-  await api.signOut();assert.equal(session.getDemoSession(saved),null)
+  api=render();assert.equal(api.profile.academicLevel,'E1')
+  await api.signOut();assert.equal(render().profile,null);assert.equal(logoutCount,1)
   check=deferred();const late=api.completeDemoLogin(details,'483912')
   await api.signOut();check.resolve(verified)
   await assert.rejects(late,/session changed/)
-  assert.equal(session.getDemoSession(saved),null)
+  assert.equal(render().profile,null)
 })
 
 test('fixed OTP bypass and hint are absent from active prototype source',()=>{

@@ -63,7 +63,7 @@ export function SiteContentFields({page,value,onChange}:{page:string;value:unkno
 export function prepareAdminBody(values:Record<string,unknown>):Record<string,unknown>{
   const result={...values}
   for(const key of ['id','created_at','updated_at'])delete result[key]
-  for(const key of ['branch_id','resource_url','video_type','video_url','experiment_number','pdf_url','supporting_url','image_url','storage_type'])if(result[key]==='')result[key]=null
+  for(const key of ['branch_id','resource_url','video_type','video_url','experiment_number','pdf_url','supporting_url','youtube_url','image_url','storage_type'])if(result[key]==='')result[key]=null
   if(result.academic_level==='P1')result.branch_id=null
   for(const [key,value] of Object.entries(result)){
     if(Array.isArray(value)&&value.every(item=>typeof item==='string'))result[key]=(value as string[]).map(item=>item.trim()).filter(Boolean)

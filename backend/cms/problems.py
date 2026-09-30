@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import Field
 from sqlalchemy import func, select
 
-from student_session import current as current_student
+from student_session import current as current_student, identifier
 from .models import ProblemReaction, StudentProblem, utcnow
 from .repository import fail
 from .schemas import Input
@@ -39,13 +39,13 @@ def install_problems(app, settings):
     security = app.state.admin_security
     router = APIRouter(tags=['Student problems'])
 
-    def student(request: Request):
+    def student(request: Request, db=Depends(get_db)):
         if request.headers.get('origin') != settings.frontend_url or request.headers.get('x-pivot-student') != '1':
             fail('This student request is not allowed.', 403)
-        identity = current_student(request, settings.otp_secret)
-        if not identity:
+        session = current_student(request, db)
+        if not session:
             fail('Verify your email again before reporting or voting.', 401)
-        return identity
+        return identifier(settings.otp_secret, session.student_email)
 
     def get_problem(db, problem_id: UUID, *, include_archived=False):
         row = db.get(StudentProblem, str(problem_id))

@@ -73,20 +73,20 @@ test('demo guard admits local profiles without Supabase identities; production r
     }
   }
 })
-test('demo provider uses local session helpers and existing shared auth interface',async()=>{
-  const changes=[],calls=[]
+test('student provider uses backend session instead of a local login marker',async()=>{
   const fixture=demo.createDemoSession(details,verified,memoryStorage())
+  const slots=[],effects=[];let index=0,cleared=0,verifiedDetails
   const {DemoAuthProvider}=loadTypeScript('src/contexts/DemoAuthContext.tsx',{
-    react:{useState:initializer=>[initializer(),value=>changes.push(value)],useEffect:()=>{},useRef:value=>({current:value})},
+    react:{useState:initial=>{const i=index++;if(!(i in slots))slots[i]=typeof initial==='function'?initial():initial;return [slots[i],value=>{slots[i]=typeof value==='function'?value(slots[i]):value}]},useEffect:effect=>effects.push(effect),useRef:value=>{const i=index++;return slots[i]??(slots[i]={current:value})}},
     './AuthContext':{AuthContext:{Provider:()=>null}},'../config/demo':{DEMO_MODE:true},
-    '../lib/demoSession':{getDemoSession:()=>fixture,createDemoSession:(d,result)=>{calls.push(['create',d,result]);return fixture},clearDemoSession:()=>calls.push(['clear'])},
-    '../lib/otpApi':{verifyOtp:async()=>verified},
+    '../lib/otpApi':{verifyOtp:async(_email,_otp,provided)=>{verifiedDetails=provided;return verified},getStudentSession:async()=>fixture,clearStudentServerSession:async()=>{cleared++}},
   })
-  const api=DemoAuthProvider({children:null}).props.value
-  assert.equal(api.profile,fixture);assert.equal(api.session,null);assert.equal(api.user,null)
-  await api.completeDemoLogin(details,'483912')
-  assert.equal(calls[0][0],'create')
-  await api.signOut();assert.equal(calls[1][0],'clear');assert.equal(changes.at(-1),null)
+  const render=()=>{index=0;return DemoAuthProvider({children:null}).props.value}
+  let api=render();assert.equal(api.loading,true);assert.equal(api.profile,null)
+  effects[0]();await new Promise(resolve=>setTimeout(resolve,0));api=render()
+  assert.equal(api.loading,false);assert.equal(api.profile.academicLevel,fixture.academicLevel)
+  await api.completeDemoLogin(details,'483912');assert.equal(verifiedDetails.email,details.email)
+  await api.signOut();api=render();assert.equal(api.profile,null);assert.equal(cleared,1)
   await assert.rejects(api.googleSignIn(),/prototype login/)
 })
 test('Supabase client is not initialized in demo mode even when credentials are configured',()=>{

@@ -26,7 +26,7 @@ test('public content transport uses the database endpoint and refuses errors or 
   let value=contentFixture;let ok=true;const requests=[]
   const api=loadTypeScript('src/lib/contentApi.ts',{},new Map(),{fetch:async(url,options)=>{requests.push({url,options});return {ok,json:async()=>value}}})
   assert.equal(JSON.stringify(await api.fetchPublishedContent()),JSON.stringify(contentFixture))
-  assert.equal(requests[0].url,'http://localhost:8000/api/public/catalog')
+  assert.equal(requests[0].url,'/api/public/catalog')
   assert.equal(requests[0].options.credentials,'omit')
   for(const invalid of [null,{}, {...contentFixture,domains:null}]){value=invalid;await assert.rejects(api.fetchPublishedContent(),/couldn't load/)}
   value=contentFixture;ok=false;await assert.rejects(api.fetchPublishedContent(),/couldn't load/)

@@ -1,6 +1,6 @@
 from functools import partial
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -14,7 +14,7 @@ from otp_service import OtpError, OtpService
 from cms.api import install_cms
 from cms.problems import install_problems
 from cms.storage import install_uploads
-from student_session import issue as issue_student_session, clear as clear_student_session
+from student_session import issue as issue_student_session, current as current_student_session, public_profile, revoke as revoke_student_session
 
 
 def create_app(settings: Settings, *, otp_service: OtpService | None = None, contact_service: ContactService | None = None, db_factory=None, admin_sender=None) -> FastAPI:
@@ -79,12 +79,39 @@ def create_app(settings: Settings, *, otp_service: OtpService | None = None, con
     @app.post("/api/auth/verify-otp")
     def verify_otp(body: VerifyOtpRequest, response: Response):
         service.verify(str(body.email), body.otp)
-        issue_student_session(response, settings.otp_secret, str(body.email), settings.frontend_url)
+        if db_factory is not None:
+            with db_factory() as db:
+                try:
+                    profile = {'name': body.name, 'student_id': body.student_id,
+                               'academic_level': body.academic_level} if body.name else None
+                    issue_student_session(response, db, str(body.email), profile, settings.frontend_url)
+                except Exception:
+                    db.rollback()
+                    raise HTTPException(503, detail={'message': 'Student session service is unavailable.'}) from None
         return {"success": True, "verified": True}
 
+    @app.get('/api/auth/me')
+    def student_me(request: Request):
+        if db_factory is None:
+            raise HTTPException(503, detail={'message': 'Student session service is unavailable.'})
+        with db_factory() as db:
+            row = current_student_session(request, db)
+            if row is None:
+                raise HTTPException(401, detail={'message': 'Sign in to continue.'})
+            profile = public_profile(row, settings.otp_secret)
+            if profile is None:
+                raise HTTPException(401, detail={'message': 'Complete student sign-in again.'})
+            db.commit()
+            return {'profile': profile}
+
     @app.post('/api/auth/logout')
-    def student_logout(response: Response):
-        clear_student_session(response, settings.frontend_url)
+    def student_logout(request: Request, response: Response):
+        if request.headers.get('origin') != settings.frontend_url or request.headers.get('x-pivot-student') != '1':
+            raise HTTPException(403, detail={'message': 'This student request is not allowed.'})
+        if db_factory is None:
+            raise HTTPException(503, detail={'message': 'Student session service is unavailable.'})
+        with db_factory() as db:
+            revoke_student_session(request, response, db, settings.frontend_url)
         return {"success": True}
 
     install_cms(app, settings, db_factory, admin_sender or partial(send_otp_email, settings=settings))
