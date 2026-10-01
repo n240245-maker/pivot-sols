@@ -1,0 +1,10 @@
+backend/
+supabase/
+tests/
+qa-results/
+.deployment-tools/
+deployment-private/
+.env*
+*.dump
+*.backup
+*.md

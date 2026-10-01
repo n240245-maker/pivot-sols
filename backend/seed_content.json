@@ -1,0 +1,4114 @@
+{
+  "books": {
+    "demo": true,
+    "curricula": [
+      {
+        "id": "common",
+        "level": "P1",
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "cse",
+        "level": "E1",
+        "branch": {
+          "id": "cse",
+          "shortName": "CSE",
+          "name": "Computer Science & Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "ece",
+        "level": "E1",
+        "branch": {
+          "id": "ece",
+          "shortName": "ECE",
+          "name": "Electronics & Communication Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "eee",
+        "level": "E1",
+        "branch": {
+          "id": "eee",
+          "shortName": "EEE",
+          "name": "Electrical & Electronics Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "mechanical",
+        "level": "E1",
+        "branch": {
+          "id": "mechanical",
+          "shortName": "ME",
+          "name": "Mechanical Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "civil",
+        "level": "E1",
+        "branch": {
+          "id": "civil",
+          "shortName": "CE",
+          "name": "Civil Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "chemical",
+        "level": "E1",
+        "branch": {
+          "id": "chemical",
+          "shortName": "CHE",
+          "name": "Chemical Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "id": "common-semester-1-mathematics",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "name": "Mathematics",
+        "slug": "mathematics"
+      },
+      {
+        "id": "common-semester-1-physics",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "name": "Physics",
+        "slug": "physics"
+      },
+      {
+        "id": "common-semester-1-chemistry",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "name": "Chemistry",
+        "slug": "chemistry"
+      },
+      {
+        "id": "common-semester-1-english",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "name": "English",
+        "slug": "english"
+      },
+      {
+        "id": "common-semester-1-introduction-to-computing",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "name": "Introduction to Computing",
+        "slug": "introduction-to-computing"
+      },
+      {
+        "id": "common-semester-2-mathematics-ii",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "name": "Mathematics II",
+        "slug": "mathematics-ii"
+      },
+      {
+        "id": "common-semester-2-physics-ii",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "name": "Physics II",
+        "slug": "physics-ii"
+      },
+      {
+        "id": "common-semester-2-basic-electrical-engineering",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "name": "Basic Electrical Engineering",
+        "slug": "basic-electrical-engineering"
+      },
+      {
+        "id": "common-semester-2-programming-fundamentals",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "name": "Programming Fundamentals",
+        "slug": "programming-fundamentals"
+      },
+      {
+        "id": "common-semester-2-engineering-drawing",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "name": "Engineering Drawing",
+        "slug": "engineering-drawing"
+      },
+      {
+        "id": "cse-semester-1-c-programming",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "name": "C Programming",
+        "slug": "c-programming"
+      },
+      {
+        "id": "cse-semester-1-data-structures",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "name": "Data Structures",
+        "slug": "data-structures"
+      },
+      {
+        "id": "cse-semester-1-digital-logic",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "name": "Digital Logic",
+        "slug": "digital-logic"
+      },
+      {
+        "id": "cse-semester-1-discrete-mathematics",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "name": "Discrete Mathematics",
+        "slug": "discrete-mathematics"
+      },
+      {
+        "id": "cse-semester-1-computer-organization",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "name": "Computer Organization",
+        "slug": "computer-organization"
+      },
+      {
+        "id": "cse-semester-2-algorithms",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "name": "Algorithms",
+        "slug": "algorithms"
+      },
+      {
+        "id": "cse-semester-2-object-oriented-programming",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "name": "Object Oriented Programming",
+        "slug": "object-oriented-programming"
+      },
+      {
+        "id": "cse-semester-2-database-management-systems",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "name": "Database Management Systems",
+        "slug": "database-management-systems"
+      },
+      {
+        "id": "cse-semester-2-operating-systems",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "name": "Operating Systems",
+        "slug": "operating-systems"
+      },
+      {
+        "id": "cse-semester-2-probability-and-statistics",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "name": "Probability & Statistics",
+        "slug": "probability-and-statistics"
+      },
+      {
+        "id": "ece-semester-1-network-theory",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "name": "Network Theory",
+        "slug": "network-theory"
+      },
+      {
+        "id": "ece-semester-1-electronic-devices",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "name": "Electronic Devices",
+        "slug": "electronic-devices"
+      },
+      {
+        "id": "ece-semester-1-engineering-mathematics",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "name": "Engineering Mathematics",
+        "slug": "engineering-mathematics"
+      },
+      {
+        "id": "ece-semester-1-electromagnetic-theory",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "name": "Electromagnetic Theory",
+        "slug": "electromagnetic-theory"
+      },
+      {
+        "id": "ece-semester-1-c-programming",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "name": "C Programming",
+        "slug": "c-programming"
+      },
+      {
+        "id": "ece-semester-2-analog-electronics",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "name": "Analog Electronics",
+        "slug": "analog-electronics"
+      },
+      {
+        "id": "ece-semester-2-digital-electronics",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "name": "Digital Electronics",
+        "slug": "digital-electronics"
+      },
+      {
+        "id": "ece-semester-2-signals-and-systems",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "name": "Signals and Systems",
+        "slug": "signals-and-systems"
+      },
+      {
+        "id": "ece-semester-2-electrical-machines",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "name": "Electrical Machines",
+        "slug": "electrical-machines"
+      },
+      {
+        "id": "ece-semester-2-probability-and-random-processes",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "name": "Probability & Random Processes",
+        "slug": "probability-and-random-processes"
+      }
+    ],
+    "books": [
+      {
+        "title": "Mathematics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-1-mathematics-book-1",
+        "subjectId": "common-semester-1-mathematics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Physics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-1-physics-book-1",
+        "subjectId": "common-semester-1-physics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Chemistry — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-1-chemistry-book-1",
+        "subjectId": "common-semester-1-chemistry",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "English — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-1-english-book-1",
+        "subjectId": "common-semester-1-english",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Introduction to Computing — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-1-introduction-to-computing-book-1",
+        "subjectId": "common-semester-1-introduction-to-computing",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Mathematics II — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-2-mathematics-ii-book-1",
+        "subjectId": "common-semester-2-mathematics-ii",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Physics II — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-2-physics-ii-book-1",
+        "subjectId": "common-semester-2-physics-ii",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Basic Electrical Engineering — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-2-basic-electrical-engineering-book-1",
+        "subjectId": "common-semester-2-basic-electrical-engineering",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Programming Fundamentals — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-2-programming-fundamentals-book-1",
+        "subjectId": "common-semester-2-programming-fundamentals",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Engineering Drawing — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "common-semester-2-engineering-drawing-book-1",
+        "subjectId": "common-semester-2-engineering-drawing",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "The C Programming Language",
+        "authors": [
+          "Brian W. Kernighan",
+          "Dennis M. Ritchie"
+        ],
+        "id": "cse-semester-1-c-programming-book-1",
+        "subjectId": "cse-semester-1-c-programming",
+        "type": "Reference Book",
+        "description": "A reference listing for the Pivot Sols prototype. No downloadable file is included."
+      },
+      {
+        "title": "Data Structures — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-1-data-structures-book-1",
+        "subjectId": "cse-semester-1-data-structures",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Digital Logic — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-1-digital-logic-book-1",
+        "subjectId": "cse-semester-1-digital-logic",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Discrete Mathematics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-1-discrete-mathematics-book-1",
+        "subjectId": "cse-semester-1-discrete-mathematics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Computer Organization — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-1-computer-organization-book-1",
+        "subjectId": "cse-semester-1-computer-organization",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Algorithms — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-2-algorithms-book-1",
+        "subjectId": "cse-semester-2-algorithms",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Object Oriented Programming — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-2-object-oriented-programming-book-1",
+        "subjectId": "cse-semester-2-object-oriented-programming",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Database Management Systems — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-2-database-management-systems-book-1",
+        "subjectId": "cse-semester-2-database-management-systems",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Operating Systems — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-2-operating-systems-book-1",
+        "subjectId": "cse-semester-2-operating-systems",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Probability & Statistics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "cse-semester-2-probability-and-statistics-book-1",
+        "subjectId": "cse-semester-2-probability-and-statistics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Engineering Circuit Analysis",
+        "authors": [
+          "William H. Hayt"
+        ],
+        "id": "ece-semester-1-network-theory-book-1",
+        "subjectId": "ece-semester-1-network-theory",
+        "type": "Reference Book",
+        "description": "A reference listing for the Pivot Sols prototype. No downloadable file is included."
+      },
+      {
+        "title": "Network Analysis",
+        "authors": [
+          "M. E. Van Valkenburg"
+        ],
+        "id": "ece-semester-1-network-theory-book-2",
+        "subjectId": "ece-semester-1-network-theory",
+        "type": "Reference Book",
+        "description": "A reference listing for the Pivot Sols prototype. No downloadable file is included."
+      },
+      {
+        "title": "Electronic Devices — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-1-electronic-devices-book-1",
+        "subjectId": "ece-semester-1-electronic-devices",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Engineering Mathematics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-1-engineering-mathematics-book-1",
+        "subjectId": "ece-semester-1-engineering-mathematics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Introduction to Electrodynamics",
+        "authors": [
+          "David J. Griffiths"
+        ],
+        "id": "ece-semester-1-electromagnetic-theory-book-1",
+        "subjectId": "ece-semester-1-electromagnetic-theory",
+        "type": "Reference Book",
+        "description": "A reference listing for the Pivot Sols prototype. No downloadable file is included."
+      },
+      {
+        "title": "The C Programming Language",
+        "authors": [
+          "Brian W. Kernighan",
+          "Dennis M. Ritchie"
+        ],
+        "id": "ece-semester-1-c-programming-book-1",
+        "subjectId": "ece-semester-1-c-programming",
+        "type": "Reference Book",
+        "description": "A reference listing for the Pivot Sols prototype. No downloadable file is included."
+      },
+      {
+        "title": "Analog Electronics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-2-analog-electronics-book-1",
+        "subjectId": "ece-semester-2-analog-electronics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Digital Electronics — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-2-digital-electronics-book-1",
+        "subjectId": "ece-semester-2-digital-electronics",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Signals and Systems — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-2-signals-and-systems-book-1",
+        "subjectId": "ece-semester-2-signals-and-systems",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Electrical Machines — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-2-electrical-machines-book-1",
+        "subjectId": "ece-semester-2-electrical-machines",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      },
+      {
+        "title": "Probability & Random Processes — Sample Reference",
+        "authors": [
+          "Sample Author"
+        ],
+        "id": "ece-semester-2-probability-and-random-processes-book-1",
+        "subjectId": "ece-semester-2-probability-and-random-processes",
+        "type": "Reference Book",
+        "description": "Sample metadata for the presentation. The final reading list will be added later."
+      }
+    ]
+  },
+  "labs": {
+    "demo": true,
+    "curricula": [
+      {
+        "id": "common",
+        "level": "P1",
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "cse",
+        "level": "E1",
+        "branch": {
+          "id": "cse",
+          "shortName": "CSE",
+          "name": "Computer Science & Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "ece",
+        "level": "E1",
+        "branch": {
+          "id": "ece",
+          "shortName": "ECE",
+          "name": "Electronics & Communication Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "eee",
+        "level": "E1",
+        "branch": {
+          "id": "eee",
+          "shortName": "EEE",
+          "name": "Electrical & Electronics Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "mechanical",
+        "level": "E1",
+        "branch": {
+          "id": "mechanical",
+          "shortName": "ME",
+          "name": "Mechanical Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "civil",
+        "level": "E1",
+        "branch": {
+          "id": "civil",
+          "shortName": "CE",
+          "name": "Civil Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      },
+      {
+        "id": "chemical",
+        "level": "E1",
+        "branch": {
+          "id": "chemical",
+          "shortName": "CHE",
+          "name": "Chemical Engineering"
+        },
+        "semesters": [
+          {
+            "id": "semester-1",
+            "name": "Semester 1",
+            "number": 1
+          },
+          {
+            "id": "semester-2",
+            "name": "Semester 2",
+            "number": 2
+          }
+        ]
+      }
+    ],
+    "labs": [
+      {
+        "id": "common-1-physics-lab",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "slug": "physics-lab",
+        "name": "Physics Lab",
+        "shortDescription": "Build confidence with measurement and observation.",
+        "experiments": [
+          {
+            "id": "vernier",
+            "slug": "vernier-caliper-measurement",
+            "title": "Measurement with a Vernier Caliper",
+            "experimentNumber": 1,
+            "objective": "Measure a small object using a vernier caliper and record the instrument’s least count.",
+            "apparatus": [
+              "Vernier caliper",
+              "Small cylindrical object"
+            ],
+            "procedure": [
+              "Identify the main scale and vernier scale, then check for zero error.",
+              "Place the object gently between the appropriate jaws.",
+              "Read the main scale and coinciding vernier division, applying any zero correction.",
+              "Repeat the measurement at several positions and record the readings with units."
+            ],
+            "expectedResult": "Repeated readings agree within the instrument’s measurement resolution.",
+            "precautions": [
+              "Do not force the jaws against the object.",
+              "Follow the reading method for the instrument provided by your instructor."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "common-1-chemistry-lab",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "slug": "chemistry-lab",
+        "name": "Chemistry Lab",
+        "shortDescription": "Explore introductory chemistry practicals.",
+        "experiments": []
+      },
+      {
+        "id": "common-1-english-language-lab",
+        "curriculumId": "common",
+        "semesterId": "semester-1",
+        "slug": "english-language-lab",
+        "name": "English Language Lab",
+        "shortDescription": "Practice listening and communication.",
+        "experiments": []
+      },
+      {
+        "id": "common-2-physics-lab-ii",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "slug": "physics-lab-ii",
+        "name": "Physics Lab II",
+        "shortDescription": "Continue exploring physical principles.",
+        "experiments": []
+      },
+      {
+        "id": "common-2-programming-lab",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "slug": "programming-lab",
+        "name": "Programming Lab",
+        "shortDescription": "Turn programming concepts into working examples.",
+        "experiments": [
+          {
+            "id": "input-output",
+            "slug": "basic-input-and-output",
+            "title": "Basic Input and Output",
+            "experimentNumber": 1,
+            "objective": "Read two integers in C and display their sum.",
+            "apparatus": [
+              "Computer",
+              "C compiler",
+              "Text editor"
+            ],
+            "procedure": [
+              "Write a program that reads two integers, checking that input succeeds.",
+              "Compile the program and resolve warnings.",
+              "Run it with positive, negative and zero values within the integer range."
+            ],
+            "expectedResult": "The displayed sum matches each pair of valid inputs."
+          },
+          {
+            "id": "functions",
+            "slug": "functions",
+            "title": "Functions",
+            "experimentNumber": 2,
+            "objective": "Organize a calculation into a C function with parameters and a return value.",
+            "expectedResult": "Calling the function with known inputs returns the expected output."
+          },
+          {
+            "id": "arrays",
+            "slug": "arrays",
+            "title": "Arrays",
+            "experimentNumber": 3,
+            "objective": "Store a fixed collection of integers and find its largest element.",
+            "expectedResult": "The program finds the correct maximum without accessing outside the array bounds."
+          },
+          {
+            "id": "strings",
+            "slug": "strings",
+            "title": "Strings",
+            "experimentNumber": 4,
+            "objective": "Read and process a bounded, null-terminated character array in C.",
+            "expectedResult": "The program handles text within the buffer capacity and terminates the string correctly."
+          },
+          {
+            "id": "structures",
+            "slug": "structures",
+            "title": "Structures",
+            "experimentNumber": 5,
+            "objective": "Group related fields into a C structure and display a sample record.",
+            "expectedResult": "Each field is stored and displayed with the expected value."
+          },
+          {
+            "id": "recursion",
+            "slug": "recursion",
+            "title": "Recursion",
+            "experimentNumber": 6,
+            "objective": "Implement factorial using recursion for a small, non-negative integer.",
+            "theory": "A recursive function calls itself on a smaller problem and stops at a base case.",
+            "expectedResult": "Results match known factorial values within the chosen integer type’s range.",
+            "precautions": [
+              "Validate input and limit its size to avoid integer overflow and excessive recursion."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "common-2-engineering-drawing-workshop",
+        "curriculumId": "common",
+        "semesterId": "semester-2",
+        "slug": "engineering-drawing-workshop",
+        "name": "Engineering Drawing / Workshop",
+        "shortDescription": "An introduction to drawing and workshop practice.",
+        "experiments": []
+      },
+      {
+        "id": "ece-1-network-theory-lab",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "slug": "network-theory-lab",
+        "name": "Network Theory Lab",
+        "shortDescription": "Explore circuit equivalents and transient responses.",
+        "experiments": [
+          {
+            "id": "thevenin",
+            "slug": "verification-of-thevenins-theorem",
+            "title": "Verification of Thevenin's Theorem",
+            "experimentNumber": 1,
+            "objective": "Verify that a resistive network and its Thevenin equivalent produce approximately the same current through a given load.",
+            "apparatus": [
+              "DC supply",
+              "Resistors",
+              "Breadboard",
+              "Multimeter",
+              "Connecting wires"
+            ],
+            "theory": "Thevenin's theorem states that a linear bilateral network can be replaced at two terminals by an equivalent voltage source in series with an equivalent resistance. For this prototype, use a resistive DC network with independent sources.",
+            "procedure": [
+              "With the supply off, construct the instructor-provided network and check all connections.",
+              "Disconnect the load, power the circuit within its approved limits, and measure the open-circuit terminal voltage. This is the Thevenin voltage.",
+              "Switch off and disconnect the physical supply. In the equivalent circuit calculation, replace ideal independent voltage sources with shorts and ideal independent current sources with open circuits. Never short a live supply.",
+              "Determine the equivalent resistance looking into the load terminals with the sources deactivated.",
+              "Construct the Thevenin equivalent using the calculated resistance and measured voltage; connect the same load with the supply off.",
+              "Measure the load current in each circuit and compare the results, noting resistor tolerance and measurement error."
+            ],
+            "expectedResult": "The measured load current should closely match the current obtained from the Thevenin equivalent circuit, within component and measurement tolerances.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "norton",
+            "slug": "verification-of-nortons-theorem",
+            "title": "Verification of Norton's Theorem",
+            "experimentNumber": 2,
+            "objective": "Compare the load current of a resistive DC network with its Norton equivalent.",
+            "theory": "The Norton equivalent represents a linear network by a current source in parallel with a resistance. For an independent-source resistive network, the resistance equals the Thevenin resistance.",
+            "expectedResult": "Both circuits give approximately the same current through the same load.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "maximum-power",
+            "slug": "maximum-power-transfer-theorem",
+            "title": "Maximum Power Transfer Theorem",
+            "experimentNumber": 3,
+            "objective": "Observe how load power changes as a resistive load is varied.",
+            "theory": "For a DC network with positive Thevenin resistance, maximum load power occurs when the load resistance equals the Thevenin resistance.",
+            "expectedResult": "A plot of load power against load resistance peaks near the Thevenin resistance.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "rc-transient",
+            "slug": "rc-transient-response",
+            "title": "RC Transient Response",
+            "experimentNumber": 4,
+            "objective": "Observe the charging and discharging voltage of a capacitor in a series RC circuit.",
+            "theory": "The time constant of a simple RC circuit is R × C. It describes how quickly the capacitor voltage approaches its final value.",
+            "expectedResult": "The measured waveform follows an exponential response with a time constant close to R × C.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual.",
+              "Discharge the capacitor safely using the method specified by your instructor before handling it."
+            ]
+          },
+          {
+            "id": "rl-transient",
+            "slug": "rl-transient-response",
+            "title": "RL Transient Response",
+            "experimentNumber": 5,
+            "objective": "Observe the change in current after a step input to a series RL circuit.",
+            "theory": "The time constant of a simple RL circuit is L / R, where R includes the resistance in the current path.",
+            "expectedResult": "Current approaches its final value gradually, with a time constant close to L / R.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "rlc-response",
+            "slug": "rlc-circuit-response",
+            "title": "RLC Circuit Response",
+            "experimentNumber": 6,
+            "objective": "Compare the transient responses of a series RLC circuit at different resistance values.",
+            "theory": "Resistance changes the damping of an RLC circuit. Depending on its component values, a step response may oscillate or approach its final value without oscillation.",
+            "expectedResult": "Recorded waveforms illustrate the effect of damping on the circuit response.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ece-1-electronic-devices-lab",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "slug": "electronic-devices-lab",
+        "name": "Electronic Devices Lab",
+        "shortDescription": "Observe diodes, rectifiers and transistors.",
+        "experiments": [
+          {
+            "id": "pn-diode",
+            "slug": "pn-junction-diode-characteristics",
+            "title": "PN Junction Diode Characteristics",
+            "experimentNumber": 1,
+            "objective": "Plot diode current against applied voltage for an instructor-approved range.",
+            "expectedResult": "Forward and reverse bias produce distinctly different current–voltage characteristics.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "zener",
+            "slug": "zener-diode-characteristics",
+            "title": "Zener Diode Characteristics",
+            "experimentNumber": 2,
+            "objective": "Observe the reverse-bias voltage regulation region of a Zener diode with a current-limiting resistor.",
+            "expectedResult": "The voltage varies relatively little over the permitted regulation current range.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "half-wave",
+            "slug": "half-wave-rectifier",
+            "title": "Half-Wave Rectifier",
+            "experimentNumber": 3,
+            "objective": "Observe the output waveform of a diode rectifier using an isolated low-voltage AC source.",
+            "expectedResult": "The load receives pulses during one half of each AC cycle.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "full-wave",
+            "slug": "full-wave-rectifier",
+            "title": "Full-Wave Rectifier",
+            "experimentNumber": 4,
+            "objective": "Observe full-wave rectification using an isolated low-voltage AC source.",
+            "expectedResult": "Both input half-cycles produce load current in the same direction.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          },
+          {
+            "id": "bjt",
+            "slug": "bjt-input-and-output-characteristics",
+            "title": "BJT Input and Output Characteristics",
+            "experimentNumber": 5,
+            "objective": "Plot the input and output characteristics of an instructor-provided common-emitter BJT circuit.",
+            "expectedResult": "The plots show how base current and collector-emitter voltage affect collector current.",
+            "precautions": [
+              "Check component values and the instructor-approved supply limits before powering the circuit.",
+              "Avoid short circuits. Switch off the supply before modifying connections.",
+              "Use only a supervised, low-voltage teaching circuit; follow your lab manual."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ece-1-c-programming-lab",
+        "curriculumId": "ece",
+        "semesterId": "semester-1",
+        "slug": "c-programming-lab",
+        "name": "C Programming Lab",
+        "shortDescription": "Practice the building blocks of C.",
+        "experiments": [
+          {
+            "id": "input-output",
+            "slug": "basic-input-and-output",
+            "title": "Basic Input and Output",
+            "experimentNumber": 1,
+            "objective": "Read two integers in C and display their sum.",
+            "apparatus": [
+              "Computer",
+              "C compiler",
+              "Text editor"
+            ],
+            "procedure": [
+              "Write a program that reads two integers, checking that input succeeds.",
+              "Compile the program and resolve warnings.",
+              "Run it with positive, negative and zero values within the integer range."
+            ],
+            "expectedResult": "The displayed sum matches each pair of valid inputs."
+          },
+          {
+            "id": "functions",
+            "slug": "functions",
+            "title": "Functions",
+            "experimentNumber": 2,
+            "objective": "Organize a calculation into a C function with parameters and a return value.",
+            "expectedResult": "Calling the function with known inputs returns the expected output."
+          },
+          {
+            "id": "arrays",
+            "slug": "arrays",
+            "title": "Arrays",
+            "experimentNumber": 3,
+            "objective": "Store a fixed collection of integers and find its largest element.",
+            "expectedResult": "The program finds the correct maximum without accessing outside the array bounds."
+          },
+          {
+            "id": "strings",
+            "slug": "strings",
+            "title": "Strings",
+            "experimentNumber": 4,
+            "objective": "Read and process a bounded, null-terminated character array in C.",
+            "expectedResult": "The program handles text within the buffer capacity and terminates the string correctly."
+          },
+          {
+            "id": "structures",
+            "slug": "structures",
+            "title": "Structures",
+            "experimentNumber": 5,
+            "objective": "Group related fields into a C structure and display a sample record.",
+            "expectedResult": "Each field is stored and displayed with the expected value."
+          },
+          {
+            "id": "recursion",
+            "slug": "recursion",
+            "title": "Recursion",
+            "experimentNumber": 6,
+            "objective": "Implement factorial using recursion for a small, non-negative integer.",
+            "theory": "A recursive function calls itself on a smaller problem and stops at a base case.",
+            "expectedResult": "Results match known factorial values within the chosen integer type’s range.",
+            "precautions": [
+              "Validate input and limit its size to avoid integer overflow and excessive recursion."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ece-2-analog-electronics-lab",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "slug": "analog-electronics-lab",
+        "name": "Analog Electronics Lab",
+        "shortDescription": "Explore practical analog circuits.",
+        "experiments": []
+      },
+      {
+        "id": "ece-2-digital-electronics-lab",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "slug": "digital-electronics-lab",
+        "name": "Digital Electronics Lab",
+        "shortDescription": "Connect logic concepts with circuit behavior.",
+        "experiments": []
+      },
+      {
+        "id": "ece-2-electrical-machines-lab",
+        "curriculumId": "ece",
+        "semesterId": "semester-2",
+        "slug": "electrical-machines-lab",
+        "name": "Electrical Machines Lab",
+        "shortDescription": "An introduction to electrical machine experiments.",
+        "experiments": []
+      },
+      {
+        "id": "cse-1-c-programming-lab",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "slug": "c-programming-lab",
+        "name": "C Programming Lab",
+        "shortDescription": "Practice the building blocks of C.",
+        "experiments": [
+          {
+            "id": "input-output",
+            "slug": "basic-input-and-output",
+            "title": "Basic Input and Output",
+            "experimentNumber": 1,
+            "objective": "Read two integers in C and display their sum.",
+            "apparatus": [
+              "Computer",
+              "C compiler",
+              "Text editor"
+            ],
+            "procedure": [
+              "Write a program that reads two integers, checking that input succeeds.",
+              "Compile the program and resolve warnings.",
+              "Run it with positive, negative and zero values within the integer range."
+            ],
+            "expectedResult": "The displayed sum matches each pair of valid inputs."
+          },
+          {
+            "id": "functions",
+            "slug": "functions",
+            "title": "Functions",
+            "experimentNumber": 2,
+            "objective": "Organize a calculation into a C function with parameters and a return value.",
+            "expectedResult": "Calling the function with known inputs returns the expected output."
+          },
+          {
+            "id": "arrays",
+            "slug": "arrays",
+            "title": "Arrays",
+            "experimentNumber": 3,
+            "objective": "Store a fixed collection of integers and find its largest element.",
+            "expectedResult": "The program finds the correct maximum without accessing outside the array bounds."
+          },
+          {
+            "id": "strings",
+            "slug": "strings",
+            "title": "Strings",
+            "experimentNumber": 4,
+            "objective": "Read and process a bounded, null-terminated character array in C.",
+            "expectedResult": "The program handles text within the buffer capacity and terminates the string correctly."
+          },
+          {
+            "id": "structures",
+            "slug": "structures",
+            "title": "Structures",
+            "experimentNumber": 5,
+            "objective": "Group related fields into a C structure and display a sample record.",
+            "expectedResult": "Each field is stored and displayed with the expected value."
+          },
+          {
+            "id": "recursion",
+            "slug": "recursion",
+            "title": "Recursion",
+            "experimentNumber": 6,
+            "objective": "Implement factorial using recursion for a small, non-negative integer.",
+            "theory": "A recursive function calls itself on a smaller problem and stops at a base case.",
+            "expectedResult": "Results match known factorial values within the chosen integer type’s range.",
+            "precautions": [
+              "Validate input and limit its size to avoid integer overflow and excessive recursion."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cse-1-data-structures-lab",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "slug": "data-structures-lab",
+        "name": "Data Structures Lab",
+        "shortDescription": "Explore ways to organize and work with data.",
+        "experiments": []
+      },
+      {
+        "id": "cse-1-digital-logic-lab",
+        "curriculumId": "cse",
+        "semesterId": "semester-1",
+        "slug": "digital-logic-lab",
+        "name": "Digital Logic Lab",
+        "shortDescription": "Experiment with the foundations of digital systems.",
+        "experiments": []
+      },
+      {
+        "id": "cse-2-oop-lab",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "slug": "oop-lab",
+        "name": "OOP Lab",
+        "shortDescription": "Practice object-oriented programming concepts.",
+        "experiments": []
+      },
+      {
+        "id": "cse-2-dbms-lab",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "slug": "dbms-lab",
+        "name": "DBMS Lab",
+        "shortDescription": "Explore database design and queries.",
+        "experiments": []
+      },
+      {
+        "id": "cse-2-algorithms-lab",
+        "curriculumId": "cse",
+        "semesterId": "semester-2",
+        "slug": "algorithms-lab",
+        "name": "Algorithms Lab",
+        "shortDescription": "Study algorithms through implementation.",
+        "experiments": []
+      }
+    ]
+  },
+  "domains": [
+    {
+      "slug": "software-development",
+      "name": "Software Development",
+      "category": "Software",
+      "description": "Build and maintain reliable applications and software systems.",
+      "overview": "Software development turns a problem into an application people can use. The work includes understanding requirements, designing a solution, testing it and improving it over time.",
+      "work": [
+        "Break a problem into smaller components",
+        "Implement application features",
+        "Test and debug behavior",
+        "Review changes with teammates",
+        "Maintain existing systems"
+      ],
+      "skills": [
+        "Programming",
+        "Data structures",
+        "Testing",
+        "Problem solving"
+      ],
+      "subjects": [
+        "Programming",
+        "Data Structures",
+        "Computer Organization",
+        "Software Engineering"
+      ],
+      "tools": [
+        "Git",
+        "VS Code",
+        "Debuggers",
+        "Test frameworks"
+      ],
+      "programming": "High",
+      "mathematics": "Moderate",
+      "interests": [
+        "Logic",
+        "Building systems",
+        "Debugging"
+      ],
+      "roleIds": [
+        "software-engineer",
+        "backend-developer",
+        "full-stack-developer"
+      ],
+      "id": "software-development",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Programming, Data Structures, Computer Organization."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Programming, Data structures, Testing with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Software Development and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Build a campus task manager, write tests and document the decisions behind it."
+        }
+      ]
+    },
+    {
+      "slug": "web-development",
+      "name": "Web Development",
+      "category": "Software",
+      "description": "Create websites and services that work well across devices.",
+      "overview": "Web development connects browser interfaces with data and server services. Accessibility, responsiveness and clear interactions matter alongside working code.",
+      "work": [
+        "Build accessible user interfaces",
+        "Connect pages to APIs",
+        "Design server endpoints",
+        "Test across screen sizes",
+        "Improve loading and error states"
+      ],
+      "skills": [
+        "HTML & CSS",
+        "JavaScript",
+        "APIs",
+        "Accessibility"
+      ],
+      "subjects": [
+        "Programming",
+        "Computer Networks",
+        "Database Systems"
+      ],
+      "tools": [
+        "Browser DevTools",
+        "Git",
+        "React",
+        "Node.js"
+      ],
+      "programming": "High",
+      "mathematics": "Low",
+      "interests": [
+        "Visual interfaces",
+        "User experience",
+        "Connecting systems"
+      ],
+      "roleIds": [
+        "frontend-developer",
+        "backend-developer",
+        "full-stack-developer"
+      ],
+      "id": "web-development",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Programming, Computer Networks, Database Systems."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice HTML & CSS, JavaScript, APIs with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Web Development and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Create a responsive resource catalogue with search, accessible forms and an API."
+        }
+      ]
+    },
+    {
+      "slug": "mobile-app-development",
+      "name": "Mobile App Development",
+      "category": "Software",
+      "description": "Build applications shaped around phones and tablets.",
+      "overview": "Mobile applications work within small screens, touch interactions and changing network conditions. Developers design features around a platform’s lifecycle, permissions and device capabilities.",
+      "work": [
+        "Design touch-friendly screens",
+        "Manage application state",
+        "Handle offline and network states",
+        "Test device and screen variations",
+        "Respect device permissions"
+      ],
+      "skills": [
+        "Application state",
+        "UI development",
+        "APIs",
+        "Testing"
+      ],
+      "subjects": [
+        "Programming",
+        "Data Structures",
+        "Human–Computer Interaction"
+      ],
+      "tools": [
+        "Android Studio",
+        "Kotlin",
+        "Swift",
+        "Flutter"
+      ],
+      "programming": "High",
+      "mathematics": "Low",
+      "interests": [
+        "Mobile interfaces",
+        "Everyday utilities",
+        "Device features"
+      ],
+      "roleIds": [
+        "software-engineer"
+      ],
+      "id": "mobile-app-development",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Programming, Data Structures, Human–Computer Interaction."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Application state, UI development, APIs with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Mobile App Development and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Build a study planner that stores tasks locally and handles an interrupted session."
+        }
+      ]
+    },
+    {
+      "slug": "ai-machine-learning",
+      "name": "Artificial Intelligence & Machine Learning",
+      "category": "AI & Data",
+      "description": "Build systems that learn patterns from data and support useful tasks.",
+      "overview": "AI and machine learning use data and algorithms to make predictions or support decisions. A useful model needs careful evaluation, appropriate data and an understanding of its limits.",
+      "work": [
+        "Prepare and inspect datasets",
+        "Train baseline models",
+        "Evaluate errors and bias",
+        "Integrate models into applications",
+        "Monitor changing model behavior"
+      ],
+      "skills": [
+        "Python",
+        "Model evaluation",
+        "Linear algebra",
+        "Statistics"
+      ],
+      "subjects": [
+        "Linear Algebra",
+        "Probability",
+        "Calculus",
+        "Algorithms"
+      ],
+      "tools": [
+        "Python",
+        "PyTorch",
+        "scikit-learn",
+        "Jupyter"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "interests": [
+        "Patterns",
+        "Experimentation",
+        "Measuring uncertainty"
+      ],
+      "roleIds": [
+        "ai-engineer",
+        "machine-learning-engineer"
+      ],
+      "id": "ai-machine-learning",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Linear Algebra, Probability, Calculus."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Python, Model evaluation, Linear algebra with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Artificial Intelligence & Machine Learning and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Compare simple classifiers on a public dataset and explain errors, data splits and limitations."
+        }
+      ]
+    },
+    {
+      "slug": "data-science",
+      "name": "Data Science",
+      "category": "AI & Data",
+      "description": "Turn data into clear questions, evidence and useful insights.",
+      "overview": "Data science combines statistics, programming and domain understanding. The goal is to investigate a question carefully and communicate what the data can and cannot show.",
+      "work": [
+        "Clarify a question with stakeholders",
+        "Clean and validate data",
+        "Explore distributions and relationships",
+        "Build and evaluate statistical models",
+        "Explain findings with reproducible analysis"
+      ],
+      "skills": [
+        "Statistics",
+        "Python",
+        "SQL",
+        "Data communication"
+      ],
+      "subjects": [
+        "Probability",
+        "Statistics",
+        "Linear Algebra",
+        "Database Systems"
+      ],
+      "tools": [
+        "Jupyter",
+        "pandas",
+        "SQL",
+        "Matplotlib"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "interests": [
+        "Finding patterns",
+        "Asking questions",
+        "Explaining evidence"
+      ],
+      "roleIds": [
+        "data-scientist",
+        "data-engineer"
+      ],
+      "id": "data-science",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Probability, Statistics, Linear Algebra."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Statistics, Python, SQL with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Data Science and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Analyze a public dataset, document cleaning decisions and write a short findings report."
+        }
+      ]
+    },
+    {
+      "slug": "cybersecurity",
+      "name": "Cybersecurity",
+      "category": "Security",
+      "description": "Help protect systems, data and users from security threats.",
+      "overview": "Cybersecurity studies how systems can fail and how to reduce those risks. Practice belongs in authorized labs and systems you have permission to assess.",
+      "work": [
+        "Review security alerts",
+        "Identify configuration weaknesses",
+        "Help investigate incidents",
+        "Document risks and mitigations",
+        "Improve access and monitoring practices"
+      ],
+      "skills": [
+        "Networking",
+        "Linux",
+        "Threat analysis",
+        "Secure practices"
+      ],
+      "subjects": [
+        "Computer Networks",
+        "Operating Systems",
+        "Cryptography basics"
+      ],
+      "tools": [
+        "Wireshark",
+        "Linux",
+        "Log analysis tools",
+        "Python"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "interests": [
+        "Investigation",
+        "Careful analysis",
+        "Protecting systems"
+      ],
+      "roleIds": [
+        "cybersecurity-analyst"
+      ],
+      "id": "cybersecurity",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Computer Networks, Operating Systems, Cryptography basics."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Networking, Linux, Threat analysis with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Cybersecurity and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Analyze sample logs in a local lab and document an incident timeline without testing real systems."
+        }
+      ]
+    },
+    {
+      "slug": "cloud-computing",
+      "name": "Cloud Computing",
+      "category": "Infrastructure",
+      "description": "Run applications using managed compute, storage and networking.",
+      "overview": "Cloud computing provides infrastructure and services on demand. Engineers choose resources, manage access and keep systems observable while considering reliability and cost.",
+      "work": [
+        "Provision compute and storage",
+        "Configure networks and access",
+        "Deploy application services",
+        "Set up monitoring and backups",
+        "Review reliability and resource use"
+      ],
+      "skills": [
+        "Linux",
+        "Networking",
+        "Infrastructure as code",
+        "Observability"
+      ],
+      "subjects": [
+        "Computer Networks",
+        "Operating Systems",
+        "Distributed Systems"
+      ],
+      "tools": [
+        "Terraform",
+        "Linux",
+        "Cloud consoles",
+        "Docker"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Low",
+      "interests": [
+        "Infrastructure",
+        "Reliable services",
+        "Systems thinking"
+      ],
+      "roleIds": [
+        "cloud-engineer",
+        "devops-engineer"
+      ],
+      "id": "cloud-computing",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Computer Networks, Operating Systems, Distributed Systems."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Linux, Networking, Infrastructure as code with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Cloud Computing and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Deploy a small application in a local container environment and document its cloud deployment design."
+        }
+      ]
+    },
+    {
+      "slug": "devops",
+      "name": "DevOps",
+      "category": "Infrastructure",
+      "description": "Improve how teams build, release and operate software.",
+      "overview": "DevOps connects development and operations through shared practices and automation. The focus is repeatable delivery, feedback and reliable services rather than one particular tool.",
+      "work": [
+        "Automate builds and tests",
+        "Maintain deployment pipelines",
+        "Manage reproducible environments",
+        "Investigate operational issues",
+        "Improve monitoring and recovery"
+      ],
+      "skills": [
+        "Automation",
+        "CI/CD",
+        "Linux",
+        "Monitoring"
+      ],
+      "subjects": [
+        "Operating Systems",
+        "Computer Networks",
+        "Software Engineering"
+      ],
+      "tools": [
+        "Git",
+        "GitHub Actions",
+        "Docker",
+        "Terraform"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Low",
+      "interests": [
+        "Automation",
+        "Removing repetitive work",
+        "Reliable delivery"
+      ],
+      "roleIds": [
+        "devops-engineer",
+        "cloud-engineer"
+      ],
+      "id": "devops",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Operating Systems, Computer Networks, Software Engineering."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Automation, CI/CD, Linux with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within DevOps and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Add automated tests and a reproducible container build to a small application."
+        }
+      ]
+    },
+    {
+      "slug": "vlsi",
+      "name": "VLSI",
+      "category": "Hardware",
+      "description": "Design and verify integrated circuits and semiconductor systems.",
+      "overview": "Very-large-scale integration brings many electronic components together on a chip. Different roles focus on describing logic, checking behavior, arranging physical layout, testability and timing.",
+      "work": [
+        "Describe digital circuits in RTL",
+        "Verify behavior against a specification",
+        "Study synthesis results",
+        "Plan physical implementation",
+        "Analyze timing and test coverage"
+      ],
+      "skills": [
+        "Digital Logic",
+        "Verilog",
+        "CMOS",
+        "Verification"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Electronic Devices",
+        "Computer Architecture",
+        "Circuit Theory"
+      ],
+      "tools": [
+        "Verilog / SystemVerilog",
+        "Icarus Verilog",
+        "GTKWave",
+        "EDA tools"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "interests": [
+        "Logic",
+        "Precise specifications",
+        "Hardware design"
+      ],
+      "roleIds": [
+        "rtl-design-engineer",
+        "design-verification-engineer",
+        "physical-design-engineer",
+        "dft-engineer",
+        "sta-engineer"
+      ],
+      "id": "vlsi",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Digital Electronics, Electronic Devices, Computer Architecture."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Digital Logic, Verilog, CMOS with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within VLSI and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Design and simulate a small FIFO or UART, with a testbench and documented timing assumptions."
+        }
+      ]
+    },
+    {
+      "slug": "embedded-systems",
+      "name": "Embedded Systems",
+      "category": "Electronics",
+      "description": "Combine software and electronics inside dedicated devices.",
+      "overview": "Embedded systems perform specific tasks using processors, sensors and peripheral hardware. Software must work within constraints such as memory, timing and power.",
+      "work": [
+        "Program microcontrollers",
+        "Read sensors and control outputs",
+        "Implement peripheral communication",
+        "Debug hardware/software interactions",
+        "Measure timing and resource use"
+      ],
+      "skills": [
+        "C / C++",
+        "Microcontrollers",
+        "Interfaces",
+        "Debugging"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Computer Organization",
+        "Circuit Theory",
+        "Operating Systems"
+      ],
+      "tools": [
+        "GCC",
+        "GDB",
+        "Logic analyzer",
+        "Microcontroller development boards"
+      ],
+      "programming": "High",
+      "mathematics": "Moderate",
+      "interests": [
+        "Hardware",
+        "Hands-on debugging",
+        "Real-world devices"
+      ],
+      "roleIds": [
+        "embedded-systems-engineer",
+        "firmware-engineer"
+      ],
+      "id": "embedded-systems",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Digital Electronics, Computer Organization, Circuit Theory."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice C / C++, Microcontrollers, Interfaces with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Embedded Systems and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Build a low-voltage sensor logger and explain sampling, error handling and memory use."
+        }
+      ]
+    },
+    {
+      "slug": "internet-of-things",
+      "name": "Internet of Things",
+      "category": "Electronics",
+      "description": "Connect physical devices to applications through networks.",
+      "overview": "IoT combines sensing, embedded software and network services. A complete system considers device reliability, secure communication and what happens when connectivity is lost.",
+      "work": [
+        "Collect sensor readings",
+        "Connect devices to a network",
+        "Exchange telemetry messages",
+        "Build a simple monitoring interface",
+        "Handle outages and access control"
+      ],
+      "skills": [
+        "Sensors",
+        "Networking",
+        "Embedded programming",
+        "Data handling"
+      ],
+      "subjects": [
+        "Computer Networks",
+        "Embedded Systems",
+        "Database Systems"
+      ],
+      "tools": [
+        "ESP32",
+        "MQTT",
+        "Python",
+        "Node-RED"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "interests": [
+        "Connected devices",
+        "Sensing",
+        "System integration"
+      ],
+      "roleIds": [
+        "iot-engineer",
+        "embedded-systems-engineer"
+      ],
+      "id": "internet-of-things",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Computer Networks, Embedded Systems, Database Systems."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Sensors, Networking, Embedded programming with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Internet of Things and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Send simulated or low-voltage sensor data to a local dashboard with an offline retry path."
+        }
+      ]
+    },
+    {
+      "slug": "communication-systems",
+      "name": "Communication Systems",
+      "category": "Electronics",
+      "description": "Study how information travels across wired and wireless links.",
+      "overview": "Communication systems encode, transmit and recover information through imperfect channels. Engineers use models and measurements to understand bandwidth, noise and signal quality.",
+      "work": [
+        "Model modulation and demodulation",
+        "Study channel noise",
+        "Simulate communication links",
+        "Measure error performance",
+        "Document design trade-offs"
+      ],
+      "skills": [
+        "Signals",
+        "Modulation",
+        "Probability",
+        "Simulation"
+      ],
+      "subjects": [
+        "Signals and Systems",
+        "Communication Theory",
+        "Probability",
+        "Electromagnetics"
+      ],
+      "tools": [
+        "Python",
+        "MATLAB / Octave",
+        "GNU Radio",
+        "Oscilloscope"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "interests": [
+        "Wireless systems",
+        "Signals",
+        "Mathematical models"
+      ],
+      "roleIds": [
+        "communication-systems-engineer"
+      ],
+      "id": "communication-systems",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Signals and Systems, Communication Theory, Probability."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Signals, Modulation, Probability with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Communication Systems and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Simulate a basic digital link with added noise and plot bit errors against signal conditions."
+        }
+      ]
+    },
+    {
+      "slug": "signal-processing",
+      "name": "Signal Processing",
+      "category": "Electronics",
+      "description": "Analyze and transform signals such as sound, images and measurements.",
+      "overview": "Signal processing extracts information from sampled data or changes a signal to make it more useful. It combines mathematical models with practical constraints on sampling and computation.",
+      "work": [
+        "Sample and inspect signals",
+        "Design and test filters",
+        "Analyze frequency content",
+        "Compare numerical implementations",
+        "Evaluate distortion and noise"
+      ],
+      "skills": [
+        "DSP",
+        "Fourier analysis",
+        "Python",
+        "Filter design"
+      ],
+      "subjects": [
+        "Signals and Systems",
+        "Linear Algebra",
+        "Calculus",
+        "Probability"
+      ],
+      "tools": [
+        "Python",
+        "SciPy",
+        "MATLAB / Octave",
+        "Jupyter"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "interests": [
+        "Audio and images",
+        "Mathematics",
+        "Measurement"
+      ],
+      "roleIds": [
+        "signal-processing-engineer"
+      ],
+      "id": "signal-processing",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Signals and Systems, Linear Algebra, Calculus."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice DSP, Fourier analysis, Python with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Signal Processing and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Filter a noisy audio sample and compare the waveform and spectrum before and after."
+        }
+      ]
+    },
+    {
+      "slug": "robotics",
+      "name": "Robotics",
+      "category": "Core Engineering",
+      "description": "Integrate sensing, computation and motion in physical systems.",
+      "overview": "Robotics brings together mechanics, electronics, programming and control. Engineers work on parts of a system and verify how they behave together, often starting in simulation.",
+      "work": [
+        "Read and combine sensor data",
+        "Model motion",
+        "Implement control loops",
+        "Plan movements in simulation",
+        "Test safe integration"
+      ],
+      "skills": [
+        "Control systems",
+        "Programming",
+        "Sensors",
+        "Kinematics"
+      ],
+      "subjects": [
+        "Mechanics",
+        "Linear Algebra",
+        "Control Systems",
+        "Embedded Systems"
+      ],
+      "tools": [
+        "ROS 2",
+        "Python",
+        "C++",
+        "Simulation tools"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "interests": [
+        "Motion",
+        "Building machines",
+        "System integration"
+      ],
+      "roleIds": [
+        "robotics-engineer",
+        "embedded-systems-engineer"
+      ],
+      "id": "robotics",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Mechanics, Linear Algebra, Control Systems."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Control systems, Programming, Sensors with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Robotics and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Simulate a mobile robot following waypoints and evaluate tracking error before using hardware."
+        }
+      ]
+    },
+    {
+      "slug": "power-systems",
+      "name": "Power Systems",
+      "category": "Core Engineering",
+      "description": "Study the generation, delivery and dependable use of electrical energy.",
+      "overview": "Power systems connect generation, transmission, distribution and loads. Engineers model these networks and consider protection, reliability and changing operating conditions.",
+      "work": [
+        "Model electrical networks",
+        "Study load flow",
+        "Analyze faults in simulation",
+        "Review protection concepts",
+        "Document operating constraints"
+      ],
+      "skills": [
+        "Circuit analysis",
+        "Power flow",
+        "Protection",
+        "Simulation"
+      ],
+      "subjects": [
+        "Circuit Theory",
+        "Electrical Machines",
+        "Power Systems",
+        "Control Systems"
+      ],
+      "tools": [
+        "MATLAB / Octave",
+        "pandapower",
+        "Power-system simulators",
+        "Spreadsheets"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "interests": [
+        "Electrical networks",
+        "Energy infrastructure",
+        "System reliability"
+      ],
+      "roleIds": [
+        "power-systems-engineer"
+      ],
+      "id": "power-systems",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Circuit Theory, Electrical Machines, Power Systems."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Circuit analysis, Power flow, Protection with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Power Systems and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Model a small teaching network in simulation and study voltage changes as loads vary."
+        }
+      ]
+    },
+    {
+      "slug": "renewable-energy",
+      "name": "Renewable Energy",
+      "category": "Core Engineering",
+      "description": "Explore systems that convert renewable resources into usable energy.",
+      "overview": "Renewable energy engineering considers conversion equipment, resource variability, storage and grid integration. Work can involve electrical, mechanical and environmental questions.",
+      "work": [
+        "Assess energy resource data",
+        "Model system output",
+        "Compare storage options",
+        "Study grid integration",
+        "Evaluate efficiency and operating assumptions"
+      ],
+      "skills": [
+        "Energy systems",
+        "Data analysis",
+        "Power electronics",
+        "System modelling"
+      ],
+      "subjects": [
+        "Physics",
+        "Thermodynamics",
+        "Electrical Machines",
+        "Power Electronics"
+      ],
+      "tools": [
+        "Python",
+        "PV modelling tools",
+        "Spreadsheets",
+        "Simulation tools"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "interests": [
+        "Energy",
+        "Physical systems",
+        "Sustainability"
+      ],
+      "roleIds": [
+        "renewable-energy-engineer",
+        "power-systems-engineer"
+      ],
+      "id": "renewable-energy",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Build a working understanding of Physics, Thermodynamics, Electrical Machines."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Energy systems, Data analysis, Power electronics with small exercises."
+        },
+        {
+          "title": "Specialization",
+          "description": "Choose one area within Renewable Energy and learn its tools through guided experiments."
+        },
+        {
+          "title": "Projects & Practice",
+          "description": "Estimate a small solar system’s energy output from public weather data, stating all assumptions."
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "software-engineer",
+      "slug": "software-engineer",
+      "name": "Software Engineer",
+      "domainSlug": "software-development",
+      "description": "Design, build and maintain software that solves a defined user or business problem.",
+      "skills": [
+        "Programming",
+        "Data structures",
+        "Testing",
+        "Code review"
+      ],
+      "tools": [
+        "Git",
+        "An IDE",
+        "Test frameworks"
+      ],
+      "responsibilities": [
+        "Turn requirements into a design",
+        "Implement and test features",
+        "Diagnose defects",
+        "Review and document changes"
+      ],
+      "projects": [
+        "Build a campus task manager with tests.",
+        "Create a command-line file organizer with a dry-run mode."
+      ],
+      "interviewTopics": [
+        "Data structures",
+        "Algorithms",
+        "Testing",
+        "Design trade-offs"
+      ],
+      "subjects": [
+        "Programming",
+        "Data Structures",
+        "Computer Organization",
+        "Software Engineering"
+      ],
+      "technologies": [
+        "Programming languages",
+        "SQL",
+        "HTTP"
+      ],
+      "programming": "High",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Programming, Data Structures, Computer Organization and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Programming, Data structures, Testing. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Git and An IDE to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a campus task manager with tests. Explain your design and revisit Data structures, Algorithms, Testing."
+        }
+      ]
+    },
+    {
+      "id": "frontend-developer",
+      "slug": "frontend-developer",
+      "name": "Frontend Developer",
+      "domainSlug": "web-development",
+      "description": "Build the browser interfaces that people see and interact with.",
+      "skills": [
+        "HTML & CSS",
+        "JavaScript",
+        "Accessibility",
+        "Responsive design"
+      ],
+      "tools": [
+        "Browser DevTools",
+        "React",
+        "Git"
+      ],
+      "responsibilities": [
+        "Create accessible page components",
+        "Manage interface state",
+        "Integrate APIs and error states",
+        "Test keyboard and mobile use"
+      ],
+      "projects": [
+        "Build an accessible course catalogue.",
+        "Create a responsive timetable with filtering."
+      ],
+      "interviewTopics": [
+        "Semantic HTML",
+        "JavaScript",
+        "CSS layout",
+        "Accessibility"
+      ],
+      "subjects": [
+        "Programming",
+        "Computer Networks",
+        "Database Systems"
+      ],
+      "technologies": [
+        "HTML / CSS",
+        "JavaScript / TypeScript",
+        "HTTP / REST",
+        "SQL"
+      ],
+      "programming": "High",
+      "mathematics": "Low",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Programming, Computer Networks, Database Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice HTML & CSS, JavaScript, Accessibility. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Browser DevTools and React to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build an accessible course catalogue. Explain your design and revisit Semantic HTML, JavaScript, CSS layout."
+        }
+      ]
+    },
+    {
+      "id": "backend-developer",
+      "slug": "backend-developer",
+      "name": "Backend Developer",
+      "domainSlug": "web-development",
+      "description": "Build the server logic and data interfaces behind applications.",
+      "skills": [
+        "APIs",
+        "Databases",
+        "Validation",
+        "Testing"
+      ],
+      "tools": [
+        "Python / Node.js",
+        "PostgreSQL",
+        "Git"
+      ],
+      "responsibilities": [
+        "Design API contracts",
+        "Implement business rules",
+        "Validate input and data access",
+        "Test failures and troubleshoot services"
+      ],
+      "projects": [
+        "Build a library catalogue API with validation.",
+        "Implement a reservation API with concurrency tests."
+      ],
+      "interviewTopics": [
+        "HTTP",
+        "SQL",
+        "Authentication concepts",
+        "Concurrency"
+      ],
+      "subjects": [
+        "Programming",
+        "Computer Networks",
+        "Database Systems"
+      ],
+      "technologies": [
+        "HTML / CSS",
+        "JavaScript / TypeScript",
+        "HTTP / REST",
+        "SQL"
+      ],
+      "programming": "High",
+      "mathematics": "Low",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Programming, Computer Networks, Database Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice APIs, Databases, Validation. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Python / Node.js and PostgreSQL to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a library catalogue API with validation. Explain your design and revisit HTTP, SQL, Authentication concepts."
+        }
+      ]
+    },
+    {
+      "id": "full-stack-developer",
+      "slug": "full-stack-developer",
+      "name": "Full-Stack Developer",
+      "domainSlug": "web-development",
+      "description": "Connect a usable frontend with dependable backend services.",
+      "skills": [
+        "Frontend development",
+        "APIs",
+        "SQL",
+        "Integration testing"
+      ],
+      "tools": [
+        "React",
+        "Node.js / Python",
+        "PostgreSQL"
+      ],
+      "responsibilities": [
+        "Design end-to-end features",
+        "Connect screens to APIs",
+        "Handle data and validation",
+        "Test complete user journeys"
+      ],
+      "projects": [
+        "Build a resource-sharing catalogue with a reviewed submission flow.",
+        "Create a study planner with persistent tasks."
+      ],
+      "interviewTopics": [
+        "HTTP",
+        "Application state",
+        "Database design",
+        "Error handling"
+      ],
+      "subjects": [
+        "Programming",
+        "Computer Networks",
+        "Database Systems"
+      ],
+      "technologies": [
+        "HTML / CSS",
+        "JavaScript / TypeScript",
+        "HTTP / REST",
+        "SQL"
+      ],
+      "programming": "High",
+      "mathematics": "Low",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Programming, Computer Networks, Database Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Frontend development, APIs, SQL. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use React and Node.js / Python to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a resource-sharing catalogue with a reviewed submission flow. Explain your design and revisit HTTP, Application state, Database design."
+        }
+      ]
+    },
+    {
+      "id": "ai-engineer",
+      "slug": "ai-engineer",
+      "name": "AI Engineer",
+      "domainSlug": "ai-machine-learning",
+      "description": "Integrate AI capabilities into applications and evaluate whether they meet a defined need.",
+      "skills": [
+        "Python",
+        "Model integration",
+        "Evaluation",
+        "Data handling"
+      ],
+      "tools": [
+        "PyTorch",
+        "Python",
+        "Evaluation scripts"
+      ],
+      "responsibilities": [
+        "Define measurable application goals",
+        "Integrate model inference",
+        "Evaluate failure cases",
+        "Document limitations and safeguards"
+      ],
+      "projects": [
+        "Build a small image classifier with an error report.",
+        "Compare a rule-based and learned text classifier."
+      ],
+      "interviewTopics": [
+        "Model evaluation",
+        "Data leakage",
+        "Inference",
+        "Responsible data use"
+      ],
+      "subjects": [
+        "Linear Algebra",
+        "Probability",
+        "Calculus",
+        "Algorithms"
+      ],
+      "technologies": [
+        "Neural networks",
+        "Model inference",
+        "Data pipelines"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Linear Algebra, Probability, Calculus and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Python, Model integration, Evaluation. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use PyTorch and Python to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a small image classifier with an error report. Explain your design and revisit Model evaluation, Data leakage, Inference."
+        }
+      ]
+    },
+    {
+      "id": "machine-learning-engineer",
+      "slug": "machine-learning-engineer",
+      "name": "Machine Learning Engineer",
+      "domainSlug": "ai-machine-learning",
+      "description": "Build reproducible pipelines for training, evaluating and serving machine-learning models.",
+      "skills": [
+        "Python",
+        "Training pipelines",
+        "Model evaluation",
+        "Software engineering"
+      ],
+      "tools": [
+        "PyTorch",
+        "scikit-learn",
+        "Git"
+      ],
+      "responsibilities": [
+        "Prepare repeatable training workflows",
+        "Compare models against baselines",
+        "Package inference code",
+        "Monitor model and data changes"
+      ],
+      "projects": [
+        "Create a reproducible classifier training pipeline.",
+        "Serve a small model with input validation and tests."
+      ],
+      "interviewTopics": [
+        "Overfitting",
+        "Data splits",
+        "Feature engineering",
+        "Deployment"
+      ],
+      "subjects": [
+        "Linear Algebra",
+        "Probability",
+        "Calculus",
+        "Algorithms"
+      ],
+      "technologies": [
+        "Neural networks",
+        "Model inference",
+        "Data pipelines"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Linear Algebra, Probability, Calculus and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Python, Training pipelines, Model evaluation. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use PyTorch and scikit-learn to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Create a reproducible classifier training pipeline. Explain your design and revisit Overfitting, Data splits, Feature engineering."
+        }
+      ]
+    },
+    {
+      "id": "data-scientist",
+      "slug": "data-scientist",
+      "name": "Data Scientist",
+      "domainSlug": "data-science",
+      "description": "Investigate questions with data, statistics and clear communication.",
+      "skills": [
+        "Statistics",
+        "Python",
+        "SQL",
+        "Visualization"
+      ],
+      "tools": [
+        "Jupyter",
+        "pandas",
+        "Matplotlib"
+      ],
+      "responsibilities": [
+        "Define an analytical question",
+        "Clean and inspect data",
+        "Evaluate hypotheses and models",
+        "Explain findings and uncertainty"
+      ],
+      "projects": [
+        "Analyze public transport data and document missing values.",
+        "Compare baseline forecasting methods on a public series."
+      ],
+      "interviewTopics": [
+        "Probability",
+        "Statistical inference",
+        "Data cleaning",
+        "Model evaluation"
+      ],
+      "subjects": [
+        "Probability",
+        "Statistics",
+        "Linear Algebra",
+        "Database Systems"
+      ],
+      "technologies": [
+        "SQL",
+        "Statistical models",
+        "Data pipelines"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Probability, Statistics, Linear Algebra and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Statistics, Python, SQL. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Jupyter and pandas to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Analyze public transport data and document missing values. Explain your design and revisit Probability, Statistical inference, Data cleaning."
+        }
+      ]
+    },
+    {
+      "id": "data-engineer",
+      "slug": "data-engineer",
+      "name": "Data Engineer",
+      "domainSlug": "data-science",
+      "description": "Build reliable systems that move, validate and organize data for other teams.",
+      "skills": [
+        "SQL",
+        "Data modelling",
+        "Pipelines",
+        "Python"
+      ],
+      "tools": [
+        "PostgreSQL",
+        "Python",
+        "Workflow tools"
+      ],
+      "responsibilities": [
+        "Design data tables and contracts",
+        "Build ingestion pipelines",
+        "Validate quality and freshness",
+        "Recover failed data processing"
+      ],
+      "projects": [
+        "Build a CSV-to-database pipeline with validation.",
+        "Create an incremental data loader with repeatable runs."
+      ],
+      "interviewTopics": [
+        "SQL joins",
+        "Data modelling",
+        "Idempotency",
+        "Batch processing"
+      ],
+      "subjects": [
+        "Probability",
+        "Statistics",
+        "Linear Algebra",
+        "Database Systems"
+      ],
+      "technologies": [
+        "SQL",
+        "Statistical models",
+        "Data pipelines"
+      ],
+      "programming": "High",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Probability, Statistics, Linear Algebra and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice SQL, Data modelling, Pipelines. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use PostgreSQL and Python to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a CSV-to-database pipeline with validation. Explain your design and revisit SQL joins, Data modelling, Idempotency."
+        }
+      ]
+    },
+    {
+      "id": "cybersecurity-analyst",
+      "slug": "cybersecurity-analyst",
+      "name": "Cybersecurity Analyst",
+      "domainSlug": "cybersecurity",
+      "description": "Review security signals and help teams investigate and reduce risk.",
+      "skills": [
+        "Networking",
+        "Log analysis",
+        "Incident triage",
+        "Documentation"
+      ],
+      "tools": [
+        "Wireshark",
+        "Linux",
+        "Log analysis tools"
+      ],
+      "responsibilities": [
+        "Review alerts and context",
+        "Investigate suspicious activity in authorized systems",
+        "Document evidence and timelines",
+        "Recommend and track mitigations"
+      ],
+      "projects": [
+        "Write an incident report from sample logs.",
+        "Create a security configuration checklist for your own local lab."
+      ],
+      "interviewTopics": [
+        "Network protocols",
+        "Access control",
+        "Incident response",
+        "Threat modelling"
+      ],
+      "subjects": [
+        "Computer Networks",
+        "Operating Systems",
+        "Cryptography basics"
+      ],
+      "technologies": [
+        "TCP/IP",
+        "TLS",
+        "Access-control systems"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Computer Networks, Operating Systems, Cryptography basics and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Networking, Log analysis, Incident triage. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Wireshark and Linux to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Write an incident report from sample logs. Explain your design and revisit Network protocols, Access control, Incident response."
+        }
+      ]
+    },
+    {
+      "id": "cloud-engineer",
+      "slug": "cloud-engineer",
+      "name": "Cloud Engineer",
+      "domainSlug": "cloud-computing",
+      "description": "Configure and maintain infrastructure that hosts applications and data.",
+      "skills": [
+        "Networking",
+        "Linux",
+        "Infrastructure as code",
+        "Monitoring"
+      ],
+      "tools": [
+        "Terraform",
+        "Cloud consoles",
+        "Docker"
+      ],
+      "responsibilities": [
+        "Provision resources repeatably",
+        "Configure access and networking",
+        "Monitor service health",
+        "Review backup and recovery plans"
+      ],
+      "projects": [
+        "Document a cloud deployment using a local container prototype.",
+        "Create a reproducible infrastructure template and explain its costs."
+      ],
+      "interviewTopics": [
+        "Networking",
+        "Identity and access",
+        "Availability",
+        "Backups"
+      ],
+      "subjects": [
+        "Computer Networks",
+        "Operating Systems",
+        "Distributed Systems"
+      ],
+      "technologies": [
+        "Virtual machines",
+        "Containers",
+        "Cloud networking"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Low",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Computer Networks, Operating Systems, Distributed Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Networking, Linux, Infrastructure as code. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Terraform and Cloud consoles to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Document a cloud deployment using a local container prototype. Explain your design and revisit Networking, Identity and access, Availability."
+        }
+      ]
+    },
+    {
+      "id": "devops-engineer",
+      "slug": "devops-engineer",
+      "name": "DevOps Engineer",
+      "domainSlug": "devops",
+      "description": "Improve the automation and reliability of software delivery and operation.",
+      "skills": [
+        "CI/CD",
+        "Scripting",
+        "Containers",
+        "Observability"
+      ],
+      "tools": [
+        "GitHub Actions",
+        "Docker",
+        "Terraform"
+      ],
+      "responsibilities": [
+        "Build automated delivery pipelines",
+        "Maintain repeatable environments",
+        "Investigate failed releases",
+        "Improve monitoring and recovery"
+      ],
+      "projects": [
+        "Add CI tests and a container build to an application.",
+        "Create a deployment and rollback demonstration locally."
+      ],
+      "interviewTopics": [
+        "CI/CD",
+        "Linux",
+        "Containers",
+        "Monitoring"
+      ],
+      "subjects": [
+        "Operating Systems",
+        "Computer Networks",
+        "Software Engineering"
+      ],
+      "technologies": [
+        "Containers",
+        "CI/CD pipelines",
+        "Infrastructure as code"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Low",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Operating Systems, Computer Networks, Software Engineering and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice CI/CD, Scripting, Containers. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use GitHub Actions and Docker to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Add CI tests and a container build to an application. Explain your design and revisit CI/CD, Linux, Containers."
+        }
+      ]
+    },
+    {
+      "id": "rtl-design-engineer",
+      "slug": "rtl-design-engineer",
+      "name": "RTL Design Engineer",
+      "domainSlug": "vlsi",
+      "description": "Describe digital hardware behavior in RTL and check that it meets a specification.",
+      "skills": [
+        "Digital logic",
+        "Verilog",
+        "FSMs",
+        "Synthesis"
+      ],
+      "tools": [
+        "Icarus Verilog",
+        "GTKWave",
+        "Synthesis tools"
+      ],
+      "responsibilities": [
+        "Translate specifications into logic",
+        "Write synthesizable RTL",
+        "Run simulations and lint checks",
+        "Review timing and area trade-offs"
+      ],
+      "projects": [
+        "Design and simulate a synchronous FIFO.",
+        "Implement a UART transmitter with a testbench."
+      ],
+      "interviewTopics": [
+        "FSMs",
+        "Verilog semantics",
+        "Computer architecture",
+        "Clocking"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Electronic Devices",
+        "Computer Architecture",
+        "Circuit Theory"
+      ],
+      "technologies": [
+        "CMOS",
+        "Verilog / SystemVerilog",
+        "RTL",
+        "Standard-cell libraries"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Electronic Devices, Computer Architecture and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Digital logic, Verilog, FSMs. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Icarus Verilog and GTKWave to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Design and simulate a synchronous FIFO. Explain your design and revisit FSMs, Verilog semantics, Computer architecture."
+        }
+      ]
+    },
+    {
+      "id": "design-verification-engineer",
+      "slug": "design-verification-engineer",
+      "name": "Design Verification Engineer",
+      "domainSlug": "vlsi",
+      "description": "Check that hardware designs behave correctly across intended and unexpected conditions.",
+      "skills": [
+        "SystemVerilog",
+        "Testbenches",
+        "Assertions",
+        "Coverage"
+      ],
+      "tools": [
+        "HDL simulators",
+        "GTKWave",
+        "Verification frameworks"
+      ],
+      "responsibilities": [
+        "Turn specifications into a test plan",
+        "Build testbenches and checks",
+        "Debug mismatches and waveforms",
+        "Review functional coverage"
+      ],
+      "projects": [
+        "Verify a FIFO including full and empty boundary cases.",
+        "Create a self-checking testbench for an arithmetic unit."
+      ],
+      "interviewTopics": [
+        "Simulation scheduling",
+        "Assertions",
+        "Coverage",
+        "Constrained testing"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Electronic Devices",
+        "Computer Architecture",
+        "Circuit Theory"
+      ],
+      "technologies": [
+        "CMOS",
+        "Verilog / SystemVerilog",
+        "RTL",
+        "Standard-cell libraries"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Electronic Devices, Computer Architecture and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice SystemVerilog, Testbenches, Assertions. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use HDL simulators and GTKWave to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Verify a FIFO including full and empty boundary cases. Explain your design and revisit Simulation scheduling, Assertions, Coverage."
+        }
+      ]
+    },
+    {
+      "id": "physical-design-engineer",
+      "slug": "physical-design-engineer",
+      "name": "Physical Design Engineer",
+      "domainSlug": "vlsi",
+      "description": "Transform a digital design into a physical chip layout while considering timing, power and area.",
+      "skills": [
+        "CMOS",
+        "Floorplanning",
+        "Placement and routing",
+        "Timing"
+      ],
+      "tools": [
+        "OpenROAD",
+        "Layout viewers",
+        "EDA tools"
+      ],
+      "responsibilities": [
+        "Plan floorplans and constraints",
+        "Run placement and routing",
+        "Inspect timing and congestion",
+        "Review physical rule checks"
+      ],
+      "projects": [
+        "Explore a small open teaching design through a layout flow.",
+        "Compare placement results under two constraints."
+      ],
+      "interviewTopics": [
+        "CMOS",
+        "Clock trees",
+        "Routing",
+        "Timing closure"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Electronic Devices",
+        "Computer Architecture",
+        "Circuit Theory"
+      ],
+      "technologies": [
+        "CMOS",
+        "Verilog / SystemVerilog",
+        "RTL",
+        "Standard-cell libraries"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Electronic Devices, Computer Architecture and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice CMOS, Floorplanning, Placement and routing. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use OpenROAD and Layout viewers to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Explore a small open teaching design through a layout flow. Explain your design and revisit CMOS, Clock trees, Routing."
+        }
+      ]
+    },
+    {
+      "id": "dft-engineer",
+      "slug": "dft-engineer",
+      "name": "DFT Engineer",
+      "domainSlug": "vlsi",
+      "description": "Add and verify design-for-test structures that help detect manufacturing faults.",
+      "skills": [
+        "Digital logic",
+        "Scan concepts",
+        "Fault models",
+        "Test coverage"
+      ],
+      "tools": [
+        "HDL simulators",
+        "ATPG tools",
+        "EDA tools"
+      ],
+      "responsibilities": [
+        "Plan testability features",
+        "Review scan architecture",
+        "Analyze fault coverage",
+        "Verify test modes and document results"
+      ],
+      "projects": [
+        "Simulate a simple scan-chain teaching design.",
+        "Compare detectable faults in a small combinational circuit."
+      ],
+      "interviewTopics": [
+        "Scan chains",
+        "Fault models",
+        "ATPG concepts",
+        "Test coverage"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Electronic Devices",
+        "Computer Architecture",
+        "Circuit Theory"
+      ],
+      "technologies": [
+        "CMOS",
+        "Verilog / SystemVerilog",
+        "RTL",
+        "Standard-cell libraries"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Electronic Devices, Computer Architecture and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Digital logic, Scan concepts, Fault models. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use HDL simulators and ATPG tools to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Simulate a simple scan-chain teaching design. Explain your design and revisit Scan chains, Fault models, ATPG concepts."
+        }
+      ]
+    },
+    {
+      "id": "sta-engineer",
+      "slug": "sta-engineer",
+      "name": "STA Engineer",
+      "domainSlug": "vlsi",
+      "description": "Analyze whether signal paths meet timing requirements without simulating every input pattern.",
+      "skills": [
+        "Timing analysis",
+        "Constraints",
+        "Digital logic",
+        "Scripting"
+      ],
+      "tools": [
+        "OpenSTA",
+        "Timing report viewers",
+        "Tcl"
+      ],
+      "responsibilities": [
+        "Define and review timing constraints",
+        "Inspect setup and hold paths",
+        "Identify constraint errors",
+        "Work with design teams on timing fixes"
+      ],
+      "projects": [
+        "Analyze timing reports for a small teaching design.",
+        "Explain how clock constraints change reported slack."
+      ],
+      "interviewTopics": [
+        "Setup and hold",
+        "Clock uncertainty",
+        "Timing constraints",
+        "Critical paths"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Electronic Devices",
+        "Computer Architecture",
+        "Circuit Theory"
+      ],
+      "technologies": [
+        "CMOS",
+        "Verilog / SystemVerilog",
+        "RTL",
+        "Standard-cell libraries"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Electronic Devices, Computer Architecture and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Timing analysis, Constraints, Digital logic. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use OpenSTA and Timing report viewers to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Analyze timing reports for a small teaching design. Explain your design and revisit Setup and hold, Clock uncertainty, Timing constraints."
+        }
+      ]
+    },
+    {
+      "id": "embedded-systems-engineer",
+      "slug": "embedded-systems-engineer",
+      "name": "Embedded Systems Engineer",
+      "domainSlug": "embedded-systems",
+      "description": "Integrate hardware and software for devices with specific timing and resource needs.",
+      "skills": [
+        "C / C++",
+        "Microcontrollers",
+        "Interfaces",
+        "Debugging"
+      ],
+      "tools": [
+        "GCC",
+        "GDB",
+        "Logic analyzer"
+      ],
+      "responsibilities": [
+        "Integrate sensors and peripherals",
+        "Implement device behavior",
+        "Debug hardware/software boundaries",
+        "Measure timing and resource use"
+      ],
+      "projects": [
+        "Build a low-voltage temperature logger.",
+        "Simulate a sensor-driven controller with error recovery."
+      ],
+      "interviewTopics": [
+        "Interrupts",
+        "Memory",
+        "Serial interfaces",
+        "Real-time concepts"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Computer Organization",
+        "Circuit Theory",
+        "Operating Systems"
+      ],
+      "technologies": [
+        "Microcontrollers",
+        "UART / SPI / I2C",
+        "Real-time operating systems"
+      ],
+      "programming": "High",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Computer Organization, Circuit Theory and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice C / C++, Microcontrollers, Interfaces. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use GCC and GDB to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a low-voltage temperature logger. Explain your design and revisit Interrupts, Memory, Serial interfaces."
+        }
+      ]
+    },
+    {
+      "id": "firmware-engineer",
+      "slug": "firmware-engineer",
+      "name": "Firmware Engineer",
+      "domainSlug": "embedded-systems",
+      "description": "Write the low-level software that starts and controls electronic hardware.",
+      "skills": [
+        "C",
+        "Registers",
+        "Interrupts",
+        "Peripheral drivers"
+      ],
+      "tools": [
+        "GCC",
+        "GDB",
+        "Hardware debugger"
+      ],
+      "responsibilities": [
+        "Implement initialization and drivers",
+        "Handle interrupts and device state",
+        "Debug low-level failures",
+        "Test memory and timing constraints"
+      ],
+      "projects": [
+        "Write a timer-driven LED state machine on a teaching board.",
+        "Create a serial command parser with bounded buffers."
+      ],
+      "interviewTopics": [
+        "Pointers",
+        "Volatile",
+        "Interrupts",
+        "Memory layout"
+      ],
+      "subjects": [
+        "Digital Electronics",
+        "Computer Organization",
+        "Circuit Theory",
+        "Operating Systems"
+      ],
+      "technologies": [
+        "Microcontrollers",
+        "UART / SPI / I2C",
+        "Real-time operating systems"
+      ],
+      "programming": "High",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Digital Electronics, Computer Organization, Circuit Theory and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice C, Registers, Interrupts. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use GCC and GDB to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Write a timer-driven LED state machine on a teaching board. Explain your design and revisit Pointers, Volatile, Interrupts."
+        }
+      ]
+    },
+    {
+      "id": "iot-engineer",
+      "slug": "iot-engineer",
+      "name": "IoT Engineer",
+      "domainSlug": "internet-of-things",
+      "description": "Connect embedded devices, networks and services into a useful monitoring or control system.",
+      "skills": [
+        "Embedded programming",
+        "MQTT",
+        "Networking",
+        "Integration"
+      ],
+      "tools": [
+        "ESP32",
+        "MQTT broker",
+        "Node-RED"
+      ],
+      "responsibilities": [
+        "Collect and validate telemetry",
+        "Implement device communication",
+        "Handle offline operation",
+        "Review device access and update design"
+      ],
+      "projects": [
+        "Build a local sensor dashboard with reconnect handling.",
+        "Simulate a fleet of devices reporting measurements."
+      ],
+      "interviewTopics": [
+        "Network protocols",
+        "Telemetry",
+        "Device identity",
+        "Offline behavior"
+      ],
+      "subjects": [
+        "Computer Networks",
+        "Embedded Systems",
+        "Database Systems"
+      ],
+      "technologies": [
+        "MQTT",
+        "Wi-Fi",
+        "Microcontrollers"
+      ],
+      "programming": "Moderate",
+      "mathematics": "Moderate",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Computer Networks, Embedded Systems, Database Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Embedded programming, MQTT, Networking. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use ESP32 and MQTT broker to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Build a local sensor dashboard with reconnect handling. Explain your design and revisit Network protocols, Telemetry, Device identity."
+        }
+      ]
+    },
+    {
+      "id": "communication-systems-engineer",
+      "slug": "communication-systems-engineer",
+      "name": "Communication Systems Engineer",
+      "domainSlug": "communication-systems",
+      "description": "Model and assess systems that transmit information over communication channels.",
+      "skills": [
+        "Modulation",
+        "Signals",
+        "Probability",
+        "Simulation"
+      ],
+      "tools": [
+        "Python",
+        "MATLAB / Octave",
+        "GNU Radio"
+      ],
+      "responsibilities": [
+        "Model transmitters and receivers",
+        "Study channel impairments",
+        "Evaluate link performance",
+        "Document system trade-offs"
+      ],
+      "projects": [
+        "Simulate BPSK over a noisy channel.",
+        "Compare two modulation schemes in a teaching simulation."
+      ],
+      "interviewTopics": [
+        "Modulation",
+        "Noise",
+        "Bandwidth",
+        "Error probability"
+      ],
+      "subjects": [
+        "Signals and Systems",
+        "Communication Theory",
+        "Probability",
+        "Electromagnetics"
+      ],
+      "technologies": [
+        "Digital modulation",
+        "Channel coding",
+        "Software-defined radio"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Signals and Systems, Communication Theory, Probability and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Modulation, Signals, Probability. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Python and MATLAB / Octave to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Simulate BPSK over a noisy channel. Explain your design and revisit Modulation, Noise, Bandwidth."
+        }
+      ]
+    },
+    {
+      "id": "signal-processing-engineer",
+      "slug": "signal-processing-engineer",
+      "name": "Signal Processing Engineer",
+      "domainSlug": "signal-processing",
+      "description": "Develop and evaluate algorithms that extract information from signals.",
+      "skills": [
+        "DSP",
+        "Filter design",
+        "Fourier analysis",
+        "Numerical methods"
+      ],
+      "tools": [
+        "SciPy",
+        "Python",
+        "MATLAB / Octave"
+      ],
+      "responsibilities": [
+        "Inspect sampled signals",
+        "Implement filtering algorithms",
+        "Compare numerical performance",
+        "Validate outputs against reference cases"
+      ],
+      "projects": [
+        "Remove noise from an audio recording.",
+        "Detect simple events in a public sensor dataset."
+      ],
+      "interviewTopics": [
+        "Sampling",
+        "Aliasing",
+        "Fourier transform",
+        "Digital filters"
+      ],
+      "subjects": [
+        "Signals and Systems",
+        "Linear Algebra",
+        "Calculus",
+        "Probability"
+      ],
+      "technologies": [
+        "Digital filters",
+        "FFT",
+        "Sampled-data systems"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Signals and Systems, Linear Algebra, Calculus and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice DSP, Filter design, Fourier analysis. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use SciPy and Python to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Remove noise from an audio recording. Explain your design and revisit Sampling, Aliasing, Fourier transform."
+        }
+      ]
+    },
+    {
+      "id": "robotics-engineer",
+      "slug": "robotics-engineer",
+      "name": "Robotics Engineer",
+      "domainSlug": "robotics",
+      "description": "Integrate sensing, software and control so a robot can perform a defined task.",
+      "skills": [
+        "Control",
+        "Kinematics",
+        "C++ / Python",
+        "System integration"
+      ],
+      "tools": [
+        "ROS 2",
+        "Simulation tools",
+        "Python"
+      ],
+      "responsibilities": [
+        "Model motion and sensors",
+        "Implement control and planning",
+        "Integrate subsystems",
+        "Evaluate behavior in simulation before hardware"
+      ],
+      "projects": [
+        "Simulate a robot following a path.",
+        "Build a virtual obstacle-detection and stopping demo."
+      ],
+      "interviewTopics": [
+        "Coordinate frames",
+        "Feedback control",
+        "Kinematics",
+        "Sensor uncertainty"
+      ],
+      "subjects": [
+        "Mechanics",
+        "Linear Algebra",
+        "Control Systems",
+        "Embedded Systems"
+      ],
+      "technologies": [
+        "Robot middleware",
+        "Feedback control",
+        "Sensor interfaces"
+      ],
+      "programming": "High",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Mechanics, Linear Algebra, Control Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Control, Kinematics, C++ / Python. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use ROS 2 and Simulation tools to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Simulate a robot following a path. Explain your design and revisit Coordinate frames, Feedback control, Kinematics."
+        }
+      ]
+    },
+    {
+      "id": "power-systems-engineer",
+      "slug": "power-systems-engineer",
+      "name": "Power Systems Engineer",
+      "domainSlug": "power-systems",
+      "description": "Model electrical networks and study their operation, reliability and protection.",
+      "skills": [
+        "Circuit analysis",
+        "Load flow",
+        "Protection",
+        "Simulation"
+      ],
+      "tools": [
+        "pandapower",
+        "MATLAB / Octave",
+        "Power-system simulators"
+      ],
+      "responsibilities": [
+        "Build network models",
+        "Study loading and faults in simulation",
+        "Review protection assumptions",
+        "Document operating limits"
+      ],
+      "projects": [
+        "Simulate load changes in a small teaching network.",
+        "Compare voltage profiles with different modelled generation inputs."
+      ],
+      "interviewTopics": [
+        "Three-phase systems",
+        "Load flow",
+        "Fault analysis",
+        "Protection"
+      ],
+      "subjects": [
+        "Circuit Theory",
+        "Electrical Machines",
+        "Power Systems",
+        "Control Systems"
+      ],
+      "technologies": [
+        "Protection relays",
+        "Power converters",
+        "Grid modelling"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Circuit Theory, Electrical Machines, Power Systems and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Circuit analysis, Load flow, Protection. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use pandapower and MATLAB / Octave to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Simulate load changes in a small teaching network. Explain your design and revisit Three-phase systems, Load flow, Fault analysis."
+        }
+      ]
+    },
+    {
+      "id": "renewable-energy-engineer",
+      "slug": "renewable-energy-engineer",
+      "name": "Renewable Energy Engineer",
+      "domainSlug": "renewable-energy",
+      "description": "Evaluate renewable energy systems and how they connect to loads, storage or the grid.",
+      "skills": [
+        "Energy modelling",
+        "Power electronics",
+        "Data analysis",
+        "System design"
+      ],
+      "tools": [
+        "Python",
+        "PV modelling tools",
+        "Spreadsheets"
+      ],
+      "responsibilities": [
+        "Analyze resource and demand data",
+        "Estimate system output",
+        "Compare storage and conversion choices",
+        "Document assumptions and constraints"
+      ],
+      "projects": [
+        "Estimate solar energy output using public weather data.",
+        "Model a small battery storage schedule for a sample load."
+      ],
+      "interviewTopics": [
+        "Energy conversion",
+        "Efficiency",
+        "Storage",
+        "Grid integration"
+      ],
+      "subjects": [
+        "Physics",
+        "Thermodynamics",
+        "Electrical Machines",
+        "Power Electronics"
+      ],
+      "technologies": [
+        "Solar PV",
+        "Energy storage",
+        "Power converters"
+      ],
+      "programming": "Moderate",
+      "mathematics": "High",
+      "roadmap": [
+        {
+          "title": "Foundations",
+          "description": "Study Physics, Thermodynamics, Electrical Machines and connect each idea to a small example."
+        },
+        {
+          "title": "Core Skills",
+          "description": "Practice Energy modelling, Power electronics, Data analysis. Keep notes on mistakes and trade-offs."
+        },
+        {
+          "title": "Tools",
+          "description": "Use Python and PV modelling tools to build, inspect and test a small implementation."
+        },
+        {
+          "title": "Projects & Interview Preparation",
+          "description": "Try this project: Estimate solar energy output using public weather data. Explain your design and revisit Energy conversion, Efficiency, Storage."
+        }
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "id": "cse",
+      "shortName": "CSE",
+      "name": "Computer Science & Engineering",
+      "overview": "Computer Science & Engineering explores computation, software and the systems that store, process and communicate information.",
+      "areas": [
+        "Programming",
+        "Algorithms",
+        "Computer systems",
+        "Data",
+        "Networks"
+      ],
+      "domainSlugs": [
+        "software-development",
+        "ai-machine-learning",
+        "data-science",
+        "cybersecurity",
+        "cloud-computing",
+        "devops"
+      ],
+      "roleIds": [
+        "software-engineer",
+        "frontend-developer",
+        "data-engineer",
+        "machine-learning-engineer"
+      ]
+    },
+    {
+      "id": "ece",
+      "shortName": "ECE",
+      "name": "Electronics & Communication Engineering",
+      "overview": "Electronics & Communication Engineering connects electronic devices, circuits and the transmission and processing of information.",
+      "areas": [
+        "Electronics",
+        "Communication",
+        "VLSI",
+        "Embedded Systems",
+        "Signal Processing",
+        "IoT"
+      ],
+      "domainSlugs": [
+        "vlsi",
+        "embedded-systems",
+        "internet-of-things",
+        "communication-systems",
+        "signal-processing"
+      ],
+      "roleIds": [
+        "rtl-design-engineer",
+        "design-verification-engineer",
+        "firmware-engineer",
+        "communication-systems-engineer"
+      ]
+    },
+    {
+      "id": "eee",
+      "shortName": "EEE",
+      "name": "Electrical & Electronics Engineering",
+      "overview": "Electrical & Electronics Engineering explores electrical energy, machines, circuits and the control of physical systems.",
+      "areas": [
+        "Electrical machines",
+        "Power networks",
+        "Power electronics",
+        "Control systems"
+      ],
+      "domainSlugs": [
+        "power-systems",
+        "renewable-energy",
+        "embedded-systems",
+        "robotics"
+      ],
+      "roleIds": [
+        "power-systems-engineer",
+        "renewable-energy-engineer",
+        "embedded-systems-engineer"
+      ]
+    },
+    {
+      "id": "mechanical",
+      "shortName": "ME",
+      "name": "Mechanical Engineering",
+      "overview": "Mechanical Engineering studies motion, materials, energy and the design of physical machines. This short guide highlights a few connections to the current career catalogue.",
+      "areas": [
+        "Mechanics",
+        "Manufacturing",
+        "Thermal systems",
+        "Machine design"
+      ],
+      "domainSlugs": [
+        "robotics",
+        "renewable-energy"
+      ],
+      "roleIds": [
+        "robotics-engineer",
+        "renewable-energy-engineer"
+      ]
+    },
+    {
+      "id": "civil",
+      "shortName": "CE",
+      "name": "Civil Engineering",
+      "overview": "Civil Engineering focuses on the built environment, including structures, transportation, water and infrastructure. The links here show adjacent paths in the current catalogue, not a complete list of civil careers.",
+      "areas": [
+        "Structures",
+        "Transportation",
+        "Water resources",
+        "Construction"
+      ],
+      "domainSlugs": [
+        "renewable-energy"
+      ],
+      "roleIds": [
+        "renewable-energy-engineer"
+      ]
+    },
+    {
+      "id": "chemical",
+      "shortName": "CHE",
+      "name": "Chemical Engineering",
+      "overview": "Chemical Engineering studies how materials and energy are transformed through processes. The current catalogue offers a few adjacent paths while dedicated process-engineering guides are prepared.",
+      "areas": [
+        "Process design",
+        "Thermodynamics",
+        "Transport processes",
+        "Materials"
+      ],
+      "domainSlugs": [
+        "renewable-energy",
+        "data-science"
+      ],
+      "roleIds": [
+        "renewable-energy-engineer",
+        "data-scientist"
+      ]
+    }
+  ],
+  "site": {
+    "about": {
+      "title": "About Pivot Sols",
+      "content_json": {
+        "eyebrow": "Built around student needs",
+        "intro": "Pivot Sols is being built for RGUKT Nuzvid students to make academic resources, practical learning and career guidance easier to find.",
+        "why_title": "Why Pivot Sols?",
+        "why": [
+          {
+            "title": "A place for academic resources",
+            "description": "Useful information is often scattered across messages, folders and websites. A subject-wise collection gives students a clearer starting point."
+          },
+          {
+            "title": "Prepare for practical learning",
+            "description": "Experiment guides help students understand the purpose, equipment and steps before entering the lab."
+          },
+          {
+            "title": "Make career options understandable",
+            "description": "First-year students can explore what domains and roles involve, connect them to subjects and try manageable projects."
+          },
+          {
+            "title": "Keep the next step clear",
+            "description": "Search, branch guides and linked resources help students move from a question to something useful."
+          }
+        ],
+        "goal_title": "Our goal",
+        "goal": "Turn common student problems into clear, useful solutions."
+      }
+    },
+    "explore": {
+      "title": "Explore Pivot Sols",
+      "content_json": {
+        "description": "Discover academic resources, labs and career paths from one place.",
+        "academic_title": "Academic",
+        "careers_title": "Careers",
+        "tools_title": "Student Tools",
+        "cards": [
+          {
+            "path": "/resources/books",
+            "title": "Reference Books",
+            "description": "Find subject-wise books and study references for your coursework."
+          },
+          {
+            "path": "/resources/labs",
+            "title": "Lab Videos",
+            "description": "Watch practical demonstrations and understand experiments before entering the lab."
+          },
+          {
+            "path": "/careers/domains",
+            "title": "Career Domains",
+            "description": "Explore technical fields and understand what each career path actually involves."
+          },
+          {
+            "path": "/careers/jobs",
+            "title": "Career Jobs",
+            "description": "Discover roles, required skills and possible career paths after graduation."
+          }
+        ]
+      }
+    }
+  }
+}

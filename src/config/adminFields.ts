@@ -1,0 +1,30 @@
+import type {AdminResource} from '../types/admin'
+import {careerCategories} from '../types/careers'
+
+export interface AdminField {key:string;label:string;type?:'text'|'textarea'|'number'|'select'|'list'|'roadmap'|'relations';options?:readonly string[];relation?:AdminResource;required?:boolean;hint?:string;max?:number}
+export interface AdminSection {resource:AdminResource;path:string;title:string;singular:string;group:string;fields:readonly AdminField[]}
+const identity:AdminField[]=[{key:'name',label:'Name',required:true,max:200},{key:'slug',label:'URL slug',required:true,max:100,hint:'Lowercase words separated by hyphens. Changing this changes the public link.'}]
+const description:AdminField={key:'description',label:'Description',type:'textarea'}
+const levels:AdminField[]=[{key:'programming_level',label:'Programming level',type:'select',options:['Low','Moderate','High']},{key:'mathematics_level',label:'Mathematics level',type:'select',options:['Low','Moderate','High']}]
+const list=(key:string,label:string):AdminField=>({key,label,type:'list'})
+export const adminSections:readonly AdminSection[]=[
+  {resource:'branches',path:'branches',title:'Branches',singular:'Branch',group:'Academics',fields:[...identity,{key:'short_name',label:'Short name',max:30},description,list('areas','Major areas'),{key:'domain_ids',label:'Related career domains',type:'relations',relation:'career-domains'},{key:'role_ids',label:'Related career roles',type:'relations',relation:'career-roles'}]},
+  {resource:'semesters',path:'semesters',title:'Semesters',singular:'Semester',group:'Academics',fields:[{key:'academic_level',label:'Academic level',type:'select',options:['P1','E1']},{key:'branch_id',label:'Branch',type:'select',relation:'branches'},{key:'name',label:'Name',required:true,max:100},{key:'number',label:'Semester number',type:'number',required:true,max:12}]},
+  {resource:'subjects',path:'subjects',title:'Subjects',singular:'Subject',group:'Academics',fields:[...identity,{key:'code',label:'Subject code',max:50},description]},
+  {resource:'books',path:'books',title:'Reference Books',singular:'Book',group:'Academics',fields:[{key:'title',label:'Title',required:true},list('authors','Authors'),{key:'category',label:'Category',max:100},{key:'edition',label:'Edition',max:100},{key:'publisher',label:'Publisher',max:200},description,{key:'resource_url',label:'Resource URL',max:2048,hint:'Use a lawful HTTPS publisher, library or open-access link.'},{key:'availability',label:'Availability',type:'select',options:['coming_soon','available']}]},
+  {resource:'labs',path:'labs',title:'Labs',singular:'Lab',group:'Labs',fields:[...identity,description]},
+  {resource:'experiments',path:'experiments',title:'Experiments',singular:'Experiment',group:'Labs',fields:[{key:'title',label:'Title',required:true},{key:'slug',label:'URL slug',required:true,max:100},{key:'experiment_number',label:'Experiment number',type:'number',max:10000},{key:'objective',label:'Objective',type:'textarea'},list('apparatus','Apparatus'),{key:'theory',label:'Theory',type:'textarea'},list('procedure','Procedure'),{key:'expected_result',label:'Expected result',type:'textarea'},list('precautions','Precautions'),{key:'video_type',label:'Video type',type:'select',options:['','youtube','mp4','external']},{key:'video_url',label:'Video URL',max:2048,hint:'Paste a normal YouTube watch/share URL, an HTTPS MP4, or an approved external link.'},{key:'duration',label:'Duration',max:50}]},
+  {resource:'career-domains',path:'career-domains',title:'Career Domains',singular:'Career Domain',group:'Careers',fields:[...identity,{key:'short_name',label:'Short name',max:50},{key:'category',label:'Category',type:'select',options:careerCategories},{key:'summary',label:'Short summary',type:'textarea',max:1000},description,list('what_you_do',"What you'll work on"),list('core_skills','Core skills'),list('supporting_skills','Supporting skills'),list('useful_subjects','Useful subjects'),list('tools','Tools'),list('technologies','Technologies'),list('suitable_for','Who may enjoy this?'),list('challenges','Challenges'),...levels,{key:'roadmap',label:'Learning roadmap',type:'roadmap'},{key:'related_role_ids',label:'Additional related roles',type:'relations',relation:'career-roles',hint:'Roles whose primary domain is this domain are also included automatically.'}]},
+  {resource:'career-roles',path:'career-jobs',title:'Career Jobs',singular:'Career Role',group:'Careers',fields:[...identity,{key:'domain_id',label:'Career domain',type:'select',relation:'career-domains',required:true},{key:'summary',label:'Short summary',type:'textarea',max:1000},description,list('responsibilities','Responsibilities'),list('skills','Skills'),list('useful_subjects','Useful subjects'),list('tools','Tools'),list('technologies','Technologies'),...levels,{key:'roadmap',label:'Learning roadmap',type:'roadmap'},list('interview_topics','Interview topics'),list('example_projects','Example projects')]},
+  {resource:'site-content',path:'content',title:'Site Content',singular:'Site Content',group:'Content',fields:[{key:'key',label:'Page',type:'select',options:['about','explore']},{key:'title',label:'Page title',required:true,max:200}]},
+]
+export function newAdminValues(section:AdminSection):Record<string,unknown>{
+  const values:Record<string,unknown>={status:'draft',sort_order:0}
+  for(const field of section.fields)values[field.key]=['list','roadmap','relations'].includes(field.type??'')?[]:field.type==='number'?null:field.options?.[0]??''
+  if(section.resource==='books'){values.category='Reference Book';values.availability='coming_soon';values.subject_id=''}
+  if(section.resource==='subjects'||section.resource==='labs')values.semester_id=''
+  if(section.resource==='experiments')values.lab_id=''
+  if(section.resource==='semesters')values.number=1
+  if(section.resource==='site-content')values.content_json={}
+  return values
+}

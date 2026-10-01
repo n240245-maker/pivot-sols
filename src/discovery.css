@@ -1,0 +1,75 @@
+/* Careers and discovery extend the existing Pivot Sols resource surfaces. */
+.discovery-page { min-width: 0; max-width: 1200px; margin-inline: auto; }
+.discovery-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.discovery-card { display: flex; flex-direction: column; min-width: 0; gap: 16px; padding: 26px; border: 1px solid var(--border); border-radius: 21px; background: radial-gradient(ellipse at top left,#a58cce0a,transparent 85%),#ffffff04; transition: border-color .2s,transform .2s; }
+.discovery-card-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.discovery-card-top > span:last-child,.discovery-category { color: #b9a7cf; font-size: 11px; }
+.discovery-card h3 { font-size: 24px; line-height: 1.3; letter-spacing: -.6px; margin: 0; overflow-wrap: anywhere; }
+.discovery-card p { color: var(--foreground-secondary); font-size: 13px; line-height: 1.8; margin: 0; overflow-wrap: anywhere; }
+.discovery-card-action { display: flex; gap: 9px; align-items: center; justify-content: space-between; padding-top: 12px; margin-top: auto; color: #d5c3ed; font-size: 12px; }
+.discovery-card-action svg { flex-shrink: 0; }
+.discovery-chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.discovery-chips li { padding: 7px 10px; border: 1px solid #ffffff0f; border-radius: 8px; background: #ffffff03; color: #c6bdcf; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; max-width: 100%; }
+.discovery-levels { display: flex; flex-wrap: wrap; gap: 16px 30px; margin: 0; }
+.discovery-levels dt { font-size: 11px; color: var(--muted); margin-bottom: 7px; }
+.discovery-levels dd { font-size: 13px; color: #d3c6e3; margin: 0; }
+.discovery-filters { padding: 0; margin: 0 0 20px; border: 0; min-width: 0; }
+.discovery-filters legend { font-size: 12px; color: var(--foreground-secondary); margin-bottom: 12px; }
+.discovery-filters > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.discovery-filters button { border: 1px solid var(--border); padding: 10px 14px; min-height: 42px; border-radius: 10px; background: #ffffff03; color: var(--foreground-secondary); font: inherit; font-size: 12px; }
+.discovery-filters button[aria-pressed=true] { background: #bba4e518; border-color: #bba4e56b; color: #e0d2f0; }
+.discovery-result-count,.discovery-search-hint { font-size: 12px; color: var(--muted); line-height: 1.8; margin: 18px 0; }
+.discovery-details { display: grid; gap: 35px; }
+.discovery-section { min-width: 0; scroll-margin-top: 100px; }
+.discovery-section h2 { font-size: 25px; letter-spacing: -.6px; line-height: 1.35; margin: 0 0 20px; overflow-wrap: anywhere; }
+.discovery-section h3 { line-height: 1.4; overflow-wrap: anywhere; }
+.discovery-section > p,.discovery-detail-grid p { max-width: 76ch; font-size: 14px; line-height: 1.9; color: var(--foreground-secondary); margin: 0 0 18px; }
+.discovery-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.discovery-detail-grid > * { min-width: 0; padding: 23px; border: 1px solid var(--border); border-radius: 17px; background: #ffffff03; }
+.discovery-detail-grid h2 { font-size: 20px; }
+.discovery-detail-grid h3 { font-size: 20px; margin: 0 0 15px; }
+.discovery-list { margin: 0; padding-left: 22px; max-width: 80ch; }
+.discovery-list li { color: var(--foreground-secondary); font-size: 14px; line-height: 1.9; margin-block: 9px; padding-left: 5px; overflow-wrap: anywhere; }
+.discovery-roadmap { list-style: none; margin: 0; padding: 0; display: grid; gap: 13px; }
+.discovery-roadmap li { display: flex; align-items: flex-start; gap: 21px; padding: 24px; border: 1px solid var(--border); border-radius: 17px; background: #ffffff03; }
+.discovery-roadmap li > span { color: #ac95ca; font-size: 13px; padding-top: 3px; }
+.discovery-roadmap li > div { min-width: 0; }
+.discovery-roadmap h3 { font-size: 19px; margin: 0 0 9px; }
+.discovery-roadmap p { font-size: 13px; line-height: 1.8; color: var(--foreground-secondary); margin: 0; max-width: 80ch; overflow-wrap: anywhere; }
+.discovery-text-link { color: #d5c3ed; text-decoration: underline; text-underline-offset: 5px; font-size: 16px; }
+.discovery-inline-links { display: flex; flex-wrap: wrap; gap: 12px; }
+.discovery-inline-links a { border: 1px solid #bba4e530; border-radius: 11px; padding: 14px 18px; background: #bba4e50a; color: #dfceef; font-size: 13px; overflow-wrap: anywhere; }
+.discovery-tools { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 15px; }
+.discovery-tools > a { display: flex; flex-direction: column; gap: 14px; padding: 23px; border: 1px solid var(--border); border-radius: 18px; background: #ffffff04; }
+.discovery-tools svg { color: #c2aedb; }
+.discovery-tools strong { font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+.discovery-tools span { color: var(--muted); font-size: 12px; line-height: 1.8; }
+.local-search-results ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+.local-search-results li { min-width: 0; }
+.local-search-results a { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 17px; border: 1px solid var(--border); border-radius: 13px; background: #ffffff03; }
+.local-search-results a > span { min-width: 0; display: grid; gap: 7px; }
+.local-result-type { font-size: 10px; color: #bba4d7; }
+.local-search-results strong { font-size: 14px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.local-search-results small { color: var(--muted); font-size: 10px; line-height: 1.6; overflow-wrap: anywhere; }
+.local-search-results svg { color: #baa6d3; flex-shrink: 0; }
+.contact-success { color: #bfd8c4; line-height: 1.7; font-size: 13px; padding: 13px; border: 1px solid #bfd8c42e; border-radius: 10px; }
+.pivot-contact-actions .button { flex-shrink: 0; }
+.pivot-editorial-page .discovery-section { margin-block: 35px; }
+@media (hover:hover) and (pointer:fine) { .discovery-card:hover { border-color: #bba4e548; transform: translateY(-2px); } .local-search-results a:hover,.discovery-tools a:hover { border-color: #bba4e548; } }
+@media (min-width:1440px) { .discovery-grid:not(.discovery-two) { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width:767px) { .discovery-tools { grid-template-columns: minmax(0,1fr); } }
+@media (max-width:639px) {
+  .discovery-grid,.discovery-detail-grid { grid-template-columns: minmax(0,1fr); gap: 14px; }
+  .discovery-card { padding: 22px; }
+  .discovery-card h3 { font-size: 22px; }
+  .discovery-filters button { padding: 10px 12px; font-size: 11px; }
+  .discovery-details { gap: 28px; }
+  .discovery-section h2 { font-size: 23px; }
+  .discovery-roadmap li { padding: 20px; gap: 14px; }
+  .discovery-roadmap h3 { font-size: 18px; }
+  .discovery-detail-grid > * { padding: 20px; }
+  .local-search-results a { padding: 14px; }
+}
+@media (prefers-reduced-motion:reduce) { .discovery-card { transition: none; } .discovery-card:hover { transform: none; } }
+.content-state { padding: 64px 24px; text-align: center; color: var(--foreground-secondary); }
+.content-state p { margin: 0 0 24px; }
