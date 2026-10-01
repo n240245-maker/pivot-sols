@@ -17,3 +17,6 @@ coverage/
 deployment-private/
 *.dump
 *.backup
+
+.vercel/
+/.env.local
