@@ -88,6 +88,10 @@ test('profile identity stays read-only while contact exposes a prefilled working
   assert.match(contact,/<button[^>]*type="submit"[^>]*>Send message/)
   assert.ok(contact.includes(`value="${fixture.email}"`)); assert.ok(contact.includes(`value="${fixture.name}"`))
   assert.ok(contact.includes('minLength="10"'));assert.ok(!contact.includes('Coming soon'))
+  const noEmail=render(createElement(ContactContent,{profile:{...fixture,email:undefined}}),'/contact')
+  assert.ok(noEmail.includes('id="contact-email"')&&noEmail.includes('value=""'))
+  const noEmailProfile=render(createElement(ProfileContent,{profile:{...fixture,email:undefined},logoutAction:createElement('button',null,'Log Out')}),'/profile')
+  assert.ok(!noEmailProfile.includes('Verified Email')&&!noEmailProfile.includes('undefined'))
 })
 test('every student destination is nested under the unchanged protected route', () => {
   const stub=()=>null

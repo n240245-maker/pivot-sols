@@ -87,6 +87,12 @@ test('admin API includes cookies and CSRF, invalidates expired sessions and mask
   assert.deepEqual(JSON.parse(sent.options.body),{status:'draft',expected_updated_at:row.updated_at})
   status=401;value={detail:{message:'Sign in again'}};await assert.rejects(adminApi.catalog(),/Sign in again/);assert.deepEqual(events,['pivot-admin-expired'])
   await assert.rejects(adminApi.login('admin@example.com','test-only'),/Sign in again/);assert.equal(events.length,1)
+  status=200;value={admin:{email:'admin@example.com'},csrf_token:'new-csrf'}
+  await adminApi.login('admin@example.com','test-only password')
+  assert.equal(requests.at(-1).url,'/api/admin/auth/login')
+  assert.deepEqual(JSON.parse(requests.at(-1).options.body),{email:'admin@example.com',password:'test-only password'})
+  await adminApi.status('books',row,'draft')
+  assert.equal(requests.at(-1).options.headers['X-CSRF-Token'],'new-csrf')
   const offline=loadTypeScript('src/lib/adminApi.ts',{},new Map(),{fetch:async()=>{throw Error('private driver detail')}})
   await assert.rejects(offline.adminApi.catalog(),error=>error.message==='Unable to reach the agent service. Please try again.')
 })
@@ -101,18 +107,18 @@ test('admin route guard checks server identity and supports retry without accept
   state.admin={email:'admin@example.com'};assert.equal(AdminGuard().type.name,'Outlet')
 })
 
-test('admin login requires password then OTP, prevents duplicate sends and accepts only verified identity',async()=>{
+test('admin login uses password only, prevents duplicate submits and accepts server session',async()=>{
   const h=hooks(),calls=[];let finish,accepted,navigated
-  const api={login:async(...args)=>{calls.push(args);await new Promise(resolve=>finish=resolve);return {challenge:'challenge-token',resend_after:60}},verify:async(token,otp)=>{assert.equal(token,'challenge-token');assert.equal(otp,'123456');return {admin:{email:'admin@example.com'}}}}
-  const {AdminLoginPage}=loadTypeScript('src/pages/admin/AdminLoginPage.tsx',{react:h.react,'../../contexts/AdminContext':{useAdmin:()=>({admin:null,loading:false,accept:admin=>accepted=admin})},'../../lib/adminApi':{adminApi:api},'../../hooks/useOtpCountdown':{useOtpCountdown:()=>60},'react-router':{...await import('react-router'),useNavigate:()=>path=>navigated=path}})
+  const api={login:async(...args)=>{calls.push(args);await new Promise(resolve=>finish=resolve);return {admin:{email:'admin@example.com'},csrf_token:'csrf'}}}
+  const {AdminLoginPage}=loadTypeScript('src/pages/admin/AdminLoginPage.tsx',{react:h.react,'../../contexts/AdminContext':{useAdmin:()=>({admin:null,loading:false,accept:admin=>accepted=admin})},'../../lib/adminApi':{adminApi:api},'react-router':{...await import('react-router'),useNavigate:()=>path=>navigated=path}})
   const draw=()=>{h.reset();return AdminLoginPage()}
   const input=type=>nodes(draw()).find(n=>n.type==='input'&&n.props.type===type)
   input('email').props.onChange({target:{value:'admin@example.com'}});input('password').props.onChange({target:{value:'test-only password'}})
   const submit=()=>nodes(draw()).find(n=>n.type==='form').props.onSubmit(event)
   const pending=submit();await submit();assert.equal(calls.length,1);finish();await pending
-  assert.equal(accepted,undefined);assert.ok(!input('password'));assert.equal(h.slots[1],'')
-  nodes(draw()).find(n=>n.type==='input'&&n.props.inputMode==='numeric').props.onChange({target:{value:'123456'}})
-  await submit();assert.equal(accepted.email,'admin@example.com');assert.equal(navigated,'/admin')
+  assert.equal(accepted.email,'admin@example.com');assert.equal(navigated,'/admin')
+  assert.ok(input('password'))
+  assert.ok(!nodes(draw()).some(n=>n.props?.inputMode==='numeric'))
 })
 
 test('admin dashboard counts database statuses and exposes every management section',()=>{

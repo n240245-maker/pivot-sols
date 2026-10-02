@@ -1,5 +1,5 @@
 import {API_BASE_URL} from '../config/api'
-import type {AdminCatalog,AdminChallenge,AdminRecord,AdminResource,AdminSessionResponse,ContentDependency,ContentStatus} from '../types/admin'
+import type {AdminCatalog,AdminRecord,AdminResource,AdminSessionResponse,ContentDependency,ContentStatus} from '../types/admin'
 import type {StudentProblem} from './problemApi'
 
 let csrfToken=''
@@ -18,7 +18,7 @@ async function request<T>(path:string,method='GET',body?:unknown):Promise<T> {
       const safe=detail&&typeof detail==='object'?detail as {message?:unknown;fields?:unknown;dependencies?:unknown}:{}
       const fields=Array.isArray(safe.fields)?safe.fields.filter((v):v is string=>typeof v==='string'):[]
       const dependencies=Array.isArray(safe.dependencies)?safe.dependencies as ContentDependency[]:[]
-      if(response.status===401&&!path.startsWith('/auth/login')&&!path.startsWith('/auth/verify')&&!path.startsWith('/auth/resend'))window.dispatchEvent(new Event('pivot-admin-expired'))
+      if(response.status===401&&!path.startsWith('/auth/login'))window.dispatchEvent(new Event('pivot-admin-expired'))
       throw new AdminApiError(typeof safe.message==='string'?safe.message:'This request could not be completed.',response.status,fields,dependencies)
     }
     return value as T
@@ -30,9 +30,7 @@ async function request<T>(path:string,method='GET',body?:unknown):Promise<T> {
 function keepSession(value:AdminSessionResponse){csrfToken=value.csrf_token;return value}
 export const adminApi={
   me:()=>request<AdminSessionResponse>('/auth/me').then(keepSession),
-  login:(email:string,password:string)=>request<AdminChallenge>('/auth/login','POST',{email,password}),
-  verify:(challenge:string,otp:string)=>request<AdminSessionResponse>('/auth/verify','POST',{challenge,otp}).then(keepSession),
-  resend:(challenge:string)=>request<AdminChallenge>('/auth/resend','POST',{challenge}),
+  login:(email:string,password:string)=>request<AdminSessionResponse>('/auth/login','POST',{email,password}).then(keepSession),
   logout:async()=>{await request('/auth/logout','POST',{});csrfToken=''},
   catalog:()=>request<AdminCatalog>('/catalog'),
   get:(resource:AdminResource,id:string)=>request<AdminRecord>(`/${resource}/${encodeURIComponent(id)}`),

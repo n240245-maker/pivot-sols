@@ -24,16 +24,16 @@ P1 direct career URLs redirect to `/dashboard`. The new sections begin empty unt
 - `GET /api/public/rooms`, `/api/public/faculty-subjects`, `/api/public/faculty`: published records only.
 - `GET /api/public/career-resources?type=domain|job&branch=<slug>`: published resources for any published branch.
 - `GET /api/public/problems`, `GET /api/public/problems/{id}`: public report views, excluding archived reports and private identifiers. List filters: `level`, `priority`, `status`, `category`, `sort`.
-- `POST /api/problems`, `POST /api/problems/{id}/reaction`: require an OTP-issued HttpOnly student session, exact frontend origin, and student request header. The report body contains level, priority, title, description, and optional category. A reaction body is `{"reaction":"like"}` or `{"reaction":"dislike"}`.
+- `POST /api/problems`, `POST /api/problems/{id}/reaction`: require a name/ID/year-issued HttpOnly student session, exact frontend origin, and student request header. The report body contains level, priority, title, description, and optional category. A reaction body is `{"reaction":"like"}` or `{"reaction":"dislike"}`.
 - `/api/admin/{rooms|faculty-subjects|faculty|career-resources}`: existing Agent CMS list, create, detail, update and status pattern, plus safe draft deletion. All require Agent authentication; writes also require CSRF.
 - `GET /api/admin/problems`, `PUT /api/admin/problems/{id}`: Agent report moderation.
 - `POST /api/admin/uploads/image`, `POST /api/admin/uploads/pdf`: Agent-only validated file upload to configured S3-compatible storage.
 
-The student session is issued by `POST /api/auth/verify-otp`, restored by `GET /api/auth/me`, and revoked by `POST /api/auth/logout`. The active login no longer trusts the browser-local profile marker. PostgreSQL stores only a hash of the opaque 30-day token; Student Problems derive vote identity from the verified session email. Name, student ID and P1/E1 level entered at login are not independently checked against a campus registry.
+The student session is issued by `POST /api/auth/login`, restored by `GET /api/auth/me`, and revoked by `POST /api/auth/logout`. The active login no longer trusts the browser-local profile marker. PostgreSQL stores only a hash of the opaque 30-day token; Student Problems derive vote identity from the normalized student ID. Name, student ID and P1/E1 level are self-declared and not checked against a campus registry.
 
 ## Database and local verification
 
-Migration: `backend/migrations/versions/41f606784098_add_level_specific_resources_and_.py`, based on `222b971ed0e6`. It adds `information_rooms`, `faculty_subjects`, `faculty_members`, `career_resources`, `student_problems`, and `problem_reactions` with status constraints, foreign keys, uniqueness and indexes. The subsequent `b6d3f9a2c741_career_youtube_student_sessions.py` adds the optional career YouTube URL and revocable student sessions. Both were applied to the local PostgreSQL database only. Local `alembic current` and `alembic heads` show `b6d3f9a2c741`.
+Migration: `backend/migrations/versions/41f606784098_add_level_specific_resources_and_.py`, based on `222b971ed0e6`, adds level-specific resources and reports. The subsequent `b6d3f9a2c741_career_youtube_student_sessions.py` adds the optional career YouTube URL and revocable student sessions. `c84e7a0b6d22_passwordless_student_login.py` permits ID-only student sessions while preserving legacy email rows. All three were applied to the local PostgreSQL database only. Local Alembic head is `c84e7a0b6d22`.
 
 After backing up and reviewing a target database, run the migration through the existing Alembic process from `backend/`. Do not reset or reseed the database. Existing career records are deliberately preserved.
 
@@ -97,7 +97,7 @@ src/lib/adminApi.ts
 src/lib/contentApi.ts
 src/lib/discoveryTitles.ts
 src/lib/localSearch.ts
-src/lib/otpApi.ts
+src/lib/studentSessionApi.ts
 src/main.tsx
 src/pages/BranchesPage.tsx
 src/pages/CareerDomainsPage.tsx

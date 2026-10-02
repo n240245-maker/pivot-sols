@@ -1,16 +1,16 @@
 # Pivot Sols project handoff
 
-Verified against the local project in `C:\pavan` on 30 September 2026. This is an **existing** student resource platform, not a new scaffold. Neon Free database setup and content transfer are complete; public frontend and backend deployment remain pending. Read `ENVIRONMENT_REFERENCE.md`, `LOCAL_SETUP.md`, `DEPLOYMENT.md`, and `DEPLOYMENT_CHECKLIST.md` alongside this file. Never paste local `backend/.env` or database credentials into a ticket, browser variable, frontend build, or Git commit.
+Verified against the local project in `C:\pavan` on 2 October 2026. This is an **existing** student resource platform, not a new scaffold. Neon Free database setup and content transfer are complete; public frontend and backend deployment remain pending. Read `ENVIRONMENT_REFERENCE.md`, `LOCAL_SETUP.md`, `DEPLOYMENT.md`, and `DEPLOYMENT_CHECKLIST.md` alongside this file. Never paste local `backend/.env` or database credentials into a ticket, browser variable, frontend build, or Git commit.
 
 ## Product and runtime architecture
 
-React 19 + TypeScript + Vite 7 serves the student site and agent CMS. FastAPI (`backend/main.py` → `app.create_app`) serves real emailed student OTP, Contact, agent authentication and CMS APIs. SQLAlchemy 2/psycopg 3 connect to PostgreSQL; Alembic manages the current schema. The local backend is port **8000**, frontend **5173**. `src/config/api.ts` uses the local port-8000 backend in development and same-origin `/api` in production through `vercel.json`. `backend/config.py` loads backend `.env` and validates mail/OTP/origin fields at startup. `FRONTEND_URL` is a single exact CORS origin; credentials are enabled for cookies.
+React 19 + TypeScript + Vite 7 serves the student site and agent CMS. FastAPI (`backend/main.py` → `app.create_app`) serves student sessions, Contact, agent authentication and CMS APIs. SQLAlchemy 2/psycopg 3 connect to PostgreSQL; Alembic manages the schema. The local backend is port **8000**, frontend **5173**. `src/config/api.ts` uses the local port-8000 backend in development and same-origin `/api` in production through `vercel.json`. `backend/config.py` loads backend `.env` and validates email-provider, session-secret and origin fields at startup. `FRONTEND_URL` is a single exact CORS origin; credentials are enabled for cookies.
 
-Active `DEMO_MODE=true` is a legacy name for the current **real email OTP** student UI. Successful FastAPI verification issues an opaque, revocable 30-day student session stored as a token hash in PostgreSQL. The browser receives a persistent HttpOnly cookie; React calls `GET /api/auth/me` before deciding protected routes and does not use the old localStorage marker as authentication. Student Problems derive author and vote identity from the server session. The name, student ID and academic level entered at login are not independently checked against a campus registry, so they should not be treated as verified institutional claims. Agent authentication remains independent. The alternate Supabase code/migrations remain in the tree but are inactive.
+Active `DEMO_MODE=true` is a legacy name for the name/ID/year student UI. `POST /api/auth/login` issues an opaque, revocable 30-day student session stored as a token hash in PostgreSQL. The browser receives a persistent HttpOnly cookie; React calls `GET /api/auth/me` before deciding protected routes and does not use localStorage as authentication. Student Problems derive author and vote identity from normalized student ID in the server session. Student identity is **self-declared**: Pivot Sols does not verify ID ownership against a campus registry. Agent authentication remains independent. The alternate Supabase code/migrations remain in the tree but are inactive.
 
-Student send: validated email → `POST /api/auth/send-otp` → cryptographic six-digit `secrets.randbelow` → HMAC-SHA-256 digest keyed by server-only `OTP_SECRET` → SMTP or Brevo HTTPS → API returns success **without code**. Verify: `POST /api/auth/verify-otp` consumes the matching code. Five-minute expiry, five wrong attempts, 60-second resend cooldown, five sends per 15 minutes, replacement invalidates the old code, and mail failure leaves no usable code. The digest/history are **process memory**; one worker only, restart loses pending student OTPs. Backend automated tests mock the sender. In the final execution pass, the owner entered one live student OTP privately and confirmed the dashboard; the browser independently verified dashboard refresh, profile values, logout and the protected-route redirect. No code was logged or copied into this report.
+Student login validates name, normalized ID and P1/E1 level. It creates a PostgreSQL session without sending email or an OTP. Session restoration and logout use `/api/auth/me` and `/api/auth/logout`; the cookie has a 30-day absolute lifetime. The existing `OTP_SECRET` environment variable remains required for student ID pseudonyms, agent CSRF signing and auth throttles; its name is historical. Contact is the email-sending feature.
 
-Agents use independent database-backed authentication: Argon2id password → emailed OTP challenge → PostgreSQL admin session. The session cookie is HttpOnly, 8-hour absolute / 30-minute idle, and revocable on logout. Mutation requests require the exact frontend Origin, `X-Pivot-Admin`, and signed CSRF token. Localhost cookie is SameSite=Strict; hosted HTTPS cookies are Secure + SameSite=None. The production frontend proxies `/api` to the backend so browser requests remain same-origin. `src/lib/adminApi.ts` sends credentials. The local database already has one agent; do not recreate or reveal credentials. Agent UI says “Agent Login”; backend and routes intentionally retain `admin` identifiers.
+Agents use independent database-backed authentication: Argon2id password → PostgreSQL admin session, with no emailed code. The session cookie is HttpOnly, 8-hour absolute / 30-minute idle, and revocable on logout. Mutation requests require the exact frontend Origin, `X-Pivot-Admin`, and signed CSRF token. Localhost cookie is SameSite=Strict; hosted HTTPS cookies are Secure + SameSite=None. The production frontend proxies `/api` to the backend so browser requests remain same-origin. Existing Agent accounts and password hashes remain valid. Agent UI says “Agent Login”; backend and routes intentionally retain `admin` identifiers.
 
 The CMS has nine resource kinds: branches, semesters, subjects, books, labs, experiments, career-domains, career-roles, site-content. Each supports create, edit, draft/published/archived, and dependency checks; public read shows only published records with published ancestors. Books navigate P1/E1 → branch where applicable → semester → subject → details, showing truthful availability and only safe resource links. Labs navigate level/branch/semester/lab/experiment and show objective, theory, apparatus, procedure, expected result, precautions. Video links are validated server-side and parsed into safe YouTube/embed or HTTPS media forms; YouTube uses a no-cookie iframe, explicit load action, 16:9 sizing and autoplay disabled. Career pages, Branches, Explore and global search read the published public catalog; search is a local index over that API result, not a separate search server. About/Explore content is CMS-backed. Contact validates sender input and sends through the same provider to `CONTACT_TO_EMAIL`. The owner-selected local recipient is now configured in ignored `backend/.env`; one controlled Contact message was confirmed in the owner's inbox.
 
@@ -24,16 +24,16 @@ C:\pavan\
     ReferenceBooks,LabVideos,CareerDomains,CareerJobs,Explore}Page.tsx
   src\pages\admin\{AdminApp,AdminLoginPage,AdminShell,AdminResourcePage}.tsx
   src\components\resources\{books\*,labs\*,Discovery,LocalSearchResults}.tsx
-  src\lib\{otpApi,adminApi,contentApi,contactApi,demoSession,labVideoSource,localSearch}.ts
+  src\lib\{studentSessionApi,adminApi,contentApi,contactApi,labVideoSource,localSearch}.ts
   src\data\ (original seed/fixture content; live student catalog comes from API)
   public\favicon.svg
   tests\*.test.mjs                    frontend tests
-  backend\main.py, app.py, config.py, otp_service.py, email_service.py
+  backend\main.py, app.py, config.py, student_session.py, email_service.py
   backend\contact_{models,service}.py
   backend\cms\{api,auth,catalog,database,models,repository,schemas}.py
   backend\migrations\env.py, versions\222b971ed0e6_*.py
   backend\scripts\{create_admin,seed_existing_content,transfer_content}.py
-  backend\tests\test_{api,cms,config_and_email,contact,otp_service}.py
+  backend\tests\test_{api,cms,config_and_email,contact,feature_restructure}.py
   backend\{alembic.ini,requirements.txt,Dockerfile,.env.example}
   backend\.env                         ignored; real local secrets
   supabase\migrations\*.sql          inactive alternate auth
@@ -52,17 +52,17 @@ No `node_modules`, `.venv`, `dist`, caches or generated TypeScript info files be
 | --- | --- | --- |
 | `/` | Landing; public | static presentation |
 | `/signup` | In active mode redirects to `/login`; guest | alternate Supabase UI inactive |
-| `/login` | Student details + email OTP; guest | auth API |
+| `/login` | Student name/ID/year; guest | auth API |
 | `/auth/callback`, `/complete-profile` | Active mode redirects to dashboard | alternate Supabase flow inactive |
 | `/dashboard`, `/profile` | Student route guard; dashboard/profile | local student profile + public catalog |
 | `/branches`, `/branches/:branchSlug` | Student; list/detail | public catalog |
 | `/about`, `/contact` | Student | published site content; Contact POST API |
 | `/resources/books`, `/resources/books/*` | Student; level/branch/semester/subject/books | published catalog |
-| `/resources/labs`, `/resources/labs/*` | Student; level/branch/semester/lab/experiment | published catalog |
+| `/resources/labs`, `/resources/labs/*` | P1 only; E1 redirects to dashboard | published catalog |
 | `/careers/domains`, `/careers/domains/:domainSlug` | Student | published catalog |
 | `/careers/jobs`, `/careers/jobs/:roleSlug` | Student | published catalog |
 | `/explore` | Student, including global search | published catalog/search index |
-| `/admin/login` | Agent password and OTP; public form | admin auth API |
+| `/admin/login` | Agent email/password; public form | admin auth API |
 | `/admin` | Agent dashboard; server identity guard | admin catalog |
 | `/admin/{section}` | Agent list; guard | admin CMS API |
 | `/admin/{section}/new` | Agent create; guard | admin CMS API |
@@ -78,12 +78,11 @@ All listed endpoints are declared in the local FastAPI OpenAPI schema. Request v
 | Method and path | Auth | Request → response / purpose |
 | --- | --- | --- |
 | `GET /api/health` | P | service status |
-| `POST /api/auth/send-otp` | P | email → generic send success/error, never code |
-| `POST /api/auth/verify-otp` | P | email + six-digit OTP → `verified: true` or safe error |
+| `POST /api/auth/login` | P + Origin/header | name + student ID + year → HttpOnly 30-day session and safe student profile |
+| `GET /api/auth/me` | student cookie | restored student profile without required email |
+| `POST /api/auth/logout` | student cookie + Origin/header | revoke student session and clear cookie |
 | `POST /api/contact` | P | name, email, message → delivery status; rate limited |
-| `POST /api/admin/auth/login` | P + Origin/header | email + password → challenge token; email sent |
-| `POST /api/admin/auth/resend` | challenge | challenge → resend status/limit |
-| `POST /api/admin/auth/verify` | challenge | challenge + OTP → HttpOnly session cookie + CSRF data |
+| `POST /api/admin/auth/login` | P + Origin/header | Agent email + Argon2 password → HttpOnly session cookie + CSRF data |
 | `GET /api/admin/auth/me` | A | current agent identity + CSRF state |
 | `POST /api/admin/auth/logout` | A + CSRF | revokes DB session and clears cookie |
 | `GET /api/public/catalog` | P | complete published catalog |
@@ -106,15 +105,15 @@ The documented pattern represents every instantiated path, not an additional cat
 
 ## PostgreSQL schema and content
 
-Local connection query confirmed `pivot_sols` / `pivot_admin`; Alembic current and head both `b6d3f9a2c741` on 30 September 2026. The additive revisions since `222b971ed0e6` added level-specific resources, the optional career YouTube URL, and `student_sessions`. The local database previously had one agent, 171 published content rows, nine archived temporary QA rows, and 68 relationship rows; this turn did not recount those rows. The private deployment snapshot was created before the latest QA book and experiment and excludes archived QA records. There is no student account table, but there is a revocable student session table. Neon Free was last verified at `222b971ed0e6` with the 171 content/68 relationship snapshot; it needs the pending migrations before manual deployment. No agent account or sessions were transferred.
+Local connection query confirmed `pivot_sols` / `pivot_admin`; local Alembic head is `c84e7a0b6d22` on 2 October 2026. The additive revisions since `222b971ed0e6` added level-specific resources, career YouTube URLs, `student_sessions`, and nullable legacy student email. The local database previously had one agent, 171 published content rows, nine archived temporary QA rows, and 68 relationship rows; this turn did not recount those rows. The private deployment snapshot excludes archived QA records. There is no student account table, but there is a revocable student session table. Neon Free was last verified at `222b971ed0e6` with the 171 content/68 relationship snapshot; it needs pending migrations before manual deployment. No agent account or sessions were transferred.
 
 | Table | Key / important fields | FKs, unique constraints, lifecycle |
 | --- | --- | --- |
 | `admins` | UUID `id`, email, Argon2id password_hash, display_name, is_active, last_login_at | email unique; no content status |
-| `admin_challenges` | UUID `id`, admin_id, token_hash, otp_hash, expiry, attempts, used_at | FK admins; unique token_hash; one-time challenge |
+| `admin_challenges` | Legacy OTP challenge rows | Retained for data compatibility; no longer used by Agent login |
 | `admin_sessions` | UUID `id`, admin_id, token_hash, created/expires/last_used/revoked | FK admins; unique token_hash; revocable |
 | `admin_auth_throttles` | `key` PK, window_start, attempts | database login throttle |
-| `student_sessions` | UUID `id`, verified email, entered profile fields, token_hash, created/expires/last_used/revoked | unique token hash; 30-day absolute lifetime; revocable |
+| `student_sessions` | UUID `id`, normalized student ID, entered name/year, optional legacy email, token_hash, created/expires/last_used/revoked | unique token hash; 30-day absolute lifetime; revocable |
 | `branches` | UUID `id`, slug, short_name, name, description, areas | unique slug; draft/published/archived |
 | `semesters` | UUID `id`, academic_level, branch_id, name, number | FK branches; unique(branch_id,number); status |
 | `subjects` | UUID `id`, semester_id, slug, code, name, description | FK semesters; unique(semester_id,slug); status |
@@ -133,9 +132,9 @@ Every content table also has sort order, created/updated timestamps and an `id`;
 
 ## Validation, security and current limits
 
-On 30 September 2026, the two requested changes passed 135/135 frontend tests and the production build; backend tests and local migration checks are reported in the final task result. Automated checks cover student session restoration, expiry and revocation, session-bound Problem author identity, career YouTube URL validation and rendering, and agent auth regression. Earlier live browser checks verified student OTP, dashboard refresh/profile/logout, Contact inbox delivery, responsive student routes, resource search, and a temporary published YouTube experiment. Those earlier checks do not constitute a new hosted acceptance test. The About page reads published CMS content; editorial claims were not externally fact checked.
+On 2 October 2026, login changed to student name/ID/year and Agent email/password. Automated checks cover session restoration, expiry and revocation, session-bound Problem author identity, Contact delivery, career YouTube URL validation and rendering, and Agent CMS access. Earlier live browser checks of OTP-era login are historical and do not verify the new login UI. No hosted acceptance test has been performed. The About page reads published CMS content; editorial claims were not externally fact checked.
 
-SQLAlchemy/parameterized operations, Pydantic validation, whitelist video URL handling, no `dangerouslySetInnerHTML` in application source, and server-only secrets were inspected. `.gitignore` and staged paths were checked; there is still no commit history or remote. The owner confirmed local student OTP, Contact delivery, and agent OTP; draft→publish→archive visibility was checked for temporary book and experiment records. The published experiment produced an explicit-load `youtube-nocookie.com` embed, and archiving removed it from the public API. Neon Free has been migrated and imported. Cross-site cookie blocking, free-host cold starts, Brevo delivery, and process-memory student OTPs require hosted acceptance testing. No public frontend/backend deployment or domain was verified yet.
+SQLAlchemy/parameterized operations, Pydantic validation, whitelist video URL handling, no `dangerouslySetInnerHTML` in application source, and server-only secrets were inspected. Earlier local QA confirmed Contact delivery and draft→publish→archive visibility for temporary book and experiment records. Neon Free has been migrated and imported to its previously recorded revision, but not this new auth revision. Free-host cold starts, Contact delivery, and the new login flows require hosted acceptance testing. No public frontend/backend deployment or domain was verified yet.
 
 Run `npm test`, `npm run build` at root; run `.\.venv\Scripts\python.exe -m pytest` and `-m alembic current/heads/upgrade head` from `backend`. The exact local startup commands and ports are in `LOCAL_SETUP.md`. New agent creation: `backend/scripts/create_admin.py` in an interactive TTY, after migrating. Data transfer: `backend/scripts/transfer_content.py` content-only import into an empty migrated DB. See `DEPLOYMENT.md` for both Vercel/Render/Neon/Brevo and the requested Vercel/Railway/PostgreSQL manual route.
 
@@ -149,5 +148,5 @@ Run `npm test`, `npm run build` at root; run `.\.venv\Scripts\python.exe -m pyte
 6. Deploy one-worker backend, record its real HTTPS origin, check health and public catalog.
 7. Connect/import Vercel repository with root `.`, Vite, build `npm run build`, output `dist`; verify the `/api` proxy target in `vercel.json`, then deploy manually.
 8. Record the actual frontend HTTPS origin, set backend `FRONTEND_URL` to that exact value, and restart/redeploy backend.
-9. Verify CORS and same-origin proxied cookies, direct SPA route refreshes, real student/agent OTP inbox verification, CMS publish→student visibility, video, Contact, logout, and browser/phone layouts.
+9. Verify CORS and same-origin proxied cookies, direct SPA route refreshes, student name/ID/year login and Agent password login, CMS publish→student visibility, video, Contact email delivery, logout, and browser/phone layouts.
 10. Check persistence after restart, no leaked secrets, provider usage limits and billing settings. Sign off `DEPLOYMENT_CHECKLIST.md` with actual URLs and date.

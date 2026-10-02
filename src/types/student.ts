@@ -5,7 +5,7 @@ export interface StudentProfile {
   id: string
   studentId: string
   name: string
-  email: string
+  email?: string
   batch: number
   academicLevel: SupportedAcademicLevel
   campus: 'Nuzvid'

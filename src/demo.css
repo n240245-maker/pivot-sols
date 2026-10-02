@@ -14,13 +14,6 @@
 .demo-year label:focus-within { outline: 2px solid #bba4e5; outline-offset: 3px; }
 .demo-login-note { color: var(--muted); font-size: 11px; line-height: 1.7; margin: 20px 0 0; }
 .demo-login-layout > footer { margin-top: auto; font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
-#demo-otp { text-align: center; letter-spacing: .35em; font-size: 24px; }
-.otp-recipient { display: block; color: var(--foreground); font-weight: 500; margin-top: 8px; overflow-wrap: anywhere; }
-.otp-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
-.otp-actions .auth-text-button { margin: 0; }
-.otp-feedback, .otp-notice { font-size: 12px; line-height: 1.65; margin: 0; overflow-wrap: anywhere; }
-.otp-feedback { color: #f6aaaa; }
-.otp-notice { color: #b9d4bc; margin-top: 16px; }
 .demo-login-card button:disabled { cursor: not-allowed; opacity: .55; }
 @media (max-width: 639px) {
   .demo-login-layout { padding: 22px 20px; }

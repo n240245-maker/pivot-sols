@@ -3,9 +3,9 @@ import type { ReactNode } from 'react'
 import type { StudentProfile } from '../types/student'
 import { AuthContext } from './AuthContext'
 import { DEMO_MODE } from '../config/demo'
-import { clearStudentServerSession, getStudentSession, verifyOtp } from '../lib/otpApi'
+import { clearStudentServerSession, getStudentSession, loginStudent } from '../lib/studentSessionApi'
 
-// The prototype login form remains, but the backend session is the sole auth source.
+// The backend session is the sole student authentication source.
 export function DemoAuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<StudentProfile|null>(null)
   const [loading, setLoading] = useState(true)
@@ -29,14 +29,14 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={{
     session: null, user: null, profile, loading, error, configured: true,
     signUp: unavailable, logIn: unavailable, googleSignIn: unavailable, resendVerification: unavailable,
-    completeDemoLogin: async (details, otp) => {
-      if (!DEMO_MODE || verifying.current) throw new Error('Verification is unavailable. Please try again.')
+    completeDemoLogin: async (details) => {
+      if (!DEMO_MODE || verifying.current) throw new Error('Sign-in is unavailable. Please try again.')
       verifying.current = true
       const ticket = ++revision.current
       try {
-        await verifyOtp(details.email, otp, details)
+        await loginStudent(details)
         const restored = await getStudentSession()
-        if (!restored) throw new Error('Your verification session could not be restored. Please sign in again.')
+        if (!restored) throw new Error('Your student session could not be restored. Please sign in again.')
         if (ticket !== revision.current) throw new Error('The session changed. Please sign in again.')
         setProfile(restored)
         setError(null)

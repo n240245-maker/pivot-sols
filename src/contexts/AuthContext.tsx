@@ -6,7 +6,7 @@ import { authCallbackUrl, isSupabaseConfigured, requireSupabase, supabase } from
 import { assertVerifiedStudent, resolveStudentProfile } from '../lib/studentProfile'
 import { debugAuthError, friendlyAuthError, StudentAccessError } from '../lib/authErrors'
 import { isRguktEmail, normalizeEmail, normalizeStudentId, STUDENT_MESSAGES, validateRegistration } from '../lib/studentValidation'
-import type { DemoLoginDetails } from '../lib/demoSession'
+import type { StudentLoginDetails } from '../lib/studentSessionApi'
 
 interface AuthState {
   session: Session | null
@@ -16,7 +16,7 @@ interface AuthState {
   error: string | null
 }
 interface AuthValue extends AuthState {
-  completeDemoLogin?: (details: DemoLoginDetails, otp: string) => Promise<void>
+  completeDemoLogin?: (details: StudentLoginDetails) => Promise<void>
   configured: boolean
   signUp: (values: RegistrationValues) => Promise<{ verificationRequired: boolean }>
   logIn: (email: string, password: string) => Promise<void>

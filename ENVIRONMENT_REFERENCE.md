@@ -1,6 +1,6 @@
 # Pivot Sols environment reference
 
-Verified 25 September 2026. Values below are examples only. Never commit `backend/.env`, `.env.local`, an exported database, or any real credential. Vite exposes every `VITE_*` value to the browser.
+Verified 2 October 2026. Values below are examples only. Never commit `backend/.env`, `.env.local`, an exported database, or any real credential. Vite exposes every `VITE_*` value to the browser.
 
 | Variable | Location | Needed | Secret? | Purpose | Local example | Production example |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -13,10 +13,10 @@ Verified 25 September 2026. Values below are examples only. Never commit `backen
 | `SMTP_PORT` | backend | With SMTP | No | STARTTLS port | `587` | Provider port, usually `587` |
 | `SMTP_USERNAME` | backend | With SMTP | **Secret/config** | SMTP login | `<SMTP_USERNAME>` | `<SMTP_USERNAME>` |
 | `SMTP_PASSWORD` | backend | With SMTP | **Secret** | SMTP App Password/API password | `<SMTP_APP_PASSWORD>` | `<SMTP_PASSWORD>` |
-| `SMTP_FROM_EMAIL` | backend | Yes, both providers | No | Verified sender address for OTP and contact | `<VERIFIED_SENDER_EMAIL>` | `<VERIFIED_SENDER_EMAIL>` |
+| `SMTP_FROM_EMAIL` | backend | Yes, both providers | No | Verified sender address for Contact email | `<VERIFIED_SENDER_EMAIL>` | `<VERIFIED_SENDER_EMAIL>` |
 | `SMTP_FROM_NAME` | backend | Optional | No | Display name | `Pivot Sols` | `Pivot Sols` |
 | `BREVO_API_KEY` | backend | With `EMAIL_PROVIDER=brevo` | **Secret** | HTTPS email delivery | blank with SMTP | `<BREVO_API_KEY>` |
-| `OTP_SECRET` | backend | Yes | **Secret** | HMAC for student/admin OTP and admin CSRF; minimum 32 random characters | `<LONG_RANDOM_SECRET>` | A separately generated long random secret |
+| `OTP_SECRET` | backend | Yes (legacy variable name) | **Secret** | HMAC for student ID pseudonyms, agent CSRF and auth throttles; minimum 32 random characters | `<LONG_RANDOM_SECRET>` | A separately generated long random secret |
 | `FRONTEND_URL` | backend | Yes | No | Exact single CORS/Origin allowance and cookie environment | `http://localhost:5173` | Actual Vercel HTTPS origin, no trailing path |
 | `CONTACT_TO_EMAIL` | backend | Required for functional Contact delivery | No | Inbox receiving messages; configured in local `.env` | `<CONTACT_INBOX>` | `<CONTACT_INBOX>` |
 | `STORAGE_ENDPOINT` | backend | Optional with object storage | No | S3-compatible API endpoint; blank uses AWS S3 | blank | Provider endpoint |
@@ -30,6 +30,6 @@ Verified 25 September 2026. Values below are examples only. Never commit `backen
 
 Actual files: root `.env.example` and `backend/.env.example` contain placeholders; `backend/.env` is ignored. Local Vite development uses `http://localhost:8000` by default. Production calls relative `/api` URLs through the Vercel rewrite in `vercel.json`. The backend process loads `backend/.env` unless a process environment variable already defines a key. The active mode is `src/config/demo.ts` `DEMO_MODE=true`; its student auth now restores from a PostgreSQL-backed 30-day session. The preserved Supabase variables do not operate in this mode.
 
-`CONTACT_TO_EMAIL` is configured locally for the owner's inbox. One controlled Contact delivery was confirmed there on 25 September 2026. The local `FRONTEND_URL` was corrected to `http://localhost:5173`; the backend was restarted and student OTP was verified through the browser.
+`CONTACT_TO_EMAIL` is configured locally for the owner's inbox. One controlled Contact delivery was confirmed there on 25 September 2026. Student and agent login no longer send email; Contact still needs the configured provider. Keep `OTP_SECRET` under its existing name because session-related HMAC functions still use it.
 
 For Vercel, do not set `VITE_API_BASE_URL`; `vercel.json` proxies `/api/:path*` to the Render API before the SPA fallback. The browser receives a same-origin HttpOnly student cookie. Set backend `FRONTEND_URL` to the exact deployed frontend origin. All database and mail credentials belong on the backend host. The current API proxy destination is `https://pivot-sols-api.onrender.com`; verify that it is the actual backend URL before manual deployment.

@@ -54,4 +54,4 @@ Verified 25 September 2026 in `C:\pavan`: frontend Vite at `http://localhost:517
 
    The existing local database already has one agent. The script refuses to replace an existing account. Enter the password only at its hidden terminal prompts.
 
-Student OTP uses the configured backend SMTP server. A successful API response means the provider accepted the send, not that the email reached the inbox. Contact requires owner-supplied `CONTACT_TO_EMAIL` in `backend/.env` and a backend restart.
+Student sign-in uses name, ID number and P1/E1 year; agent sign-in uses email and password. Neither login sends an OTP. Contact email still requires owner-supplied `CONTACT_TO_EMAIL` and a configured SMTP or Brevo provider in `backend/.env`, followed by a backend restart.

@@ -18,7 +18,7 @@ export function ProfileContent({ profile, logoutAction }: { profile: StudentProf
     ['RGUKT ID', profile.studentId],
     ['Academic Level', profile.academicLevel],
     ['Campus', `RGUKT ${profile.campus}`],
-    ['Verified Email', profile.email],
+    ...(profile.email ? [['Email', profile.email]] : []),
   ]
   return <section className="pivot-profile-page">
     <Link to="/dashboard" className="pivot-back-link"><ArrowLeft size={16} aria-hidden="true" />Back to dashboard</Link>

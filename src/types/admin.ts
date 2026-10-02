@@ -5,7 +5,6 @@ export interface AdminRecord {id:string;status:ContentStatus;sort_order:number;c
 export type AdminCatalog=Record<AdminResource,AdminRecord[]>
 export interface AdminIdentity {email:string;display_name:string}
 export interface AdminSessionResponse {admin:AdminIdentity;csrf_token:string}
-export interface AdminChallenge {challenge:string;expires_in:number;resend_after:number}
 export interface ContentDependency {resource:string;total:number;published:number}
 export const emptyAdminCatalog:AdminCatalog={'branches':[],'semesters':[],'subjects':[],'books':[],'labs':[],'experiments':[],'career-domains':[],'career-roles':[],'site-content':[],'rooms':[],'faculty-subjects':[],'faculty':[],'career-resources':[]}
 export const textValue=(value:unknown):string=>typeof value==='string'?value:''

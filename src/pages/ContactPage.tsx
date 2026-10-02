@@ -14,7 +14,7 @@ export function ContactPage() {
 
 export function ContactContent({ profile }: { profile: StudentProfile }) {
   const [name, setName] = useState(profile.name)
-  const [email, setEmail] = useState(profile.email)
+  const [email, setEmail] = useState(profile.email ?? '')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -41,7 +41,7 @@ export function ContactContent({ profile }: { profile: StudentProfile }) {
       <div className="pivot-contact-fields"><InputGroup id="contact-name" label="Name" value={name} onChange={event=>{setName(event.target.value);edited()}} autoComplete="name" minLength={2} maxLength={100} required disabled={busy} /><InputGroup id="contact-email" label="Email" type="email" value={email} onChange={event=>{setEmail(event.target.value);edited()}} autoComplete="email" maxLength={254} required disabled={busy} /></div>
       <div className="input-group"><label htmlFor="contact-message">Message</label><textarea id="contact-message" name="message" value={message} onChange={event=>{setMessage(event.target.value);edited()}} rows={6} placeholder="What would you like to share?" minLength={10} maxLength={3000} required disabled={busy} aria-describedby="contact-message-hint" /><p id="contact-message-hint" className="field-hint">10–3000 characters. Please leave out passwords and verification codes.</p></div>
       {error&&<p className="field-error" role="alert">{error}</p>}{sent&&<p className="contact-success" role="status">Message sent successfully.</p>}
-      <div className="pivot-contact-actions"><p id="contact-availability"><MessageCircle size={17} aria-hidden="true" />Your contact details are pre-filled. You can change the reply address without changing your profile.</p><button type="submit" className="button button-primary" disabled={busy}>{busy?'Sending message...':'Send message'}</button></div>
+      <div className="pivot-contact-actions"><p id="contact-availability"><MessageCircle size={17} aria-hidden="true" />Enter a reply address so we can respond to your message.</p><button type="submit" className="button button-primary" disabled={busy}>{busy?'Sending message...':'Send message'}</button></div>
     </form>
   </div>
 }

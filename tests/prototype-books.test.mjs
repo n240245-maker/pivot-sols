@@ -125,12 +125,10 @@ test('all prototype subject paths resolve and invalid or cross-level resource pa
   }
   for(const path of ['/resources/books/fake/fake/fake','/resources/books/e1/ece/semester-3','/resources/books/e1/ece/semester-1/invalid','/resources/books/p1/common/semester-1/physics']) assert.ok(renderPage(path).includes('Resource not found'))
 })
-test('existing demo login profile feeds books and dashboard navigation without ID parsing',()=>{
-  const session=loadTypeScript('src/lib/demoSession.ts')
-  const entries=new Map(),storage={getItem:k=>entries.get(k)??null,setItem:(k,v)=>entries.set(k,v),removeItem:k=>entries.delete(k)}
-  const p1=session.createDemoSession({name:'Student',studentId:'ANYTHING',year:'P1',email:'student@example.com'},{success:true,verified:true},storage)
+test('student profile academic level feeds books and dashboard navigation without ID parsing',()=>{
+  const p1={name:'Student',studentId:'N260001',academicLevel:'P1'}
   assert.equal(helpers.getCurriculaForLevel(data,p1.academicLevel)[0].id,'common')
-  const e1=session.createDemoSession({name:'Harsha',studentId:'N240001',year:'E1',email:'harsha@example.com'},{success:true,verified:true},storage)
+  const e1={name:'Harsha',studentId:'N240001',academicLevel:'E1'}
   assert.equal(helpers.getBranchesForLevel(data,e1.academicLevel).length,6)
   const navigation=loadTypeScript('src/config/studentNavigation.ts')
   assert.equal(navigation.resourceDestinations.find(d=>d.title==='Reference Books').path,'/resources/books')

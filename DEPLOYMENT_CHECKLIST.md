@@ -1,19 +1,19 @@
 # Pivot Sols deployment checklist
 
-Checked boxes record completed local or Neon setup through 30 September 2026. Public hosting is still pending; record actual URLs only after deployment.
+Checked boxes record completed local or Neon setup through 2 October 2026. Public hosting is still pending; record actual URLs only after deployment.
 
 ## Local release gate
 
 - [x] Local FastAPI `/api/health` and Vite `/login` respond.
-- [x] PostgreSQL connects as `pivot_admin` to `pivot_sols`; local Alembic current=head `b6d3f9a2c741`. Neon was last verified at `222b971ed0e6` and needs the pending additive migrations during manual deployment.
+- [x] PostgreSQL connects as `pivot_admin` to `pivot_sols`; local Alembic current=head `c84e7a0b6d22`. Neon was last verified at `222b971ed0e6` and needs the pending additive migrations during manual deployment.
 - [x] Frontend tests, backend tests, and local production compilation pass (see `PROJECT_HANDOFF.md` for exact run).
 - [x] `.env.example` uses the actual port 8000; backend CORS origin matches local frontend.
 - [x] `.gitignore` excludes local secrets, private content export, builds, and caches.
-- [x] Real student OTP inbox receipt and verification confirmed by the owner; browser reached dashboard, retained it on refresh, showed profile, and redirected after logout.
+- [x] Earlier student OTP inbox receipt and verification were confirmed by the owner. The new name/ID/year flow replaces that prior login and needs hosted acceptance testing.
 - [x] `CONTACT_TO_EMAIL` configured in ignored local backend `.env`; owner confirmed one real Contact delivery.
-- [x] Agent password and OTP sign-in confirmed by the owner; browser reached `/admin`. Student route checks covered 375/768/1024/1440 px across 15 routes, plus selected 320/1920 px checks. Seven agent sections also loaded without document overflow at 375/768/1440 px.
+- [x] Earlier Agent password and OTP sign-in were confirmed by the owner; the new password-only flow retains the same Agent accounts and sessions. Earlier student route checks covered 375/768/1024/1440 px across 15 routes, plus selected 320/1920 px checks.
 - [x] Local CMS test book and experiment each stayed hidden as drafts, appeared in public API when published, and disappeared after archiving. Experiment preview generated an explicit-load YouTube no-cookie iframe. Temporary rows remain archived locally and are absent from the Neon snapshot.
-- [x] Student OTP now issues a revocable 30-day PostgreSQL session; frontend restores through `/api/auth/me` instead of a localStorage login marker. Reverify once after this upgrade to replace old cookies.
+- [x] Student name/ID/year login issues a revocable 30-day PostgreSQL session; frontend restores through `/api/auth/me` instead of a localStorage login marker. Student ID ownership is self-declared and unverified.
 
 ## Source and hosting
 
@@ -31,8 +31,8 @@ Checked boxes record completed local or Neon setup through 30 September 2026. Pu
 ## Production acceptance
 
 - [ ] Refresh deep links `/login`, `/dashboard`, `/admin/login`, `/resources/books/...`, `/resources/labs/...` directly.
-- [ ] Receive **and verify** a student OTP; check dashboard refresh, profile, protected route and logout.
-- [ ] Agent password → OTP → server session; reject unauthenticated/admin API access; logout revokes session.
+- [ ] Sign in with student name/ID/year; check both dashboards, refresh, browser reopen, profile, protected routes, expiry and logout.
+- [ ] Sign in as an existing Agent with email/password; reject unauthenticated/admin API access; verify no code email is sent and logout revokes session.
 - [ ] Publish/edit/archive a temporary book; confirm student visibility rules and restore/archive QA content.
 - [ ] Publish/edit/archive a temporary lab experiment with valid YouTube URL; check desktop/mobile playback and cleanup.
 - [ ] Validate Career Domains, Jobs, Branches, Explore/global search and draft/archived exclusion.

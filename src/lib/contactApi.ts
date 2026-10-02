@@ -1,10 +1,13 @@
 import { API_BASE_URL } from '../config/api'
-import { isValidPrototypeEmail } from './otpApi'
+
+function isValidContactEmail(email: string): boolean {
+  return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+}
 
 export interface ContactMessage { name: string; email: string; message: string }
 export function validateContact(body: ContactMessage): string | undefined {
   if (body.name.trim().length < 2 || body.name.trim().length > 100 || /[\u0000-\u001f\u007f]/.test(body.name)) return 'Enter a name between 2 and 100 characters.'
-  if (!isValidPrototypeEmail(body.email)) return 'Enter a valid email address.'
+  if (!isValidContactEmail(body.email)) return 'Enter a valid email address.'
   if (body.message.trim().length < 10 || body.message.trim().length > 3000) return 'Enter a message between 10 and 3000 characters.'
   return undefined
 }

@@ -12,14 +12,14 @@ function restoredProvider(profile) {
   const {DemoAuthProvider}=loadTypeScript('src/contexts/DemoAuthContext.tsx',{
     react:{useState:initial=>{const i=index++;if(!(i in slots))slots[i]=typeof initial==='function'?initial():initial;return [slots[i],value=>{slots[i]=typeof value==='function'?value(slots[i]):value}]},useRef:value=>{const i=index++;return slots[i]??(slots[i]={current:value})},useEffect:effect=>effects.push(effect)},
     './AuthContext':{AuthContext:{Provider:()=>null}},
-    '../lib/otpApi':{getStudentSession:async()=>profile,verifyOtp:async()=>({success:true,verified:true}),clearStudentServerSession:async()=>{}},
+    '../lib/studentSessionApi':{getStudentSession:async()=>profile,loginStudent:async()=>{},clearStudentServerSession:async()=>{}},
   })
   return {render:()=>{index=0;return DemoAuthProvider({children:null}).props.value},restore:()=>effects[0]()}
 }
 
 test('fresh app loads server session before deciding protected route',async()=>{
   for(const level of ['P1','E1']) {
-    const profile={id:'server-id',name:'Restored Student',studentId:level==='P1'?'N260001':'N240001',email:'restored@example.com',academicLevel:level,batch:0,campus:'Nuzvid'}
+    const profile={id:'server-id',name:'Restored Student',studentId:level==='P1'?'N260001':'N240001',academicLevel:level,batch:0,campus:'Nuzvid'}
     const provider=restoredProvider(profile)
     assert.equal(provider.render().loading,true)
     assert.equal(provider.render().profile,null)
