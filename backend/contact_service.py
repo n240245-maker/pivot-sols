@@ -1,4 +1,4 @@
-"""Small, bounded contact-delivery limiter. Independent of OTP state."""
+"""Small, bounded contact-delivery limiter."""
 from collections import deque
 from hashlib import sha256
 from math import ceil

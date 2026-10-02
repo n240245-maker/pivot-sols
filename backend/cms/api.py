@@ -9,7 +9,7 @@ from .repository import RESOURCES, all_rows, change_status, dependencies, fail, 
 from .schemas import ContentResponse, StatusInput
 
 
-def install_cms(app, settings, factory, sender):
+def install_cms(app, settings, factory):
     def get_db():
         if factory is None:
             fail('Content service is unavailable.', 503)
@@ -22,7 +22,7 @@ def install_cms(app, settings, factory, sender):
             finally:
                 db.rollback()
 
-    security = AdminSecurity(settings, sender)
+    security = AdminSecurity(settings)
     app.state.admin_security = security
     app.state.cms_get_db = get_db
     app.include_router(admin_auth_router(get_db, security))

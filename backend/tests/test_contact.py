@@ -15,14 +15,14 @@ from conftest import Clock
 BODY = {"name": "Student", "email": "student@example.com", "message": "Please add more reviewed experiment guides."}
 
 
-def contact_client(settings, setup, sender, clock=None):
+def contact_client(settings, sender, clock=None):
     service = ContactService(sender, clock=clock or Clock())
-    return TestClient(create_app(settings, otp_service=setup[0], contact_service=service))
+    return TestClient(create_app(settings, contact_service=service))
 
 
-def test_valid_contact_delivers_normalized_fields_and_returns_success(settings, setup):
+def test_valid_contact_delivers_normalized_fields_and_returns_success(settings):
     sent = []
-    with contact_client(settings, setup, sent.append) as client:
+    with contact_client(settings, sent.append) as client:
         response = client.post("/api/contact", json={**BODY, "name": " Student ", "email": " STUDENT@example.com "})
     assert response.status_code == 200
     assert response.json() == {"success": True, "message": "Message sent successfully."}
@@ -35,9 +35,9 @@ def test_valid_contact_delivers_normalized_fields_and_returns_success(settings, 
                                          ("email", "a@example.com\nBcc: bad@example.com"),
                                          ("message", ""), ("message", "too short"), ("message", "x" * 3001),
                                          ("message", "bad\x00message text")])
-def test_invalid_contact_never_sends_or_echoes_input(settings, setup, field, value):
+def test_invalid_contact_never_sends_or_echoes_input(settings, field, value):
     sent = []
-    with contact_client(settings, setup, sent.append) as client:
+    with contact_client(settings, sent.append) as client:
         response = client.post("/api/contact", json={**BODY, field: value})
     assert response.status_code == 400
     assert response.json()["code"] == "invalid_request"
@@ -45,26 +45,26 @@ def test_invalid_contact_never_sends_or_echoes_input(settings, setup, field, val
     assert sent == []
 
 
-def test_contact_rejects_extra_recipient_field(settings, setup):
+def test_contact_rejects_extra_recipient_field(settings):
     sent = []
-    with contact_client(settings, setup, sent.append) as client:
+    with contact_client(settings, sent.append) as client:
         assert client.post("/api/contact", json={**BODY, "to": "arbitrary@example.com"}).status_code == 400
     assert not sent
 
 
-def test_smtp_failure_is_generic_and_does_not_report_success(settings, setup):
+def test_smtp_failure_is_generic_and_does_not_report_success(settings):
     def fail(_body):
         raise RuntimeError("private credentials or SMTP details")
-    with contact_client(settings, setup, fail) as client:
+    with contact_client(settings, fail) as client:
         response = client.post("/api/contact", json=BODY)
     assert response.status_code == 503
     assert response.json() == {"success": False, "code": "delivery_failed", "message": "We couldn't send your message. Please try again."}
     assert "private" not in response.text
 
 
-def test_rate_limit_expires_and_is_independent_of_otp(settings, setup):
+def test_rate_limit_expires(settings):
     sent, clock = [], Clock()
-    with contact_client(settings, setup, sent.append, clock) as client:
+    with contact_client(settings, sent.append, clock) as client:
         for _ in range(5):
             assert client.post("/api/contact", json=BODY).status_code == 200
         limited = client.post("/api/contact", json=BODY)
@@ -73,9 +73,6 @@ def test_rate_limit_expires_and_is_independent_of_otp(settings, setup):
         assert limited.json()["retry_after"] == 900
         # A spoofed forwarding header does not reset the socket-IP limit.
         assert client.post("/api/contact", json={**BODY, "email": "another@example.com"}, headers={"X-Forwarded-For": "1.2.3.4"}).status_code == 429
-        assert client.post("/api/auth/send-otp", json={"email": BODY["email"]}).status_code == 200
-        code = setup[2][-1][1]
-        assert client.post("/api/auth/verify-otp", json={"email": BODY["email"], "otp": code}).json()["verified"] is True
         clock.advance(900)
         assert client.post("/api/contact", json=BODY).status_code == 200
     assert len(sent) == 6
@@ -125,11 +122,10 @@ def test_global_limit_caps_many_distinct_senders():
 
 
 @pytest.mark.parametrize("recipient", ["", "invalid", "a@example.com\nBcc: other@example.com"])
-def test_missing_or_invalid_contact_destination_never_connects_smtp(settings, setup, monkeypatch, recipient):
+def test_missing_or_invalid_contact_destination_never_connects_smtp(settings, monkeypatch, recipient):
     monkeypatch.setattr("email_service.smtplib.SMTP", lambda *_args, **_kwargs: pytest.fail("Must not connect"))
-    with TestClient(create_app(replace(settings, contact_to_email=recipient), otp_service=setup[0])) as client:
+    with TestClient(create_app(replace(settings, contact_to_email=recipient))) as client:
         assert client.post("/api/contact", json=BODY).status_code == 503
-        assert client.post("/api/auth/send-otp", json={"email": BODY["email"]}).status_code == 200
 
 
 def test_contact_smtp_reuses_starttls_and_sends_only_to_configured_inbox(settings, monkeypatch):

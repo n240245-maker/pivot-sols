@@ -1,27 +1,27 @@
+"""Input for self-declared student session creation."""
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr, StringConstraints, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, StringConstraints, field_validator
 
 
-class SendOtpRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    email: EmailStr
+class StudentLoginRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=120)]
+    student_id: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=40)]
+    academic_level: Literal['P1', 'E1']
 
-    @field_validator("email", mode="before")
+    @field_validator('name')
     @classmethod
-    def normalize_email(cls, value: object) -> object:
-        return value.strip().lower() if isinstance(value, str) else value
+    def valid_name(cls, value: str) -> str:
+        normalized = ' '.join(value.split())
+        if len(normalized) < 2 or not any(character.isalpha() for character in normalized):
+            raise ValueError('Enter your name.')
+        return normalized
 
-
-class VerifyOtpRequest(SendOtpRequest):
-    otp: Annotated[str, StringConstraints(strict=True, pattern=r"^[0-9]{6}$", min_length=6, max_length=6)]
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=120)] | None = None
-    student_id: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=40)] | None = None
-    academic_level: Literal['P1', 'E1'] | None = None
-
-    @model_validator(mode='after')
-    def complete_profile(self):
-        present = [self.name is not None, self.student_id is not None, self.academic_level is not None]
-        if any(present) and not all(present):
-            raise ValueError('Provide name, student ID and academic level together.')
-        return self
+    @field_validator('student_id')
+    @classmethod
+    def normalize_id(cls, value: str) -> str:
+        normalized = value.upper()
+        if not normalized.isascii() or not normalized.isalnum():
+            raise ValueError('Enter a valid student ID.')
+        return normalized

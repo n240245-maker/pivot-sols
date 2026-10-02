@@ -1,4 +1,4 @@
-"""Student reports with OTP-issued identity and agent moderation."""
+"""Student reports with session-bound ID identity and agent moderation."""
 from datetime import timedelta
 from typing import Literal
 from uuid import UUID
@@ -44,8 +44,10 @@ def install_problems(app, settings):
             fail('This student request is not allowed.', 403)
         session = current_student(request, db)
         if not session:
-            fail('Verify your email again before reporting or voting.', 401)
-        return identifier(settings.otp_secret, session.student_email)
+            fail('Sign in again before reporting or voting.', 401)
+        if not session.student_id:
+            fail('Sign in again before reporting or voting.', 401)
+        return identifier(settings.otp_secret, session.student_id)
 
     def get_problem(db, problem_id: UUID, *, include_archived=False):
         row = db.get(StudentProblem, str(problem_id))

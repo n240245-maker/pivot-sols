@@ -46,7 +46,7 @@ def cms(engine, settings):
     db.add(admin)
     db.commit()
     delivered = []
-    app = create_app(settings, db_factory=factory, admin_sender=lambda address, code: delivered.append((address, code)))
+    app = create_app(settings, db_factory=factory)
     clock = [datetime.now(timezone.utc)]
     app.state.admin_security.clock = lambda: clock[0]
     with TestClient(app, headers={'Origin': settings.frontend_url, 'X-Pivot-Admin': '1'}) as client:
@@ -61,11 +61,8 @@ def login(cms):
     client = cms['client']
     response = client.post('/api/admin/auth/login', json={'email': cms['email'], 'password': cms['password']})
     assert response.status_code == 200, response.text
-    challenge = response.json()['challenge']
-    verified = client.post('/api/admin/auth/verify', json={'challenge': challenge, 'otp': cms['delivered'][-1][1]})
-    assert verified.status_code == 200, verified.text
-    client.headers['X-CSRF-Token'] = verified.json()['csrf_token']
-    return challenge, verified
+    client.headers['X-CSRF-Token'] = response.json()['csrf_token']
+    return response
 
 
 def tree(cms):
@@ -109,24 +106,24 @@ def test_schema_migration_and_constraints(engine):
     assert any(item['name'] == 'uq_subject_semester_slug' for item in inspector.get_unique_constraints('subjects'))
     assert any(item['name'] == 'uq_semester_p1' for item in inspector.get_indexes('semesters'))
     with engine.connect() as connection:
-        assert connection.execute(text('select version_num from alembic_version')).scalar() == 'b6d3f9a2c741'
+        assert connection.execute(text('select version_num from alembic_version')).scalar() == 'c84e7a0b6d22'
 
 
-def test_password_otp_session_and_logout(cms):
+def test_password_session_and_logout_without_agent_otp(cms):
     db, client = cms['db'], cms['client']
     assert cms['admin'].password_hash.startswith('$argon2id$')
     assert password_matches(cms['admin'].password_hash, cms['password'])
     assert not password_matches(cms['admin'].password_hash, 'wrong')
     assert client.get('/api/admin/branches').status_code == 401
     assert client.post('/api/admin/auth/login', json={'email': cms['email'], 'password': 'wrong'}).status_code == 401
-    challenge, verified = login(cms)
-    cookie = verified.headers['set-cookie'].lower()
+    logged_in = login(cms)
+    cookie = logged_in.headers['set-cookie'].lower()
     assert 'httponly' in cookie and 'samesite=strict' in cookie and 'path=/api/admin' in cookie
     assert client.get('/api/admin/auth/me').status_code == 200
     assert client.get('/api/admin/catalog').status_code == 200
-    record = db.scalar(select(m.AdminChallenge).where(m.AdminChallenge.admin_id == cms['admin'].id))
-    assert record.otp_hash != cms['delivered'][-1][1] and record.token_hash != challenge
-    assert client.post('/api/admin/auth/verify', json={'challenge': challenge, 'otp': cms['delivered'][-1][1]}).status_code == 401
+    assert db.scalar(select(m.AdminChallenge).where(m.AdminChallenge.admin_id == cms['admin'].id)) is None
+    assert client.post('/api/admin/auth/verify', json={}).status_code == 404
+    assert client.post('/api/admin/auth/resend', json={}).status_code == 404
     token = client.cookies.get(COOKIE)
     assert client.post('/api/admin/auth/logout').status_code == 200
     client.cookies.set(COOKIE, token, path='/api/admin')
@@ -137,7 +134,8 @@ def test_admin_origin_csrf_and_student_session_rejected(cms):
     client = cms['client']
     assert client.post('/api/admin/auth/login', headers={'Origin': 'https://untrusted.example'}, json={'email': cms['email'], 'password': cms['password']}).status_code == 403
     assert not cms['delivered']
-    client.cookies.set('pivot-student-session', 'email-verified-v2')
+    client.headers['X-Pivot-Student'] = '1'
+    assert client.post('/api/auth/login', json={'name': 'Test Student', 'student_id': 'N240245', 'academic_level': 'E1'}).status_code == 200
     for resource in RESOURCES:
         assert client.get(f'/api/admin/{resource}').status_code == 401
         assert client.post(f'/api/admin/{resource}', json={}).status_code == 401
@@ -146,28 +144,18 @@ def test_admin_origin_csrf_and_student_session_rejected(cms):
     assert client.post('/api/admin/branches', headers={'Origin': 'https://untrusted.example'}, json={'slug': 'qa-test', 'name': 'Test'}).status_code == 403
 
 
-def test_admin_expiry_attempt_limits_and_resend(cms):
+def test_agent_login_has_no_otp_and_session_expires(cms):
     client = cms['client']
-    challenge = client.post('/api/admin/auth/login', json={'email': cms['email'], 'password': cms['password']}).json()['challenge']
-    assert client.post('/api/admin/auth/resend', json={'challenge': challenge}).status_code == 429
-    cms['clock'][0] += timedelta(seconds=61)
-    fresh = client.post('/api/admin/auth/resend', json={'challenge': challenge})
-    assert fresh.status_code == 200
-    assert client.post('/api/admin/auth/verify', json={'challenge': challenge, 'otp': cms['delivered'][0][1]}).status_code == 401
-    new_token = fresh.json()['challenge']
-    wrong = '999999' if cms['delivered'][-1][1] != '999999' else '888888'
-    for _ in range(5):
-        assert client.post('/api/admin/auth/verify', json={'challenge': new_token, 'otp': wrong}).status_code == 401
-    assert client.post('/api/admin/auth/verify', json={'challenge': new_token, 'otp': cms['delivered'][-1][1]}).status_code == 401
-    cms['clock'][0] += timedelta(seconds=61)
-    expired = client.post('/api/admin/auth/login', json={'email': cms['email'], 'password': cms['password']}).json()['challenge']
-    cms['clock'][0] += timedelta(minutes=6)
-    assert client.post('/api/admin/auth/verify', json={'challenge': expired, 'otp': cms['delivered'][-1][1]}).status_code == 401
+    result = login(cms)
+    assert 'csrf_token' in result.json() and 'challenge' not in result.json()
+    assert cms['delivered'] == []
+    cms['clock'][0] += timedelta(hours=9)
+    assert client.get('/api/admin/auth/me').status_code == 401
 
 
 def test_admin_session_idle_and_production_cookie(cms):
     cms['app'].state.admin_security.secure_cookie = True
-    _, verified = login(cms)
+    verified = login(cms)
     assert 'Secure' in verified.headers['set-cookie']
     assert 'SameSite=none' in verified.headers['set-cookie']
     # HTTPS-only cookie is not sent over this HTTP test client.
@@ -181,11 +169,10 @@ def test_cross_site_https_agent_session_cors_csrf_and_logout(cms, settings):
     from dataclasses import replace
     production = replace(settings, frontend_url='https://pivot-sols.vercel.app')
     factory = lambda: Session(bind=cms['db'].get_bind(), join_transaction_mode='create_savepoint', expire_on_commit=False)
-    app = create_app(production, db_factory=factory,
-                     admin_sender=lambda address, code: cms['delivered'].append((address, code)))
+    app = create_app(production, db_factory=factory)
     headers = {'Origin': production.frontend_url, 'X-Pivot-Admin': '1'}
     with TestClient(app, base_url='https://api.example.test', headers=headers) as client:
-        _, response = login({**cms, 'client': client})
+        response = login({**cms, 'client': client})
         cookie = response.headers['set-cookie'].lower()
         assert all(value in cookie for value in ['secure', 'httponly', 'samesite=none', 'path=/api/admin'])
         assert response.headers['access-control-allow-origin'] == production.frontend_url
@@ -330,17 +317,12 @@ def test_duplicate_api_records_return_conflict_without_partial_changes(cms):
     assert not any(item['title'] == 'Orphan' for item in client.get('/api/admin/books').json())
 
 
-def test_admin_delivery_failure_keeps_previous_challenge_usable(cms):
-    client = cms['client']
-    challenge = client.post('/api/admin/auth/login', json={'email': cms['email'], 'password': cms['password']}).json()['challenge']
-    code = cms['delivered'][-1][1]
-    cms['clock'][0] += timedelta(seconds=61)
-    def fail_delivery(*args):
-        raise RuntimeError('private SMTP diagnostic must not escape')
-    cms['app'].state.admin_security.sender = fail_delivery
-    result = client.post('/api/admin/auth/resend', json={'challenge': challenge})
-    assert result.status_code == 503 and 'private' not in result.text
-    assert client.post('/api/admin/auth/verify', json={'challenge': challenge, 'otp': code}).status_code == 200
+def test_inactive_agent_cannot_sign_in(cms):
+    cms['admin'].is_active = False
+    cms['db'].commit()
+    response = cms['client'].post('/api/admin/auth/login', json={'email': cms['email'], 'password': cms['password']})
+    assert response.status_code == 401
+    assert response.json()['detail']['message'] == 'Email or password is incorrect.'
 
 
 def test_admin_rate_limit_is_database_backed(cms):

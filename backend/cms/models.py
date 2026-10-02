@@ -52,9 +52,9 @@ class AdminSession(Identity, Base):
 class StudentSession(Identity, Base):
     __tablename__ = 'student_sessions'
     __table_args__ = (CheckConstraint("academic_level IS NULL OR academic_level IN ('P1','E1')", name='ck_student_session_level'),)
-    student_email: Mapped[str] = mapped_column(String(254), index=True)
+    student_email: Mapped[str | None] = mapped_column(String(254), index=True)
     student_name: Mapped[str | None] = mapped_column(String(120))
-    student_id: Mapped[str | None] = mapped_column(String(40))
+    student_id: Mapped[str | None] = mapped_column(String(40), index=True)
     academic_level: Mapped[str | None] = mapped_column(String(2))
     token_hash: Mapped[str] = mapped_column(String(64), unique=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

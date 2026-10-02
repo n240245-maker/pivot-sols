@@ -4,7 +4,10 @@ from dataclasses import replace
 import pytest
 
 from config import ConfigurationError, Settings
-from email_service import send_otp_email
+from email_service import send_contact_email
+from contact_models import ContactRequest
+
+CONTACT = ContactRequest(name='Student', email='student@example.com', message='A useful test message.')
 
 
 @pytest.fixture
@@ -44,7 +47,7 @@ def test_config_secrets_are_not_in_repr(configured_env):
         assert configured_env[key] not in repr(config)
 
 
-def test_smtp_uses_timeout_starttls_validation_and_both_templates(settings, monkeypatch):
+def test_smtp_contact_uses_timeout_starttls_and_configured_inbox(settings, monkeypatch):
     calls, messages = [], []
     class FakeSMTP:
         def __init__(self, host, port, timeout): calls.append(("connect", host, port, timeout))
@@ -58,15 +61,15 @@ def test_smtp_uses_timeout_starttls_validation_and_both_templates(settings, monk
         def login(self, username, password): calls.append(("login", username, password))
         def send_message(self, message): messages.append(message); calls.append(("send",))
     monkeypatch.setattr("email_service.smtplib.SMTP", FakeSMTP)
-    send_otp_email("student@example.com", "483912", settings=settings)
+    send_contact_email(CONTACT, settings=replace(settings, contact_to_email='inbox@example.com'))
     assert [call[0] for call in calls] == ["connect", "ehlo", "starttls", "ehlo", "login", "send"]
     assert calls[0][-1] == 12
     message = messages[0]
-    assert message["Subject"] == "Your Pivot Sols verification code"
+    assert message["Subject"] == "Pivot Sols Contact — Student"
     assert message["From"].startswith("Pivot Sols")
-    assert message["To"] == "student@example.com"
-    assert "483912" in message.get_body(preferencelist=("plain",)).get_content()
-    assert "483912" in message.get_body(preferencelist=("html",)).get_content()
+    assert message["To"] == "inbox@example.com"
+    assert message["Reply-To"] == "student@example.com"
+    assert "A useful test message." in message.get_body(preferencelist=("plain",)).get_content()
 
 
 def test_brevo_configuration_does_not_require_smtp_credentials(configured_env, monkeypatch):
@@ -83,9 +86,7 @@ def test_brevo_configuration_does_not_require_smtp_credentials(configured_env, m
         Settings.from_env()
 
 
-def test_brevo_sends_otp_and_contact_with_safe_reply_to(settings, monkeypatch):
-    from email_service import send_contact_email
-    from contact_models import ContactRequest
+def test_brevo_sends_contact_with_safe_reply_to(settings, monkeypatch):
     from types import SimpleNamespace
     requests = []
     def post(url, **kwargs):
@@ -94,14 +95,11 @@ def test_brevo_sends_otp_and_contact_with_safe_reply_to(settings, monkeypatch):
     monkeypatch.setattr('email_service.httpx.post', post)
     monkeypatch.setattr('email_service.smtplib.SMTP', lambda *_a, **_k: pytest.fail('HTTPS email must not use SMTP'))
     config = replace(settings, email_provider='brevo', brevo_api_key='test-only-key', contact_to_email='inbox@example.com')
-    send_otp_email('student@example.com', '483912', settings=config)
+    send_contact_email(CONTACT, settings=config)
     url, options = requests[-1]
     assert url == 'https://api.brevo.com/v3/smtp/email'
     assert options['headers']['api-key'] == 'test-only-key'
     assert options['follow_redirects'] is False and options['timeout'] == 12
-    assert options['json']['to'] == [{'email': 'student@example.com'}]
-    assert '483912' in options['json']['textContent'] and '483912' in options['json']['htmlContent']
-    send_contact_email(ContactRequest(name='Student', email='student@example.com', message='A useful test message.'), settings=config)
     payload = requests[-1][1]['json']
     assert payload['sender']['email'] == settings.smtp_from_email
     assert payload['to'] == [{'email': 'inbox@example.com'}]
@@ -114,5 +112,5 @@ def test_brevo_rejects_unconfirmed_delivery_without_leaking_values(settings, mon
     from types import SimpleNamespace
     monkeypatch.setattr('email_service.httpx.post', lambda *_a, **_k: SimpleNamespace(status_code=status, json=lambda: payload))
     with pytest.raises(RuntimeError) as error:
-        send_otp_email('student@example.com', '483912', settings=replace(settings, email_provider='brevo', brevo_api_key='test-only-key'))
-    assert '483912' not in str(error.value) and 'test-only-key' not in str(error.value)
+        send_contact_email(CONTACT, settings=replace(settings, email_provider='brevo', brevo_api_key='test-only-key', contact_to_email='inbox@example.com'))
+    assert 'A useful test message.' not in str(error.value) and 'test-only-key' not in str(error.value)

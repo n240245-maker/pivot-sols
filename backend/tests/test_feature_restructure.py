@@ -13,7 +13,6 @@ from cms import models as m
 from cms.auth import hash_password
 from cms.database import create_database_engine
 from cms.storage import identify
-from otp_service import OtpService
 from student_session import COOKIE, cookie_options, identifier
 
 
@@ -27,32 +26,27 @@ def feature(settings):
     with factory() as db:
         db.add(m.Admin(email=email, password_hash=hash_password('Test-only password 123!'), display_name='Feature Agent'))
         db.commit()
-    delivered = []
-    otp = OtpService(settings.otp_secret, lambda address, code: delivered.append((address, code)))
-    app = create_app(settings, otp_service=otp, db_factory=factory,
-                     admin_sender=lambda address, code: delivered.append((address, code)))
+    app = create_app(settings, db_factory=factory)
     with TestClient(app, headers={'Origin': settings.frontend_url, 'X-Pivot-Admin': '1'}) as client:
-        yield client, factory, delivered, email
+        yield client, factory, [], email
     outer.rollback()
     connection.close()
     engine.dispose()
 
 
 def agent(feature):
-    client, _, delivered, email = feature
-    challenge = client.post('/api/admin/auth/login', json={'email': email, 'password': 'Test-only password 123!'}).json()['challenge']
-    result = client.post('/api/admin/auth/verify', json={'challenge': challenge, 'otp': delivered[-1][1]})
+    client, _, _, email = feature
+    result = client.post('/api/admin/auth/login', json={'email': email, 'password': 'Test-only password 123!'})
     assert result.status_code == 200
     client.headers['X-CSRF-Token'] = result.json()['csrf_token']
     return client
 
 
-def student(client, delivered, email):
-    assert client.post('/api/auth/send-otp', json={'email': email}).status_code == 200
-    result = client.post('/api/auth/verify-otp', json={'email': email, 'otp': delivered[-1][1]})
+def student(client, student_id, level='P1'):
+    client.headers['X-Pivot-Student'] = '1'
+    result = client.post('/api/auth/login', json={'name': 'Test Student', 'student_id': student_id, 'academic_level': level})
     assert result.status_code == 200
     assert 'httponly' in result.headers['set-cookie'].lower()
-    client.headers['X-Pivot-Student'] = '1'
 
 
 def test_new_content_crud_and_published_visibility(feature):
@@ -142,26 +136,29 @@ def test_student_cookie_is_secure_on_hosted_frontend():
 
 
 def test_student_session_restores_expires_and_revokes(feature):
-    client, factory, delivered, _ = feature
-    email = f'session-{uuid4().hex}@example.com'
+    client, factory, _, _ = feature
+    student_id = f'N{uuid4().hex[:10].upper()}'
     assert client.get('/api/auth/me').status_code == 401
-    assert client.post('/api/auth/send-otp', json={'email': email}).status_code == 200
-    verified = client.post('/api/auth/verify-otp', json={'email': email, 'otp': delivered[-1][1],
-        'name': 'Session Student', 'student_id': 'N240001', 'academic_level': 'E1'})
-    assert verified.status_code == 200
-    cookie = verified.headers['set-cookie'].lower()
+    client.headers['X-Pivot-Student'] = '1'
+    logged_in = client.post('/api/auth/login', json={'name': ' Session Student ',
+        'student_id': student_id.lower(), 'academic_level': 'E1'})
+    assert logged_in.status_code == 200
+    assert logged_in.json()['student']['studentId'] == student_id
+    assert 'email' not in logged_in.json()['student']
+    cookie = logged_in.headers['set-cookie'].lower()
     assert 'max-age=2592000' in cookie and 'httponly' in cookie and 'path=/' in cookie
     raw_token = client.cookies.get(COOKIE)
     assert raw_token and len(raw_token) >= 40
     with factory() as db:
-        row = db.scalar(select(m.StudentSession).where(m.StudentSession.student_email == email))
+        row = db.scalar(select(m.StudentSession).where(m.StudentSession.student_id == student_id))
+        assert row.student_email is None
         assert row.token_hash == sha256(raw_token.encode()).hexdigest()
         assert row.token_hash != raw_token
         assert abs((row.expires_at - row.created_at).total_seconds() - 2592000) < 2
         session_id = row.id
     profile = client.get('/api/auth/me').json()['profile']
-    assert profile['academicLevel'] == 'E1' and profile['studentId'] == 'N240001'
-    assert profile['email'] == email and 'token' not in profile
+    assert profile['academicLevel'] == 'E1' and profile['studentId'] == student_id
+    assert profile['name'] == 'Session Student' and 'email' not in profile and 'token' not in profile
     with TestClient(client.app) as reopened:
         reopened.cookies.set(COOKIE, raw_token)
         assert reopened.get('/api/auth/me').json()['profile']['academicLevel'] == 'E1'
@@ -175,22 +172,21 @@ def test_student_session_restores_expires_and_revokes(feature):
         assert db.get(m.StudentSession, session_id).revoked_at is not None
 
     client.cookies.clear()
-    next_email = f'expired-{uuid4().hex}@example.com'
-    assert client.post('/api/auth/send-otp', json={'email': next_email}).status_code == 200
-    assert client.post('/api/auth/verify-otp', json={'email': next_email, 'otp': delivered[-1][1],
-        'name': 'P1 Student', 'student_id': 'N260002', 'academic_level': 'P1'}).status_code == 200
+    next_id = f'N{uuid4().hex[:10].upper()}'
+    assert client.post('/api/auth/login', json={'name': 'P1 Student',
+        'student_id': next_id, 'academic_level': 'P1'}).status_code == 200
     assert client.get('/api/auth/me').json()['profile']['academicLevel'] == 'P1'
     with factory() as db:
-        row = db.scalar(select(m.StudentSession).where(m.StudentSession.student_email == next_email))
+        row = db.scalar(select(m.StudentSession).where(m.StudentSession.student_id == next_id))
         row.expires_at = row.created_at - timedelta(seconds=1)
         db.commit()
     assert client.get('/api/auth/me').status_code == 401
 
 
 def test_problem_author_identity_comes_from_session_not_request(feature):
-    client, factory, delivered, _ = feature
-    email = f'author-{uuid4().hex}@example.com'
-    student(client, delivered, email)
+    client, factory, _, _ = feature
+    student_id = f'N{uuid4().hex[:10].upper()}'
+    student(client, student_id)
     body = {'title': 'Test internet issue', 'description': 'The internet is unavailable in the test area.',
             'academic_level': 'P1', 'priority': 'medium'}
     assert client.post('/api/problems', json={**body, 'author_identifier': 'another-student'}).status_code == 422
@@ -198,16 +194,17 @@ def test_problem_author_identity_comes_from_session_not_request(feature):
     assert created.status_code == 201
     with factory() as db:
         row = db.get(m.StudentProblem, created.json()['id'])
-        assert row.author_identifier == identifier(client.app.state.admin_security.settings.otp_secret, email)
+        assert row.author_identifier == identifier(client.app.state.admin_security.settings.otp_secret, student_id)
 
 
 def test_student_reports_have_server_identity_and_one_reaction_per_student(feature):
-    client, factory, delivered, _ = feature
+    client, factory, _, _ = feature
     client.headers['X-Pivot-Student'] = '1'
     body = {'title': 'Test water supply', 'description': 'Water supply is unavailable in the test block.',
             'academic_level': 'P1', 'priority': 'high', 'category': 'Infrastructure'}
     assert client.post('/api/problems', json=body).status_code == 401
-    student(client, delivered, f'student-a-{uuid4().hex}@example.com')
+    first_id = f'N{uuid4().hex[:10].upper()}'
+    student(client, first_id)
     assert client.post('/api/problems', json={**body, 'priority': 'urgent'}).status_code == 422
     assert client.post('/api/problems', json={**body, 'academic_level': 'P2'}).status_code == 422
     created = client.post('/api/problems', json=body)
@@ -221,7 +218,9 @@ def test_student_reports_have_server_identity_and_one_reaction_per_student(featu
     assert (switched['likes'], switched['dislikes']) == (0, 1)
     with factory() as db:
         assert db.scalar(select(m.ProblemReaction).where(m.ProblemReaction.problem_id == report_id)) is not None
-    student(client, delivered, f'student-b-{uuid4().hex}@example.com')
+    student(client, first_id)
+    assert client.post(f'/api/problems/{report_id}/reaction', json={'reaction': 'dislike'}).json()['dislikes'] == 0
+    student(client, f'N{uuid4().hex[:10].upper()}')
     assert client.post(f'/api/problems/{report_id}/reaction', json={'reaction': 'like'}).json()['likes'] == 1
     public = client.get('/api/public/problems').json()[0]
     assert 'author_identifier' not in public and 'student_identifier' not in public
@@ -238,8 +237,8 @@ def test_student_reports_have_server_identity_and_one_reaction_per_student(featu
 
 
 def test_problem_filters_and_trending_are_deterministic(feature):
-    client, factory, delivered, _ = feature
-    student(client, delivered, f'student-rank-{uuid4().hex}@example.com')
+    client, factory, _, _ = feature
+    student(client, f'N{uuid4().hex[:10].upper()}')
     records = [
         ('Low priority issue', 'P1', 'low'),
         ('Medium priority issue', 'E1', 'medium'),

@@ -14,8 +14,8 @@ COOKIE = 'pivot_student_session'
 LIFETIME_SECONDS = 30 * 24 * 60 * 60
 
 
-def identifier(secret: str, email: str) -> str:
-    return hmac.new(secret.encode(), f'student:{email.lower()}'.encode(), sha256).hexdigest()
+def identifier(secret: str, student_id: str) -> str:
+    return hmac.new(secret.encode(), f'student-id:{student_id.strip().upper()}'.encode(), sha256).hexdigest()
 
 
 def token_hash(token: str) -> str:
@@ -28,12 +28,11 @@ def cookie_options(frontend_url: str) -> dict:
     return {'httponly': True, 'secure': secure, 'samesite': 'lax', 'path': '/'}
 
 
-def issue(response: Response, db, email: str, profile: dict | None, frontend_url: str) -> StudentSession:
+def issue(response: Response, db, profile: dict, frontend_url: str) -> StudentSession:
     now = utcnow()
     token = secrets.token_urlsafe(32)
-    profile = profile or {}
-    row = StudentSession(student_email=email.lower(), student_name=profile.get('name'),
-                         student_id=profile.get('student_id'), academic_level=profile.get('academic_level'),
+    row = StudentSession(student_email=None, student_name=profile['name'],
+                         student_id=profile['student_id'], academic_level=profile['academic_level'],
                          token_hash=token_hash(token), created_at=now, last_used_at=now,
                          expires_at=now + timedelta(seconds=LIFETIME_SECONDS))
     db.add(row)
@@ -58,8 +57,8 @@ def current(request: Request, db) -> StudentSession | None:
 def public_profile(row: StudentSession, secret: str) -> dict | None:
     if not row.student_name or not row.student_id or row.academic_level not in {'P1', 'E1'}:
         return None
-    return {'id': identifier(secret, row.student_email), 'name': row.student_name,
-            'studentId': row.student_id, 'email': row.student_email,
+    return {'id': identifier(secret, row.student_id), 'name': row.student_name,
+            'studentId': row.student_id,
             'academicLevel': row.academic_level, 'batch': 0, 'campus': 'Nuzvid'}
 
 
