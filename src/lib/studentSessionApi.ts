@@ -13,15 +13,23 @@ export async function loginStudent(details: StudentLoginDetails): Promise<void> 
       body: JSON.stringify({name: details.name.trim(), student_id: details.studentId.trim().toUpperCase(), academic_level: details.year}),
     })
     if (!response.ok) {
-      if (response.status === 400) throw new Error('Enter a valid name, student ID and year.')
+      if (response.status === 400 || response.status === 422) throw new Error('Enter a valid name, student ID and year.')
+      if (response.status === 403) throw new Error('Sign-in is not allowed from this site. Open the official Pivot Sols address and try again.')
       if (response.status === 429) throw new Error('Too many sign-in attempts. Please try again later.')
+      if (response.status >= 500) throw new Error('The student service is temporarily unavailable. Please try again shortly.')
       throw new Error('Unable to sign in. Please try again.')
     }
     const result: unknown = await response.json()
     if (!result || typeof result !== 'object' || !('success' in result) || result.success !== true)
       throw new Error('Unable to sign in. Please try again.')
   } catch (error) {
-    if (error instanceof Error && ['Enter a valid name, student ID and year.','Too many sign-in attempts. Please try again later.','Unable to sign in. Please try again.'].includes(error.message)) throw error
+    if (error instanceof Error && [
+      'Enter a valid name, student ID and year.',
+      'Sign-in is not allowed from this site. Open the official Pivot Sols address and try again.',
+      'Too many sign-in attempts. Please try again later.',
+      'The student service is temporarily unavailable. Please try again shortly.',
+      'Unable to sign in. Please try again.',
+    ].includes(error.message)) throw error
     throw new Error('Unable to reach the student service. Please try again.')
   } finally { clearTimeout(timeout) }
 }

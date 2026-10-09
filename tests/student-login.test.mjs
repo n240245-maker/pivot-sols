@@ -91,6 +91,21 @@ test('student session API treats 401 as logged out and sends logout to server',a
   assert.equal(requests[1].options.credentials,'include')
 })
 
+test('student login reports validation, origin, throttle and service failures clearly',async()=>{
+  for(const [status,message] of [
+    [400,'Enter a valid name, student ID and year.'],
+    [422,'Enter a valid name, student ID and year.'],
+    [403,'Sign-in is not allowed from this site. Open the official Pivot Sols address and try again.'],
+    [429,'Too many sign-in attempts. Please try again later.'],
+    [503,'The student service is temporarily unavailable. Please try again shortly.'],
+  ]){
+    const api=loadTypeScript('src/lib/studentSessionApi.ts',{},new Map(),{
+      fetch:async()=>({ok:false,status}),
+    })
+    await assert.rejects(api.loginStudent(details),{message})
+  }
+})
+
 test('student context authenticates only after backend session restoration',async()=>{
   const profile={id:'safe-id',name:'Harsha',studentId:'N240245',academicLevel:'E1',batch:0,campus:'Nuzvid'}
   const slots=[],effects=[];let index=0,calls=0
