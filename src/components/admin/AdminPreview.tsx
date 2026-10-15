@@ -20,14 +20,16 @@ export function studentPreviewPath(section:AdminSection,row:Record<string,unknow
   }
   if(section.resource==='site-content')return row.key==='about'?'/about':'/explore'
   const subject=section.resource==='books'?catalog.subjects.find(item=>item.id===row.subject_id):section.resource==='subjects'?row:undefined
-  const lab=section.resource==='experiments'?catalog.labs.find(item=>item.id===row.lab_id):section.resource==='labs'?row:undefined
+  const experiment=section.resource==='experiment-videos'?catalog.experiments.find(item=>item.id===row.experiment_id):undefined
+  const lab=section.resource==='experiments'?catalog.labs.find(item=>item.id===row.lab_id):section.resource==='experiment-videos'?catalog.labs.find(item=>item.id===experiment?.lab_id):section.resource==='labs'?row:undefined
   const semester=section.resource==='semesters'?row:catalog.semesters.find(item=>item.id===(subject?.semester_id??lab?.semester_id))
   if(!semester)return undefined
   const branch=catalog.branches.find(item=>item.id===semester.branch_id)
-  const isLab=section.resource==='labs'||section.resource==='experiments'
+  const isLab=section.resource==='labs'||section.resource==='experiments'||section.resource==='experiment-videos'
   const level=textValue(semester.academic_level).toLowerCase()
+  if(level==='p1')return isLab?lab?.id?`/resources/labs/p1/${lab.id}${experiment?`/${textValue(experiment.slug)}`:section.resource==='experiments'?`/${slug}`:''}`:'/resources/labs':subject?.id?`/resources/books/p1/${subject.id}`:'/resources/books'
   const prefix=branch?textValue(branch.slug):isLab?'':'common'
-  return [`/resources/${isLab?'labs':'books'}`,level,prefix,`semester-${semester.number}`,textValue(subject?.slug??lab?.slug),section.resource==='experiments'?slug:''].filter(Boolean).join('/')
+  return [`/resources/${isLab?'labs':'books'}`,level,prefix,`semester-${semester.number}`,textValue(subject?.slug??lab?.slug),section.resource==='experiments'?slug:section.resource==='experiment-videos'?textValue(experiment?.slug):''].filter(Boolean).join('/')
 }
 
 function PreviewValue({value}:{value:unknown}){
@@ -39,5 +41,5 @@ export function AdminPreview({section,values,catalog}:{section:AdminSection;valu
   const path=studentPreviewPath(section,values,catalog)
   const videoType=values.video_type==='youtube'||values.video_type==='mp4'||values.video_type==='external'?values.video_type:undefined
   const resourceUrl=safeResourceUrl(textValue(values.resource_url))
-  return <article className="admin-preview"><div className="admin-preview-heading"><span className={`admin-status ${textValue(values.status)}`}>{textValue(values.status)||'draft'}</span><p>Private agent preview · only published content appears to students.</p></div><h2>{textValue(values.name)||textValue(values.title)||'Untitled'}</h2>{section.resource==='experiments'&&<LabVideo experiment={{id:textValue(values.id)||'preview',slug:textValue(values.slug),title:textValue(values.title),videoType,videoUrl:textValue(values.video_url),duration:textValue(values.duration)}}/>}<div className="admin-preview-body">{section.fields.filter(field=>!['name','title','slug','video_type','video_url','key'].includes(field.key)).map(field=>{const value=values[field.key];return <section key={field.key}><h3>{field.label}</h3>{field.relation?<p>{(Array.isArray(value)?value:[value]).map(id=>catalog[field.relation!].find(row=>row.id===id)).filter((row):row is AdminRecord=>!!row).map(recordTitle).join(', ')||'Not added yet.'}</p>:<PreviewValue value={value}/>}</section>})}{section.resource==='site-content'&&<PreviewValue value={values.content_json}/>}</div>{resourceUrl&&<a href={resourceUrl} target="_blank" rel="noopener noreferrer">Open book resource ↗</a>}{values.status==='published'&&path&&<Link className="button button-secondary" to={path} target="_blank">Open student page ↗</Link>}</article>
+  return <article className="admin-preview"><div className="admin-preview-heading"><span className={`admin-status ${textValue(values.status)}`}>{textValue(values.status)||'draft'}</span><p>Private agent preview · only published content appears to students.</p></div><h2>{textValue(values.name)||textValue(values.title)||'Untitled'}</h2>{(section.resource==='experiments'||section.resource==='experiment-videos')&&<LabVideo experiment={{id:textValue(values.id)||'preview',slug:textValue(values.slug),title:textValue(values.title),videoType,videoUrl:textValue(values.video_url),duration:textValue(values.duration)}}/>}<div className="admin-preview-body">{section.fields.filter(field=>!['name','title','slug','video_type','video_url','key'].includes(field.key)).map(field=>{const value=values[field.key];return <section key={field.key}><h3>{field.label}</h3>{field.relation?<p>{(Array.isArray(value)?value:[value]).map(id=>catalog[field.relation!].find(row=>row.id===id)).filter((row):row is AdminRecord=>!!row).map(recordTitle).join(', ')||'Not added yet.'}</p>:<PreviewValue value={value}/>}</section>})}{section.resource==='site-content'&&<PreviewValue value={values.content_json}/>}</div>{resourceUrl&&<a href={resourceUrl} target="_blank" rel="noopener noreferrer">Open book resource ↗</a>}{values.status==='published'&&path&&<Link className="button button-secondary" to={path} target="_blank">Open student page ↗</Link>}</article>
 }

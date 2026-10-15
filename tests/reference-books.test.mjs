@@ -18,11 +18,13 @@ function renderPage(level = 'P1', path = '/resources/books', data = demo) {
 
 test('P1 books home bypasses branches and uses supplied profile academic level', () => {
   const html = renderPage()
-  assert.ok(html.includes('Choose Semester'))
+  assert.ok(html.includes('Choose a Subject'))
+  assert.ok(!html.includes('Choose Semester'))
+  assert.ok(!html.includes('Semester 1')&&!html.includes('Semester 2'))
   assert.ok(!html.includes('Choose Your Branch'))
   assert.ok(html.includes('N260000'))
   assert.ok(html.includes('Academic level P1'))
-  assert.ok(html.includes('/resources/books/p1/common/sample-1'))
+  assert.ok(html.includes('/resources/books/p1/demo-p1-subject'))
 })
 test('E1 books home shows configured branches without deriving level from ID', () => {
   const html = renderPage('E1') // Deliberately retains P1-format fixture ID: profile level is the only source.
@@ -61,6 +63,13 @@ test('configured book page renders metadata, missing resource status, and backwa
   for(const text of ['Sample Reference Book','Sample Author','Sample edition','Resource coming soon','Back to subjects','Prototype resources']) assert.ok(html.includes(text),text)
   assert.ok(!html.includes('Open Resource'))
   assert.ok(!html.includes('<img'))
+})
+test('P1 subject page renders every independent book in its single-year view',()=>{
+  const subject=demo.subjects.find(item=>item.id==='demo-p1-subject')
+  const books=Array.from({length:7},(_,index)=>({...demo.books[0],id:`year-book-${index}`,subjectId:subject.id,title:`Year book ${index}`}))
+  const html=renderPage('P1',`/resources/books/p1/${subject.id}`,{...demo,books})
+  for(const book of books)assert.ok(html.includes(book.title))
+  assert.ok(!html.includes('Semester 1')&&!html.includes('Semester 2'))
 })
 test('resource actions allow legitimate URLs and reject executable or malformed destinations', () => {
   const { BookCard } = loadTypeScript('src/components/resources/books/BookCard.tsx')
@@ -101,7 +110,7 @@ test('production configuration excludes all demo content and shows truthful empt
   assert.equal(production.referenceBooksCatalog.subjects.length,0)
   const p1 = renderPage('P1','/resources/books',production.referenceBooksCatalog)
   const e1 = renderPage('E1','/resources/books',production.referenceBooksCatalog)
-  assert.ok(p1.includes('Semesters haven'))
+  assert.ok(p1.includes('Subjects for P1 haven'))
   assert.ok(e1.includes('Branch resources haven'))
   for(const html of [p1,e1]) { assert.ok(!html.includes('Sample')); assert.ok(!html.includes('Prototype resources')) }
 })
@@ -115,8 +124,8 @@ test('breadcrumbs follow level, branch, semester and subject with correct parent
   assert.match(renderPage('E1','/resources/books/e1/sample-engineering/sample-1/sample-subject'),/<nav aria-label="Breadcrumb"/)
 })
 test('configured empty semester and empty subject remain useful', () => {
-  assert.ok(renderPage('P1').includes('Resources for this semester haven'))
-  assert.ok(renderPage('P1','/resources/books/p1/common/sample-2').includes('Subjects for this semester haven'))
+  assert.ok(renderPage('P1').includes('Choose a Subject'))
+  assert.ok(renderPage('P1','/resources/books/p1/common/sample-2').includes('Choose a Subject'))
   assert.ok(renderPage('E1','/resources/books/e1/sample-engineering/sample-1/sample-empty-subject').includes('No reference books have been added for this subject yet.'))
 })
 test('nested books route remains inside the existing protected student shell', () => {

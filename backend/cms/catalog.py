@@ -27,11 +27,18 @@ def build_catalog(db):
               'edition': b.edition, 'publisher': b.publisher, 'description': b.description,
               'resourceUrl': b.resource_url if b.availability == 'available' else None} for b in rows['books']]
     experiments = {}
+    videos = {}
+    for video in rows['experiment-videos']:
+        videos.setdefault(video.experiment_id, []).append({'id': video.id, 'title': video.title,
+            'videoType': video.video_type, 'videoUrl': video.video_url, 'duration': video.duration})
     for e in rows['experiments']:
+        legacy_video = [{'id': f'legacy-{e.id}', 'title': e.title, 'videoType': e.video_type,
+            'videoUrl': e.video_url, 'duration': e.duration}] if e.video_type and e.video_url else []
         experiments.setdefault(e.lab_id, []).append({'id': e.id, 'title': e.title, 'slug': e.slug,
             'experimentNumber': e.experiment_number, 'objective': e.objective, 'theory': e.theory,
             'apparatus': e.apparatus, 'procedure': e.procedure, 'expectedResult': e.expected_result, 'precautions': e.precautions,
-            'videoType': e.video_type, 'videoUrl': e.video_url, 'duration': e.duration})
+            'videoType': e.video_type, 'videoUrl': e.video_url, 'duration': e.duration,
+            'videos': legacy_video + videos.get(e.id, [])})
     labs = [{'id': l.id, **academic(l.semester_id), 'name': l.name, 'slug': l.slug, 'shortDescription': l.description,
              'experiments': experiments.get(l.id, [])} for l in rows['labs']]
     domain_data = [{'id': d.id, 'slug': d.slug, 'name': d.name, 'category': d.category, 'description': d.summary,
@@ -51,5 +58,5 @@ def build_catalog(db):
             'rooms': [dict(id=r.id,name=r.name,room_number=r.room_number,phone_number=r.phone_number,floor=r.floor,description=r.description,updated_at=r.updated_at) for r in rows['rooms']],
             'faculty_subjects': [dict(id=s.id,name=s.name,slug=s.slug) for s in rows['faculty-subjects']],
             'faculty': [dict(id=f.id,subject_id=f.subject_id,name=f.name,designation=f.designation,mobile_number=f.mobile_number,email=f.email,room_number=f.room_number,image_url=f.image_url) for f in rows['faculty']],
-            'career_resources': [dict(id=r.id,resource_type=r.resource_type,branch_id=branches[r.branch_id].slug,title=r.title,description=r.description,pdf_url=r.pdf_url,supporting_url=r.supporting_url,youtube_url=r.youtube_url,storage_type=r.storage_type,tags=r.tags,updated_at=r.updated_at) for r in rows['career-resources']],
+            'career_resources': [dict(id=r.id,resource_type=r.resource_type,branch_id=branches[r.branch_id].slug,domain_id=r.domain_id,role_id=r.role_id,title=r.title,description=r.description,pdf_url=r.pdf_url,supporting_url=r.supporting_url,youtube_url=r.youtube_url,storage_type=r.storage_type,tags=r.tags,sort_order=r.sort_order,updated_at=r.updated_at) for r in rows['career-resources']],
             'site': {s.key: {'title': s.title, **s.content_json} for s in rows['site-content']}}

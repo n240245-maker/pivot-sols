@@ -66,6 +66,43 @@ test('student resource library and search render changed API content rather than
   assert.ok(index.some(item=>item.title==='Database-only PDF'));assert.ok(!index.some(item=>item.title==='VLSI'))
 })
 
+test('career libraries show every independent resource under a branch',()=>{
+  const resources=Array.from({length:7},(_,index)=>({...contentFixture.career_resources[0],id:`resource-${index}`,title:`Published item ${index}`}))
+  const jobs=Array.from({length:7},(_,index)=>({...contentFixture.career_resources[0],id:`job-${index}`,resource_type:'job',title:`Published job item ${index}`}))
+  const data={...contentFixture,career_resources:[...resources,...jobs]}
+  const mocks=Object.fromEntries(Object.keys(contentMocks).map(key=>[key,{useContent:()=>({data,status:'ready'})}]))
+  const {CareerDomainsPage}=loadTypeScript('src/pages/CareerDomainsPage.tsx',mocks)
+  const {CareerJobsPage}=loadTypeScript('src/pages/CareerJobsPage.tsx',mocks)
+  const html=render(React.createElement(CareerDomainsPage),'/careers/domains?branch=ece')
+  for(const resource of resources)assert.ok(html.includes(resource.title))
+  const jobHtml=render(React.createElement(CareerJobsPage),'/careers/jobs?branch=ece')
+  for(const job of jobs)assert.ok(jobHtml.includes(job.title))
+})
+
+test('P1 agent placement lists subjects from both legacy semesters without a semester selector',()=>{
+  const {AcademicPlacement}=loadTypeScript('src/components/admin/AdminForms.tsx')
+  const p1={...catalog,semesters:[{id:'p1-first',academic_level:'P1',number:1,status:'published'},{id:'p1-second',academic_level:'P1',number:2,status:'published'},...catalog.semesters],subjects:[{id:'p1-subject-first',name:'Physics',semester_id:'p1-first',status:'published'},{id:'p1-subject-second',name:'Mathematics',semester_id:'p1-second',status:'published'},...catalog.subjects]}
+  const html=render(React.createElement(AcademicPlacement,{resource:'books',values:{subject_id:'p1-subject-first'},catalog:p1,onChange(){}}))
+  assert.ok(html.includes('Physics')&&html.includes('Mathematics'))
+  assert.ok(!html.includes('Select semester')&&!html.includes('Semester 1')&&!html.includes('Semester 2'))
+  assert.ok(html.includes('full academic year'))
+  const e1=render(React.createElement(AcademicPlacement,{resource:'books',values:{subject_id:'subject'},catalog:p1,onChange(){}}))
+  assert.ok(e1.includes('Select semester'))
+})
+
+test('agent resource list and editor retain the selected parent',()=>{
+  const section=adminSections.find(item=>item.resource==='books')
+  const admin={useAdminCatalog:()=>({catalog,reload:async()=>{}})}
+  const router=path=>({...awaitRouter,useLocation:()=>({pathname:path,search:'?parent=subject'}),useParams:()=>({}),useNavigate:()=>()=>{}})
+  const {AdminResourcePage:List}=loadTypeScript('src/pages/admin/AdminResourcePage.tsx',{'./AdminShell':admin,'react-router':router('/admin/books')})
+  const list=render(React.createElement(List,{section}))
+  assert.match(list,/Books · Signals/)
+  assert.match(list,/href="\/admin\/books\/new\?parent=subject"/)
+  const {AdminResourcePage:Editor}=loadTypeScript('src/pages/admin/AdminResourcePage.tsx',{'./AdminShell':admin,'react-router':router('/admin/books/new')})
+  const editor=render(React.createElement(Editor,{section}))
+  assert.equal((editor.match(/href="\/admin\/books\?parent=subject"/g)||[]).length,2)
+})
+
 test('database books preserve details and resource actions with truthful availability',()=>{
   const book={...contentFixture.books.books[0],title:'Published database book',resourceUrl:'https://example.com/library/book',type:'Open textbook'}
   const {BookCard}=loadTypeScript('src/components/resources/books/BookCard.tsx')

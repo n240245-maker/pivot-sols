@@ -1,5 +1,6 @@
 import type { Curriculum, ReferenceCatalog, Semester, Subject } from '../types/referenceBooks'
 import type { SupportedAcademicLevel } from '../types/student'
+import { hasSingleYearTerm } from '../config/academicTerm'
 
 export const BOOKS_ROOT = '/resources/books'
 export const getCurriculaForLevel = (data: ReferenceCatalog, level: SupportedAcademicLevel) => data.curricula.filter(c => c.level === level)
@@ -9,6 +10,7 @@ export const getSubjects = (data: ReferenceCatalog, curriculumId: string, semest
 export const getBooks = (data: ReferenceCatalog, subjectId: string) => data.books.filter(b => b.subjectId === subjectId)
 export const findSubjectBySlug = (data: ReferenceCatalog, curriculumId: string, semesterId: string, slug: string) => getSubjects(data, curriculumId, semesterId).find(s => s.slug === slug)
 export function booksPath(curriculum: Curriculum, semester?: Semester, subject?: Subject) {
+  if (hasSingleYearTerm(curriculum.level)) return subject ? `${BOOKS_ROOT}/${curriculum.level.toLowerCase()}/${subject.id}` : BOOKS_ROOT
   return [BOOKS_ROOT, curriculum.level.toLowerCase(), curriculum.id, semester?.id, subject?.slug].filter(Boolean).join('/')
 }
 export interface BooksRoute { valid: boolean; curriculum?: Curriculum; semester?: Semester; subject?: Subject }
@@ -17,6 +19,12 @@ export function resolveBooksRoute(data: ReferenceCatalog, level: SupportedAcadem
   if (path === BOOKS_ROOT) return { valid: true }
   if (!path.startsWith(`${BOOKS_ROOT}/`)) return { valid: false }
   const parts = path.slice(BOOKS_ROOT.length + 1).split('/')
+  if (hasSingleYearTerm(level) && parts[0] === level.toLowerCase() && parts.length === 2) {
+    const curriculum = getCurriculaForLevel(data, level).find(c => !c.branch)
+    const subject = data.subjects.find(s => s.curriculumId === curriculum?.id && s.id === parts[1])
+    const semester = curriculum?.semesters.find(s => s.id === subject?.semesterId)
+    if (curriculum && subject && semester) return { valid: true, curriculum, semester, subject }
+  }
   if (parts.length < 2 || parts.length > 4 || parts.some(p => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p))) return { valid: false }
   if (parts[0] !== level.toLowerCase()) return { valid: false }
   const curriculum = getCurriculaForLevel(data, level).find(c => c.id === parts[1])
@@ -32,7 +40,7 @@ export function getBooksBreadcrumbs(route: BooksRoute, level: SupportedAcademicL
   const crumbs: ResourceCrumb[] = [{ label: 'Reference Books', to: BOOKS_ROOT }, { label: level, to: BOOKS_ROOT }]
   const { curriculum, semester, subject } = route
   if (curriculum?.branch) crumbs.push({ label: curriculum.branch.shortName ?? curriculum.branch.name, to: booksPath(curriculum) })
-  if (curriculum && semester) crumbs.push({ label: semester.name, to: booksPath(curriculum, semester) })
+  if (curriculum && semester && !hasSingleYearTerm(level)) crumbs.push({ label: semester.name, to: booksPath(curriculum, semester) })
   if (subject) crumbs.push({ label: subject.name })
   return crumbs.map((crumb, index) => index === crumbs.length - 1 ? { label: crumb.label } : crumb)
 }

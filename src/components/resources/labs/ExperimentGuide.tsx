@@ -3,8 +3,9 @@ import type { LabExperiment } from '../../../types/labVideos'
 import { LabVideo } from './LabVideo'
 
 export function ExperimentGuide({ experiment }: { experiment: LabExperiment }) {
+  const videos = experiment.videos ?? (experiment.videoUrl && experiment.videoType ? [{id:`legacy-${experiment.id}`,title:experiment.title,videoUrl:experiment.videoUrl,videoType:experiment.videoType,duration:experiment.duration}] : [])
   return <article className="labs-guide" aria-label={`${experiment.title} guide`}>
-    <section className="labs-video-section" aria-labelledby="lab-video-title"><h2 id="lab-video-title">Video</h2><LabVideo experiment={experiment} /></section>
+    <section className="labs-video-section" aria-labelledby="lab-video-title"><h2 id="lab-video-title">Videos</h2>{videos.length ? videos.map(video => <div key={video.id}><h3>{video.title}</h3><LabVideo experiment={{...experiment,...video}} /></div>) : <LabVideo experiment={experiment} />}</section>
     <div className="labs-guide-sections">
       {experiment.objective && <section><h2>Objective</h2><p>{experiment.objective}</p></section>}
       {!!experiment.apparatus?.length && <section><h2>Apparatus Required</h2><ul className="labs-apparatus">{experiment.apparatus.map((item, i) => <li key={i}>{item}</li>)}</ul></section>}

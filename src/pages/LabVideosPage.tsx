@@ -14,6 +14,7 @@ import { getLabs, getLabsBreadcrumbs, LABS_ROOT, labsPath, resolveLabsRoute, sea
 import type { LabsRoute } from '../lib/labVideos'
 import type { LabCatalog } from '../types/labVideos'
 import type { StudentProfile, SupportedAcademicLevel } from '../types/student'
+import { hasSingleYearTerm } from '../config/academicTerm'
 
 export function LabVideosPage() {
   const { profile } = useAuth()
@@ -46,10 +47,11 @@ export function LabsContent({ profile, data }: { profile: StudentProfile; data: 
 
   const back = experiment && curriculum && semester && lab ? { to: labsPath(curriculum, semester, lab), label: 'Back to Experiments' }
     : lab && curriculum && semester ? { to: labsPath(curriculum, semester), label: 'Back to Labs' }
-    : semester && curriculum ? { to: labsPath(curriculum), label: 'Back to Semesters' }
+    : semester && curriculum ? { to: labsPath(curriculum), label: hasSingleYearTerm(profile.academicLevel) ? 'Back to Labs' : 'Back to Semesters' }
     : curriculum?.branch ? { to: `${LABS_ROOT}?choose=branch`, label: 'Back to Branches' }
     : { to: '/dashboard', label: 'Back to dashboard' }
   const labs = curriculum && semester ? getLabs(data, curriculum.id, semester.id) : []
+  const yearLabs = activeCurriculum && hasSingleYearTerm(profile.academicLevel) ? data.labs.filter(item => item.curriculumId === activeCurriculum.id) : []
   const branchEmpty = curriculum?.branch && !data.labs.some(item => item.curriculumId === curriculum.id)
   return <div className="books-page labs-page">
     <ResourceBreadcrumbs items={getLabsBreadcrumbs(view)} />
@@ -58,7 +60,7 @@ export function LabsContent({ profile, data }: { profile: StudentProfile; data: 
       <p className="pivot-eyebrow"><FlaskConical size={15} aria-hidden="true" /> Learn through practice</p>
       <h1>{experiment?.title ?? lab?.name ?? 'Lab Videos'}</h1>
       <p className="books-intro">{experiment ? lab?.name : lab ? 'Explore the experiments and prepare for your next practical.' : 'Understand experiments before entering the lab.'}</p>
-      <div className="books-context"><span>Academic Level</span><span className="pivot-level-badge" aria-label={`Academic level ${profile.academicLevel}`}>{profile.academicLevel}</span>{activeCurriculum?.branch && <span>{activeCurriculum.branch.shortName ?? activeCurriculum.branch.name}</span>}{semester && <span>{semester.name}</span>}</div>
+      <div className="books-context"><span>Academic Level</span><span className="pivot-level-badge" aria-label={`Academic level ${profile.academicLevel}`}>{profile.academicLevel}</span>{activeCurriculum?.branch && <span>{activeCurriculum.branch.shortName ?? activeCurriculum.branch.name}</span>}{semester && !hasSingleYearTerm(profile.academicLevel) && <span>{semester.name}</span>}</div>
     </header>
     {data.demo && <aside className="books-demo"><strong>Prototype resources</strong><span>Sample lab guides for the presentation, not the official RGUKT syllabus. Follow your instructor’s approved lab manual.</span></aside>}
     {activeCurriculum?.branch && !experiment && <div className="books-selected-branch"><div><span>Selected Branch</span><strong>{activeCurriculum.branch.shortName ?? activeCurriculum.branch.name}</strong><p>{activeCurriculum.branch.name}</p></div><Link to={`${LABS_ROOT}?choose=branch`} aria-label="Change branch">Change <span aria-hidden="true">↗</span></Link></div>}
@@ -66,6 +68,7 @@ export function LabsContent({ profile, data }: { profile: StudentProfile; data: 
     {query.trim() ? <LabSearchResults data={data} level={profile.academicLevel} query={query} scope={view} />
       : experiment ? <ExperimentGuide experiment={experiment} />
       : lab && curriculum && semester ? <section className="books-section"><h2>Experiments</h2><p className="books-section-copy">Choose an experiment to view its video or guide.</p><ExperimentList experiments={lab.experiments} curriculum={curriculum} semester={semester} lab={lab} /></section>
+      : activeCurriculum && hasSingleYearTerm(profile.academicLevel) ? <section className="books-section"><h2>Choose a Lab</h2><p className="books-section-copy">{yearLabs.length} {yearLabs.length === 1 ? 'lab' : 'labs'}</p>{yearLabs.length ? <LabGrid labs={yearLabs} curriculum={activeCurriculum} /> : <ResourceEmptyState icon={FlaskConical} title="Lab resources are being prepared." />}</section>
       : semester && curriculum ? <section className="books-section"><h2>Choose a Lab</h2><p className="books-section-copy">{semester.name} · {labs.length} {labs.length === 1 ? 'lab' : 'labs'}</p>{labs.length ? <LabGrid labs={labs} curriculum={curriculum} semester={semester} /> : <ResourceEmptyState icon={FlaskConical} title={branchEmpty ? 'Lab resources for this branch are being prepared.' : 'No labs have been added for this semester yet.'} description="More experiments will be added soon." />}</section>
       : activeCurriculum ? <section className="books-section"><h2>Choose Semester</h2><p className="books-section-copy">Find the practicals for your semester.</p>{activeCurriculum.semesters.length ? <div className="books-grid books-semester-grid">{activeCurriculum.semesters.map(item => <SelectionCard key={item.id} to={labsPath(activeCurriculum, item)} title={item.name} detail={`${getLabs(data, activeCurriculum.id, item.id).length} labs`} icon={CalendarDays} />)}</div> : <ResourceEmptyState icon={FlaskConical} title="Semesters are being prepared." />}</section>
       : <section className="books-section"><h2>{profile.academicLevel === 'E1' ? 'Choose Your Branch' : 'Lab Videos'}</h2><p className="books-section-copy">{profile.academicLevel === 'E1' ? 'Your branch helps us show the right lab resources. You can change it anytime.' : 'Resources for your academic level will appear here.'}</p>{curricula.some(c => c.branch) ? <div className="books-grid books-branch-grid">{curricula.filter(c => c.branch).map(item => <SelectionCard key={item.id} to={labsPath(item)} title={item.branch?.shortName ?? item.branch!.name} detail={item.branch!.name} icon={Network} onSelect={() => { setSelectedBranch(data, item.id); setSelected(item.id) }} />)}</div> : <ResourceEmptyState icon={FlaskConical} title="Lab resources are being prepared." description="More experiments will be added soon." />}</section>}
@@ -76,6 +79,6 @@ export function LabsContent({ profile, data }: { profile: StudentProfile; data: 
 export function LabSearchResults({ data, level, query, scope }: { data: LabCatalog; level: SupportedAcademicLevel; query: string; scope: LabsRoute }) {
   const results = searchLabResources(data, level, query, scope)
   return <section className="books-section" aria-label="Lab search results"><h2>Search results</h2><p className="books-section-copy" role="status">{results.length} {results.length === 1 ? 'lab' : 'labs'} matching “{query.trim()}”</p>
-    {results.length ? results.map(result => <div className="books-search-group" key={result.lab.id}><Link className="books-result-heading" to={labsPath(result.curriculum, result.semester, result.lab)}>{result.lab.name}<span>{result.curriculum.level}{result.curriculum.branch ? ` · ${result.curriculum.branch.shortName ?? result.curriculum.branch.name}` : ''} · {result.semester.name}</span></Link>{!!result.experiments.length && <ExperimentList {...result} />}</div>) : <ResourceEmptyState icon={FlaskConical} title="No matching labs or experiments found." description="Try a different name or clear your search." />}
+    {results.length ? results.map(result => <div className="books-search-group" key={result.lab.id}><Link className="books-result-heading" to={labsPath(result.curriculum, result.semester, result.lab)}>{result.lab.name}<span>{result.curriculum.level}{result.curriculum.branch ? ` · ${result.curriculum.branch.shortName ?? result.curriculum.branch.name}` : ''}{!hasSingleYearTerm(level) ? ` · ${result.semester.name}` : ''}</span></Link>{!!result.experiments.length && <ExperimentList {...result} />}</div>) : <ResourceEmptyState icon={FlaskConical} title="No matching labs or experiments found." description="Try a different name or clear your search." />}
   </section>
 }

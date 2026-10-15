@@ -7,6 +7,7 @@ import type { SearchResult } from '../types/search'
 import type { SupportedAcademicLevel } from '../types/student'
 import type { ReferenceCatalog } from '../types/referenceBooks'
 import type { LabCatalog } from '../types/labVideos'
+import { hasSingleYearTerm } from '../config/academicTerm'
 
 export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:ReferenceCatalog,labs:LabCatalog,_careerDomains:readonly CareerDomain[],_careerRoles:readonly CareerRole[],branchGuides:readonly BranchGuide[],careerResources:readonly CareerResource[]=[],rooms:readonly InformationRoom[]=[],faculty:readonly FacultyMember[]=[],facultySubjects:readonly FacultySubject[]=[]):readonly SearchResult[] {
   const results:SearchResult[]=[]
@@ -14,7 +15,7 @@ export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:Referen
     const curriculum=books.curricula.find(c=>c.id===subject.curriculumId&&c.level===level)
     const semester=curriculum?.semesters.find(s=>s.id===subject.semesterId)
     if(!curriculum||!semester)continue
-    const context=[level,curriculum.branch?.shortName,semester.name].filter(Boolean).join(' · ')
+    const context=[level,curriculum.branch?.shortName,!hasSingleYearTerm(level)&&semester.name].filter(Boolean).join(' · ')
     const to=booksPath(curriculum,semester,subject)
     results.push({id:`subject:${subject.id}`,title:subject.name,type:'Subject',context,to,keywords:subject.code??''})
     for(const book of books.books.filter(b=>b.subjectId===subject.id)) results.push({id:`book:${book.id}`,title:book.title,type:'Book',context:`${subject.name} · ${context}`,to,keywords:[...book.authors,book.description??'',subject.name].join(' ')})
@@ -23,7 +24,7 @@ export function buildLocalSearchIndex(level:SupportedAcademicLevel,books:Referen
     const curriculum=labs.curricula.find(c=>c.id===lab.curriculumId&&c.level===level)
     const semester=curriculum?.semesters.find(s=>s.id===lab.semesterId)
     if(!curriculum||!semester)continue
-    const context=[level,curriculum.branch?.shortName,semester.name].filter(Boolean).join(' · ')
+    const context=[level,curriculum.branch?.shortName,!hasSingleYearTerm(level)&&semester.name].filter(Boolean).join(' · ')
     results.push({id:`lab:${lab.id}`,title:lab.name,type:'Lab',context,to:labsPath(curriculum,semester,lab),keywords:lab.shortDescription??''})
     for(const experiment of lab.experiments) results.push({id:`experiment:${lab.id}:${experiment.id}`,title:experiment.title,type:'Experiment',context:`${lab.name} · ${context}`,to:labsPath(curriculum,semester,lab,experiment),keywords:lab.name})
   }

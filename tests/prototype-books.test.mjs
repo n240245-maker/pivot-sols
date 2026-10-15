@@ -25,15 +25,16 @@ test('prototype catalog is selected in demo builds and isolated from real mode',
   assert.equal(real.referenceBooksCatalog.subjects.length,0)
   assert.equal(real.referenceBooksCatalog.books.length,0)
 })
-test('P1 prototype has both semesters directly and no branch in context or breadcrumbs',()=>{
+test('P1 prototype shows one year of subjects directly without semester navigation',()=>{
   const home=renderPage('/resources/books','P1','ece')
-  assert.ok(home.includes('Choose Semester'));assert.ok(!home.includes('Choose Your Branch'))
-  for(const semester of ['semester-1','semester-2']) assert.ok(home.includes(`/resources/books/p1/common/${semester}`))
+  assert.ok(home.includes('Choose a Subject'));assert.ok(!home.includes('Choose Semester'));assert.ok(!home.includes('Choose Your Branch'))
+  assert.ok(!home.includes('Semester 1')&&!home.includes('Semester 2'))
+  for(const subject of data.subjects.filter(s=>s.curriculumId==='common'))assert.ok(home.includes(`/resources/books/p1/${subject.id}`))
   const subjects=renderPage('/resources/books/p1/common/semester-1','P1')
   for(const name of ['Mathematics','Physics','Chemistry','English','Introduction to Computing']) assert.ok(subjects.includes(name))
   assert.ok(!subjects.includes('Common curriculum'));assert.ok(!subjects.includes('Selected Branch'))
   const route=helpers.resolveBooksRoute(data,'P1','/resources/books/p1/common/semester-1/physics')
-  assert.equal(JSON.stringify(helpers.getBooksBreadcrumbs(route,'P1').map(c=>c.label)),JSON.stringify(['Reference Books','P1','Semester 1','Physics']))
+  assert.equal(JSON.stringify(helpers.getBooksBreadcrumbs(route,'P1').map(c=>c.label)),JSON.stringify(['Reference Books','P1','Physics']))
 })
 test('E1 first visit exposes exactly the six supplied configurable branch options',()=>{
   const branches=helpers.getBranchesForLevel(data,'E1')

@@ -105,8 +105,95 @@ def test_schema_migration_and_constraints(engine):
     assert inspector.get_foreign_keys('reference_books')[0]['referred_table'] == 'subjects'
     assert any(item['name'] == 'uq_subject_semester_slug' for item in inspector.get_unique_constraints('subjects'))
     assert any(item['name'] == 'uq_semester_p1' for item in inspector.get_indexes('semesters'))
+    assert any(item['referred_table'] == 'experiments' for item in inspector.get_foreign_keys('experiment_videos'))
+    assert {item['referred_table'] for item in inspector.get_foreign_keys('career_resources')} >= {'branches', 'career_domains', 'career_roles'}
     with engine.connect() as connection:
-        assert connection.execute(text('select version_num from alembic_version')).scalar() == 'c84e7a0b6d22'
+        assert connection.execute(text('select version_num from alembic_version')).scalar() == 'd6e0a4f91b72'
+
+
+def test_p1_year_keeps_both_legacy_semesters_and_unlimited_books(cms):
+    client, db = cms['client'], cms['db']
+    login(cms)
+    semesters = list(db.scalars(select(m.Semester).where(m.Semester.academic_level == 'P1', m.Semester.status == 'published').order_by(m.Semester.number)))
+    assert len(semesters) >= 2
+    slug = 'qa-year-' + uuid4().hex[:12]
+    subjects = []
+    for number, semester in enumerate(semesters[:2]):
+        response = client.post('/api/admin/subjects', json={'semester_id': semester.id, 'slug': f'{slug}-{number}', 'name': f'Year subject {number}', 'status': 'published'})
+        assert response.status_code == 201, response.text
+        subjects.append(response.json()['id'])
+    created = []
+    for number in range(8):
+        body = {'subject_id': subjects[0], 'title': f'Year book {number}', 'authors': ['Test Author'],
+                'resource_url': f'https://example.com/book-{number}', 'availability': 'available',
+                'sort_order': 8 - number, 'status': 'published'}
+        response = client.post('/api/admin/books', json=body)
+        assert response.status_code == 201, response.text
+        created.append((response.json(), body))
+    catalog = client.get('/api/public/catalog').json()
+    assert {item['id'] for item in catalog['books']['subjects']} >= set(subjects)
+    books = [item for item in catalog['books']['books'] if item['subjectId'] == subjects[0]]
+    assert [item['title'] for item in books] == [f'Year book {number}' for number in reversed(range(8))]
+    first, body = created[0]
+    changed = client.put(f"/api/admin/books/{first['id']}", json={**body, 'title': 'Edited year book', 'expected_updated_at': first['updated_at']})
+    assert changed.status_code == 200, changed.text
+    assert client.get(f"/api/admin/books/{created[1][0]['id']}").json()['title'] == 'Year book 1'
+    hidden = client.patch(f"/api/admin/books/{first['id']}/status", json={'status': 'draft', 'expected_updated_at': changed.json()['updated_at']})
+    assert hidden.status_code == 200, hidden.text
+    assert client.delete(f"/api/admin/books/{first['id']}").status_code == 200
+    remaining = [item for item in client.get('/api/public/catalog').json()['books']['books'] if item['subjectId'] == subjects[0]]
+    assert len(remaining) == 7 and {item['title'] for item in remaining} == {f'Year book {number}' for number in range(1, 8)}
+
+
+def test_experiment_videos_are_independent_and_keep_legacy_video(cms):
+    client, db = cms['client'], cms['db']
+    login(cms)
+    semester = db.scalar(select(m.Semester).where(m.Semester.academic_level == 'P1', m.Semester.status == 'published').order_by(m.Semester.number))
+    lab = m.Lab(semester_id=semester.id, slug='qa-lab-' + uuid4().hex[:12], name='QA Year Lab', status='published')
+    db.add(lab); db.flush()
+    experiment = m.Experiment(lab_id=lab.id, slug='qa-experiment', title='QA Experiment', status='published',
+        video_type='youtube', video_url='https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+    db.add(experiment); db.commit()
+    created = []
+    for number in range(7):
+        body = {'experiment_id': experiment.id, 'title': f'Video {number}', 'video_type': 'youtube',
+                'video_url': 'https://youtu.be/dQw4w9WgXcQ', 'sort_order': 7 - number, 'status': 'published'}
+        response = client.post('/api/admin/experiment-videos', json=body)
+        assert response.status_code == 201, response.text
+        created.append(response.json())
+    item = next(item for item in client.get('/api/public/catalog').json()['labs']['labs'] if item['id'] == lab.id)['experiments'][0]
+    assert [video['title'] for video in item['videos']] == ['QA Experiment'] + [f'Video {number}' for number in reversed(range(7))]
+    changed = client.put(f"/api/admin/experiment-videos/{created[0]['id']}", json={
+        'experiment_id': experiment.id, 'title': 'Edited video', 'video_type': 'youtube',
+        'video_url': 'https://youtu.be/dQw4w9WgXcQ', 'sort_order': 7, 'status': 'draft',
+        'expected_updated_at': created[0]['updated_at']})
+    assert changed.status_code == 200, changed.text
+    assert client.delete(f"/api/admin/experiment-videos/{created[0]['id']}").status_code == 200
+    item = next(item for item in client.get('/api/public/catalog').json()['labs']['labs'] if item['id'] == lab.id)['experiments'][0]
+    assert len(item['videos']) == 7 and item['videos'][0]['id'] == f'legacy-{experiment.id}'
+
+
+def test_career_domains_and_jobs_accept_many_parent_resources(cms):
+    client, db = cms['client'], cms['db']
+    login(cms)
+    branch, _, _, _, domain, suffix = tree(cms)
+    role = m.CareerRole(slug=f'qa-role-{suffix}', name='QA Role', domain_id=domain.id, status='published')
+    db.add(role); db.commit()
+    for resource_type, field, parent_id in [('domain', 'domain_id', domain.id), ('job', 'role_id', role.id)]:
+        for number in range(7):
+            link = ('pdf_url', f'https://example.com/{resource_type}-{number}.pdf') if number < 2 else (
+                ('youtube_url', 'https://youtu.be/dQw4w9WgXcQ') if number < 5 else ('supporting_url', f'https://example.com/{resource_type}-{number}'))
+            body = {'resource_type': resource_type, 'branch_id': branch.id, field: parent_id,
+                    'title': f'{resource_type} resource {number}', link[0]: link[1], 'sort_order': 7-number, 'status': 'published'}
+            response = client.post('/api/admin/career-resources', json=body)
+            assert response.status_code == 201, response.text
+    public = client.get('/api/public/catalog').json()['career_resources']
+    for resource_type, field, parent_id in [('domain', 'domain_id', domain.id), ('job', 'role_id', role.id)]:
+        selected = [item for item in public if item[field] == parent_id]
+        assert len(selected) == 7
+        assert [item['title'] for item in selected] == [f'{resource_type} resource {number}' for number in reversed(range(7))]
+    assert client.post('/api/admin/career-resources', json={'resource_type': 'domain', 'branch_id': branch.id,
+        'role_id': role.id, 'title': 'Wrong parent', 'pdf_url': 'https://example.com/a.pdf'}).status_code == 422
 
 
 def test_password_session_and_logout_without_agent_otp(cms):

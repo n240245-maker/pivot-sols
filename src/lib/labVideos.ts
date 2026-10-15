@@ -2,12 +2,14 @@ import type { Curriculum, Semester } from '../types/referenceBooks'
 import type { Lab, LabCatalog, LabExperiment } from '../types/labVideos'
 import type { SupportedAcademicLevel } from '../types/student'
 import type { ResourceCrumb } from './referenceBooks'
+import { hasSingleYearTerm } from '../config/academicTerm'
 
 export const LABS_ROOT = '/resources/labs'
 export interface LabsRoute { valid: boolean; curriculum?: Curriculum; semester?: Semester; lab?: Lab; experiment?: LabExperiment }
 export const getLabs = (data: LabCatalog, curriculumId: string, semesterId: string) => data.labs.filter(lab => lab.curriculumId === curriculumId && lab.semesterId === semesterId)
 
 export function labsPath(curriculum: Curriculum, semester?: Semester, lab?: Lab, experiment?: LabExperiment): string {
+  if (hasSingleYearTerm(curriculum.level)) return [LABS_ROOT, curriculum.level.toLowerCase(), lab?.id, experiment?.slug].filter(Boolean).join('/')
   return [LABS_ROOT, curriculum.level.toLowerCase(), curriculum.branch ? curriculum.id : undefined, semester?.id, lab?.slug, experiment?.slug].filter(Boolean).join('/')
 }
 
@@ -17,6 +19,13 @@ export function resolveLabsRoute(data: LabCatalog, level: SupportedAcademicLevel
   if (!path.startsWith(`${LABS_ROOT}/`)) return { valid: false }
   const parts = path.slice(LABS_ROOT.length + 1).split('/')
   if (parts.some(p => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p)) || parts[0] !== level.toLowerCase()) return { valid: false }
+  if (hasSingleYearTerm(level) && parts.length <= 3 && parts.length >= 2) {
+    const curriculum = data.curricula.find(c => c.level === level && !c.branch)
+    const lab = data.labs.find(item => item.curriculumId === curriculum?.id && item.id === parts[1])
+    const semester = curriculum?.semesters.find(item => item.id === lab?.semesterId)
+    const experiment = parts[2] ? lab?.experiments.find(item => item.slug === parts[2]) : undefined
+    if (curriculum && lab && semester) return {valid: !parts[2] || !!experiment,curriculum,semester,lab,experiment}
+  }
   const branched = level === 'E1'
   const index = branched ? 2 : 1
   if (parts.length < index || parts.length > index + 3) return { valid: false }
@@ -35,7 +44,7 @@ export function getLabsBreadcrumbs(route: LabsRoute): ResourceCrumb[] {
   const crumbs: ResourceCrumb[] = [{ label: 'Lab Videos', to: LABS_ROOT }]
   const { curriculum, semester, lab, experiment } = route
   if (curriculum?.branch) crumbs.push({ label: curriculum.branch.shortName ?? curriculum.branch.name, to: labsPath(curriculum) })
-  if (curriculum && semester) crumbs.push({ label: semester.name, to: labsPath(curriculum, semester) })
+  if (curriculum && semester && !hasSingleYearTerm(curriculum.level)) crumbs.push({ label: semester.name, to: labsPath(curriculum, semester) })
   if (curriculum && semester && lab) crumbs.push({ label: lab.name, to: labsPath(curriculum, semester, lab) })
   if (experiment) crumbs.push({ label: experiment.title })
   return crumbs.map((crumb, index) => index === crumbs.length - 1 ? { label: crumb.label } : crumb)

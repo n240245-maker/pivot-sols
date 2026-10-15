@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useParams, useSearchParams } from 'react-router'
 import { useContent } from '../contexts/ContentContext'
 import type { CareerResource } from '../types/content'
 import { youtubeVideoId } from '../lib/labVideoSource'
 
 export function CareerResourceLibrary({type}:{type:'domain'|'job'}) {
   const { data } = useContent()
+  const {domainSlug,roleSlug}=useParams()
   const [params,setParams] = useSearchParams()
   const selected = data.branches.find(branch => branch.id === params.get('branch')) ?? data.branches[0]
-  const resources = (data.career_resources ?? []).filter(item => item.resource_type === type && item.branch_id === selected?.id)
+  const parent=type==='domain'?data.domains.find(item=>item.slug===domainSlug):data.roles.find(item=>item.slug===roleSlug)
+  const resources = (data.career_resources ?? []).filter(item => item.resource_type === type && item.branch_id === selected?.id && (!parent || (type==='domain'?item.domain_id:item.role_id)===parent.id || !(item.domain_id||item.role_id)))
   const title = type === 'domain' ? 'Career Domains' : 'Career Jobs'
-  return <div className="discovery-page"><header className="directory-heading"><p className="pivot-eyebrow">E1 resource library</p><h1>{title}</h1><p>Select any branch to browse published resources.</p></header>
+  return <div className="discovery-page"><header className="directory-heading"><p className="pivot-eyebrow">E1 resource library</p><h1>{parent?.name??title}</h1><p>Select any branch to browse published resources.</p></header>
     {data.branches.length > 0 && <div className="directory-tabs" role="tablist" aria-label={`${title} branches`}>{data.branches.map(branch => <button key={branch.id} role="tab" aria-selected={selected?.id === branch.id} type="button" onClick={() => setParams({branch:branch.id})}>{branch.shortName || branch.name}</button>)}</div>}
     {resources.length ? <div className="directory-grid">{resources.map(item => <CareerResourceCard key={item.id} item={item} branch={selected?.name ?? ''} />)}</div>
       : <div className="content-state"><h2>No resources have been published for this branch yet.</h2></div>}</div>

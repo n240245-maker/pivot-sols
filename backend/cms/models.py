@@ -172,6 +172,17 @@ class Experiment(Content, Base):
     duration: Mapped[str] = mapped_column(String(50), default='')
 
 
+class ExperimentVideo(Content, Base):
+    __tablename__ = 'experiment_videos'
+    __table_args__ = (status_check('experiment_videos'),
+        CheckConstraint("video_type IN ('youtube','mp4','external')", name='ck_experiment_videos_type'))
+    experiment_id: Mapped[str] = mapped_column(ForeignKey('experiments.id', ondelete='RESTRICT'), index=True)
+    title: Mapped[str] = mapped_column(String(300))
+    video_type: Mapped[str] = mapped_column(String(16))
+    video_url: Mapped[str] = mapped_column(Text)
+    duration: Mapped[str] = mapped_column(String(50), default='')
+
+
 class CareerDomain(Content, Base):
     __tablename__ = 'career_domains'
     __table_args__ = (status_check('career_domains'),
@@ -259,9 +270,12 @@ class FacultyMember(Content, Base):
 class CareerResource(Content, Base):
     __tablename__ = 'career_resources'
     __table_args__ = (status_check('career_resources'),
-                      CheckConstraint("resource_type IN ('domain','job')", name='ck_career_resource_type'))
+                      CheckConstraint("resource_type IN ('domain','job')", name='ck_career_resource_type'),
+                      CheckConstraint("(resource_type='domain' AND role_id IS NULL) OR (resource_type='job' AND domain_id IS NULL)", name='ck_career_resource_parent_type'))
     resource_type: Mapped[str] = mapped_column(String(12), index=True)
     branch_id: Mapped[str] = mapped_column(ForeignKey('branches.id', ondelete='RESTRICT'), index=True)
+    domain_id: Mapped[str | None] = mapped_column(ForeignKey('career_domains.id', ondelete='RESTRICT'), index=True)
+    role_id: Mapped[str | None] = mapped_column(ForeignKey('career_roles.id', ondelete='RESTRICT'), index=True)
     title: Mapped[str] = mapped_column(String(300))
     description: Mapped[str] = mapped_column(Text, default='')
     pdf_url: Mapped[str | None] = mapped_column(Text)

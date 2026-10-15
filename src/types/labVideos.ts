@@ -15,6 +15,15 @@ export interface LabExperiment {
   videoType?: 'youtube' | 'mp4' | 'external'
   thumbnailUrl?: string
   duration?: string
+  videos?: readonly LabVideoResource[]
+}
+
+export interface LabVideoResource {
+  id: string
+  title: string
+  videoUrl: string
+  videoType: 'youtube' | 'mp4' | 'external'
+  duration?: string
 }
 
 export interface Lab {

@@ -5,8 +5,8 @@ import type { Curriculum, Semester } from '../../../types/referenceBooks'
 import { labsPath } from '../../../lib/labVideos'
 import { ResourceEmptyState } from '../books/ResourceEmptyState'
 
-export function LabGrid({ labs, curriculum, semester }: { labs: readonly Lab[]; curriculum: Curriculum; semester: Semester }) {
-  return <div className="books-grid labs-grid">{labs.map(lab => <Link key={lab.id} className="books-selection-card labs-card" to={labsPath(curriculum, semester, lab)}>
+export function LabGrid({ labs, curriculum, semester }: { labs: readonly Lab[]; curriculum: Curriculum; semester?: Semester }) {
+  return <div className="books-grid labs-grid">{labs.map(lab => <Link key={lab.id} className="books-selection-card labs-card" to={labsPath(curriculum, semester ?? curriculum.semesters.find(item => item.id === lab.semesterId), lab)}>
     <span className="books-icon"><FlaskConical size={23} strokeWidth={1.5} aria-hidden="true" /></span>
     <h3>{lab.name}</h3><span className="labs-count">{lab.experiments.length} {lab.experiments.length === 1 ? 'experiment' : 'experiments'}</span>
     {lab.shortDescription && <p>{lab.shortDescription}</p>}<ArrowUpRight className="books-arrow" size={19} aria-hidden="true" />

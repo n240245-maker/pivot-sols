@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect,useState} from 'react'
 import type {AdminField} from '../../config/adminFields'
 import type {AdminCatalog,AdminRecord,AdminResource} from '../../types/admin'
 import {stringsValue,textValue} from '../../types/admin'
@@ -6,12 +6,12 @@ import {stringsValue,textValue} from '../../types/admin'
 export const recordTitle=(row:AdminRecord)=>textValue(row.name)||textValue(row.title)||textValue(row.key)||'Untitled'
 export const objectValue=(value:unknown):Record<string,unknown>=>value&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,unknown>:{}
 export function relationLabel(row:AdminRecord,catalog:AdminCatalog):string {
-  const parent=row.subject_id?catalog.subjects.find(item=>item.id===row.subject_id):row.lab_id?catalog.labs.find(item=>item.id===row.lab_id):undefined
-  const academic=parent??row
+  const parent=row.subject_id?catalog.subjects.find(item=>item.id===row.subject_id):row.lab_id?catalog.labs.find(item=>item.id===row.lab_id):row.experiment_id?catalog.experiments.find(item=>item.id===row.experiment_id):undefined
+  const academic=row.experiment_id&&parent?catalog.labs.find(item=>item.id===parent.lab_id)??parent:parent??row
   const semester=typeof academic.semester_id==='string'?catalog.semesters.find(s=>s.id===academic.semester_id):academic.academic_level?academic:undefined
   const branch=semester?catalog.branches.find(b=>b.id===semester.branch_id):undefined
   const domain=row.domain_id?catalog['career-domains'].find(item=>item.id===row.domain_id):undefined
-  return [parent?recordTitle(parent):recordTitle(row),semester&&semester!==row?recordTitle(semester):'',branch?textValue(branch.short_name)||recordTitle(branch):semester?textValue(semester.academic_level):'',domain?recordTitle(domain):'',row.status==='published'?'':`(${row.status})`].filter(Boolean).join(' · ')
+  return [parent?recordTitle(parent):recordTitle(row),semester&&semester!==row&&semester.academic_level!=='P1'?recordTitle(semester):'',branch?textValue(branch.short_name)||recordTitle(branch):semester?textValue(semester.academic_level):'',domain?recordTitle(domain):'',row.status==='published'?'':`(${row.status})`].filter(Boolean).join(' · ')
 }
 
 export function RepeatableStrings({label,value,onChange}:{label:string;value:unknown;onChange:(value:string[])=>void}){
@@ -39,7 +39,7 @@ export function FormField({field,value,onChange,catalog,disabled=false}:{field:A
 }
 
 export function AcademicPlacement({resource,values,catalog,onChange}:{resource:AdminResource;values:Record<string,unknown>;catalog:AdminCatalog;onChange:(key:string,value:unknown)=>void}){
-  const key=resource==='books'?'subject_id':resource==='experiments'?'lab_id':'semester_id'
+  const key=resource==='books'?'subject_id':resource==='experiments'||resource==='experiment-videos'?'lab_id':'semester_id'
   const selected=resource==='books'?catalog.subjects.find(row=>row.id===values.subject_id):resource==='experiments'?catalog.labs.find(row=>row.id===values.lab_id):undefined
   const existing=catalog.semesters.find(row=>row.id===(selected?.semester_id??values.semester_id))
   const [level,setLevel]=useState(textValue(existing?.academic_level)||'P1')
@@ -47,8 +47,10 @@ export function AcademicPlacement({resource,values,catalog,onChange}:{resource:A
   const [semester,setSemester]=useState(existing?.id??'')
   const semesters=catalog.semesters.filter(row=>row.academic_level===level&&(level==='P1'||row.branch_id===branch))
   const children=resource==='books'?catalog.subjects:catalog.labs
+  const p1Semester=catalog.semesters.filter(row=>row.academic_level==='P1').sort((a,b)=>Number(b.status==='published')-Number(a.status==='published')||Number(a.number)-Number(b.number))[0]
+  useEffect(()=>{if(level==='P1'&&key==='semester_id'&&!values.semester_id&&p1Semester)onChange('semester_id',p1Semester.id)},[level,key,values.semester_id,p1Semester?.id])
   const reset=()=>{setSemester('');onChange(key,'')}
-  return <fieldset className="admin-placement"><legend>Academic placement</legend><div className="admin-form-grid"><label>Academic level<select value={level} onChange={e=>{setLevel(e.target.value);setBranch('');reset()}}><option>P1</option><option>E1</option></select></label>{level==='E1'&&<label>Branch<select value={branch} required onChange={e=>{setBranch(e.target.value);reset()}}><option value="">Select branch</option>{catalog.branches.map(row=><option key={row.id} value={row.id}>{relationLabel(row,catalog)}</option>)}</select></label>}<label>Semester<select value={semester} required onChange={e=>{setSemester(e.target.value);onChange(key,key==='semester_id'?e.target.value:'')}}><option value="">Select semester</option>{semesters.map(row=><option key={row.id} value={row.id}>{recordTitle(row)} ({row.status})</option>)}</select></label>{key!=='semester_id'&&<label>{resource==='books'?'Subject':'Lab'}<select required value={textValue(values[key])} onChange={e=>onChange(key,e.target.value)}><option value="">Select {resource==='books'?'subject':'lab'}</option>{children.filter(row=>row.semester_id===semester).map(row=><option key={row.id} value={row.id}>{recordTitle(row)} ({row.status})</option>)}</select></label>}</div><p className="field-hint">Create the parent in its section first. Parent content must be published before a child can be published.</p></fieldset>
+  return <fieldset className="admin-placement"><legend>Academic placement</legend><div className="admin-form-grid"><label>Academic level<select value={level} onChange={e=>{setLevel(e.target.value);setBranch('');reset()}}><option>P1</option><option>E1</option></select></label>{level==='E1'&&<><label>Branch<select value={branch} required onChange={e=>{setBranch(e.target.value);reset()}}><option value="">Select branch</option>{catalog.branches.map(row=><option key={row.id} value={row.id}>{relationLabel(row,catalog)}</option>)}</select></label><label>Semester<select value={semester} required onChange={e=>{setSemester(e.target.value);onChange(key,key==='semester_id'?e.target.value:'')}}><option value="">Select semester</option>{semesters.map(row=><option key={row.id} value={row.id}>{recordTitle(row)} ({row.status})</option>)}</select></label></>}{key!=='semester_id'&&<label>{resource==='books'?'Subject':'Lab'}<select required value={textValue(values[key])} onChange={e=>onChange(key,e.target.value)}><option value="">Select {resource==='books'?'subject':'lab'}</option>{children.filter(row=>level==='P1'?catalog.semesters.some(item=>item.id===row.semester_id&&item.academic_level==='P1'):row.semester_id===semester).map(row=><option key={row.id} value={row.id}>{recordTitle(row)} ({row.status})</option>)}</select></label>}</div><p className="field-hint">{level==='P1'?'P1 subjects and resources are managed for the full academic year.':'Create the parent in its section first. Parent content must be published before a child can be published.'}</p></fieldset>
 }
 
 export function SiteContentFields({page,value,onChange}:{page:string;value:unknown;onChange:(value:Record<string,unknown>)=>void}){
@@ -63,7 +65,7 @@ export function SiteContentFields({page,value,onChange}:{page:string;value:unkno
 export function prepareAdminBody(values:Record<string,unknown>):Record<string,unknown>{
   const result={...values}
   for(const key of ['id','created_at','updated_at'])delete result[key]
-  for(const key of ['branch_id','resource_url','video_type','video_url','experiment_number','pdf_url','supporting_url','youtube_url','image_url','storage_type'])if(result[key]==='')result[key]=null
+  for(const key of ['branch_id','domain_id','role_id','resource_url','video_type','video_url','experiment_number','pdf_url','supporting_url','youtube_url','image_url','storage_type'])if(result[key]==='')result[key]=null
   if(result.academic_level==='P1')result.branch_id=null
   for(const [key,value] of Object.entries(result)){
     if(Array.isArray(value)&&value.every(item=>typeof item==='string'))result[key]=(value as string[]).map(item=>item.trim()).filter(Boolean)

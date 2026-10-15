@@ -143,6 +143,25 @@ class ExperimentInput(ContentInput):
         return self
 
 
+class ExperimentVideoInput(ContentInput):
+    experiment_id: UUID
+    title: ShortText = Field(min_length=1, max_length=300)
+    video_type: Literal['youtube', 'mp4', 'external']
+    video_url: str
+    duration: ShortText = Field(default='', max_length=50)
+    _url = field_validator('video_url')(safe_url)
+
+    @model_validator(mode='after')
+    def video(self):
+        if not self.video_url:
+            raise ValueError('Add a video URL.')
+        if self.video_type == 'youtube':
+            self.video_url = normalize_youtube(self.video_url)
+        if self.video_type == 'mp4' and not urlsplit(self.video_url).path.lower().endswith('.mp4'):
+            raise ValueError('An MP4 URL must point to an .mp4 file.')
+        return self
+
+
 class RoadmapStage(Input):
     title: ShortText = Field(min_length=1, max_length=120)
     description: LongText = Field(max_length=4000)
@@ -280,6 +299,8 @@ class FacultyMemberInput(ContentInput):
 class CareerResourceInput(ContentInput):
     resource_type: Literal['domain', 'job']
     branch_id: UUID
+    domain_id: UUID | None = None
+    role_id: UUID | None = None
     title: ShortText = Field(min_length=1, max_length=300)
     description: LongText = ''
     pdf_url: str | None = None
@@ -300,6 +321,8 @@ class CareerResourceInput(ContentInput):
 
     @model_validator(mode='after')
     def useful_publish(self):
+        if (self.resource_type == 'domain' and self.role_id) or (self.resource_type == 'job' and self.domain_id):
+            raise ValueError('Choose a parent that matches the resource type.')
         if self.status == 'published' and not (self.pdf_url or self.supporting_url or self.youtube_url):
             raise ValueError('Add a PDF, YouTube video or supporting link before publishing.')
         if self.storage_type == 'object' and not self.pdf_url:

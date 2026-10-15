@@ -40,9 +40,11 @@ test('demo lab catalog is isolated from the empty confirmed production catalog',
 
 test('P1 uses profile level, skips branch selection and has no fake branch URL', () => {
   const html = renderPage(root,'P1','ece')
-  assert.ok(html.includes('Choose Semester'))
+  assert.ok(html.includes('Choose a Lab'))
+  assert.ok(!html.includes('Choose Semester'))
+  assert.ok(!html.includes('Semester 1')&&!html.includes('Semester 2'))
   assert.ok(!html.includes('Choose Your Branch')); assert.ok(!html.includes('Selected Branch'))
-  for (const semester of ['semester-1','semester-2']) assert.ok(html.includes(`href="${root}/p1/${semester}"`))
+  for (const lab of data.labs.filter(item=>item.curriculumId==='common')) assert.ok(html.includes(`href="${root}/p1/${lab.id}"`))
   assert.ok(!html.includes('/common/'))
   const first = renderPage(`${root}/p1/semester-1`,'P1')
   for (const name of ['Physics Lab','Chemistry Lab','English Language Lab']) assert.ok(first.includes(name))
@@ -137,6 +139,15 @@ test('Thevenin detail renders configured sections, semantic lists, context and p
   for(const text of ['<h2>Objective','<h2>Theory','<h2>Apparatus Required','<h2>Procedure','<h2>Expected Result','<h2>Precautions']) assert.ok(!sparse.includes(text))
 })
 
+test('one experiment renders every published video record and its legacy video',()=>{
+  const {ExperimentGuide}=loadTypeScript('src/components/resources/labs/ExperimentGuide.tsx')
+  const videos=Array.from({length:7},(_,index)=>({id:`video-${index}`,title:`Video ${index}`,videoType:'youtube',videoUrl:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}))
+  const experiment={id:'many-videos',slug:'many-videos',title:'Many videos',videos:[{id:'legacy',title:'Original video',videoType:'youtube',videoUrl:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'},...videos]}
+  const html=render(createElement(ExperimentGuide,{experiment}))
+  for(const title of ['Original video',...videos.map(video=>video.title)])assert.ok(html.includes(title))
+  assert.equal((html.match(/aria-label="Load video:/g)??[]).length,8)
+})
+
 test('every lab and experiment URL resolves, with P1 branch-free breadcrumbs and named titles', () => {
   for(const lab of data.labs) {
     const curriculum=data.curricula.find(c=>c.id===lab.curriculumId),semester=curriculum.semesters.find(s=>s.id===lab.semesterId)
@@ -149,7 +160,7 @@ test('every lab and experiment URL resolves, with P1 branch-free breadcrumbs and
     }
   }
   const route=helpers.resolveLabsRoute(data,'P1',`${root}/p1/semester-1/physics-lab/vernier-caliper-measurement`)
-  assert.equal(JSON.stringify(helpers.getLabsBreadcrumbs(route).map(c=>c.label)),JSON.stringify(['Lab Videos','Semester 1','Physics Lab','Measurement with a Vernier Caliper']))
+  assert.equal(JSON.stringify(helpers.getLabsBreadcrumbs(route).map(c=>c.label)),JSON.stringify(['Lab Videos','Physics Lab','Measurement with a Vernier Caliper']))
   assert.equal(helpers.getLabPageTitle(data,root),'Lab Videos · Pivot Sols')
 })
 

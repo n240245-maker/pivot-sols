@@ -10,6 +10,7 @@ RESOURCES = {
     'branches': (m.Branch, s.BranchInput), 'semesters': (m.Semester, s.SemesterInput),
     'subjects': (m.Subject, s.SubjectInput), 'books': (m.ReferenceBook, s.BookInput),
     'labs': (m.Lab, s.LabInput), 'experiments': (m.Experiment, s.ExperimentInput),
+    'experiment-videos': (m.ExperimentVideo, s.ExperimentVideoInput),
     'career-domains': (m.CareerDomain, s.DomainInput), 'career-roles': (m.CareerRole, s.RoleInput),
     'site-content': (m.SiteContent, s.SiteContentInput),
     'rooms': (m.InformationRoom, s.RoomInput), 'faculty-subjects': (m.FacultySubject, s.FacultySubjectInput),
@@ -17,7 +18,7 @@ RESOURCES = {
 }
 PARENTS = {m.Semester: ('branch_id', m.Branch), m.Subject: ('semester_id', m.Semester),
            m.ReferenceBook: ('subject_id', m.Subject), m.Lab: ('semester_id', m.Semester),
-           m.Experiment: ('lab_id', m.Lab), m.CareerRole: ('domain_id', m.CareerDomain),
+           m.Experiment: ('lab_id', m.Lab), m.ExperimentVideo: ('experiment_id', m.Experiment), m.CareerRole: ('domain_id', m.CareerDomain),
            m.FacultyMember: ('subject_id', m.FacultySubject), m.CareerResource: ('branch_id', m.Branch)}
 RELATIONS = {m.Branch: {'domain_ids': ('domains', m.CareerDomain), 'role_ids': ('roles', m.CareerRole)},
              m.CareerDomain: {'related_role_ids': ('related_roles', m.CareerRole)}}
@@ -56,6 +57,11 @@ def dependencies(db, row):
             children = list(db.scalars(select(model).where(getattr(model, parent[0]) == row.id)))
             if children:
                 result.append({'resource': key, 'total': len(children), 'published': sum(c.status == 'published' for c in children)})
+    if isinstance(row, (m.CareerDomain, m.CareerRole)):
+        field = m.CareerResource.domain_id if isinstance(row, m.CareerDomain) else m.CareerResource.role_id
+        children = list(db.scalars(select(m.CareerResource).where(field == row.id)))
+        if children:
+            result.append({'resource': 'career-resources', 'total': len(children), 'published': sum(c.status == 'published' for c in children)})
     return result
 
 
@@ -92,6 +98,11 @@ def check_publish(db, row):
         current = get_row(db, parent_type, parent_id, lock=True)
         if current.status != 'published':
             fail('Publish the parent content first.', 409)
+    if isinstance(row, m.CareerResource):
+        for field, model in (('domain_id', m.CareerDomain), ('role_id', m.CareerRole)):
+            parent_id = getattr(row, field)
+            if parent_id and get_row(db, model, parent_id, lock=True).status != 'published':
+                fail('Publish the parent content first.', 409)
 
 
 def save(db, model, body, row=None):
@@ -117,6 +128,10 @@ def save(db, model, body, row=None):
             field, parent = PARENTS[model]
             if getattr(row, field):
                 get_row(db, parent, getattr(row, field))
+        if model is m.CareerResource:
+            for field, parent in (('domain_id', m.CareerDomain), ('role_id', m.CareerRole)):
+                if getattr(row, field):
+                    get_row(db, parent, getattr(row, field))
         if row.status == 'published':
             check_publish(db, row)
     try:
@@ -154,7 +169,7 @@ def remove_draft(db, row):
 
 def published_rows(db):
     result = {}
-    for key in ('branches', 'semesters', 'subjects', 'books', 'labs', 'experiments', 'career-domains', 'career-roles', 'site-content', 'rooms', 'faculty-subjects', 'faculty', 'career-resources'):
+    for key in ('branches', 'semesters', 'subjects', 'books', 'labs', 'experiments', 'experiment-videos', 'career-domains', 'career-roles', 'site-content', 'rooms', 'faculty-subjects', 'faculty', 'career-resources'):
         model, _ = RESOURCES[key]
         rows = list(db.scalars(select(model).where(model.status == 'published').order_by(model.sort_order, model.created_at, model.id)).unique())
         if model in PARENTS:
@@ -162,6 +177,10 @@ def published_rows(db):
             parent_key = next(k for k, (t, _) in RESOURCES.items() if t is parent_model)
             visible_parents = {item.id for item in result[parent_key]}
             rows = [row for row in rows if getattr(row, field) is None or getattr(row, field) in visible_parents]
+        if model is m.CareerResource:
+            domain_ids = {item.id for item in result['career-domains']}
+            role_ids = {item.id for item in result['career-roles']}
+            rows = [row for row in rows if (row.domain_id is None or row.domain_id in domain_ids) and (row.role_id is None or row.role_id in role_ids)]
         result[key] = rows
     return result
 

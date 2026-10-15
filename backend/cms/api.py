@@ -95,7 +95,7 @@ def install_cms(app, settings, factory):
         admin.add_api_route(f'/{key}/{{row_id}}', update, methods=['PUT'], response_model=ContentResponse)
         admin.add_api_route(f'/{key}/{{row_id}}/dependencies', related, methods=['GET'])
         admin.add_api_route(f'/{key}/{{row_id}}/status', status, methods=['PATCH'], response_model=ContentResponse)
-        if key in {'rooms', 'faculty-subjects', 'faculty', 'career-resources'}:
+        if key in {'rooms', 'faculty-subjects', 'faculty', 'career-resources', 'books', 'experiment-videos'}:
             remove.__name__ = f'remove_{key.replace("-", "_")}'
             admin.add_api_route(f'/{key}/{{row_id}}', remove, methods=['DELETE'])
 
